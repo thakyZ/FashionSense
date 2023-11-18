@@ -10,6 +10,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
+using System.Xml.Linq;
 
 namespace FashionSense.Framework.Managers
 {
@@ -45,21 +47,31 @@ namespace FashionSense.Framework.Managers
             // Get the current outfits
             var outfits = GetOutfits(who);
 
-            if (!outfits.Any(o => o.Name.Equals(name, StringComparison.Ordinal)))
+            // There is a method to check if the outfit exists probably should use that.
+            if (!DoesOutfitExist(outfits, name)) // Deprecated code fix.
             {
                 return;
             }
-            outfits.RemoveAt(outfits.FindIndex(o => o.Name.Equals(name, StringComparison.Ordinal)));
+
+            // Instead of finding the index and removing at the index we should remove all that have the particular name, since outfits cannot be named the same thing.
+            outfits.RemoveAll(o => o.Name.Equals(name, StringComparison.Ordinal));
 
             // Serialize the changes
             SerializeOutfits(who, outfits);
         }
 
+        // I split the DoesOutfitExist method because in some case we may need to just check if the outfit exists on that farmer and in other cases in that list.
         public bool DoesOutfitExist(Farmer who, string name)
         {
             // Get the current outfits
             var outfits = GetOutfits(who);
+            // Splitting the way outfit checking works. For compatibility.
+            return DoesOutfitExist(outfits, name);
+        }
 
+        // A new cleaner method to check if the outfit exists.
+        public bool DoesOutfitExist(List<Outfit> outfits, string name)
+        {
             return outfits.Any(o => o.Name.Equals(name, StringComparison.Ordinal));
         }
 
@@ -72,13 +84,16 @@ namespace FashionSense.Framework.Managers
             }
 
             // Add in the shared outfits
-            foreach (Outfit outfit in GetSharedOutfits())
-            {
-                if (outfits.Any(o => o.Name.Equals(outfit.Name, StringComparison.Ordinal)) is false)
-                {
-                    outfits.Add(outfit);
-                }
-            }
+            outfits.AddRange(GetSharedOutfits().FindAll(o => outfits.All(x => !x.Name.Equals(o.Name, StringComparison.Ordinal))));
+            /* Old Code
+             * foreach (Outfit outfit in GetSharedOutfits())
+             * {
+             *     if (outfits.Any(o => o.Name.Equals(outfit.Name, StringComparison.Ordinal)) is false)
+             *     {
+             *         outfits.Add(outfit);
+             *     }
+             * }
+             */
 
             return outfits;
         }
@@ -133,16 +148,28 @@ namespace FashionSense.Framework.Managers
             SerializeOutfits(who, outfits);
         }
 
+        // Old code...
+        // We do not need to fetch the outfits each time.
         public void UpdateSharedOutfits(Farmer who)
         {
             FashionSense.modHelper.Data.WriteJsonFile(_sharedOutfitDataPath, GetOutfits(who).Where(o => o.IsBeingShared).ToList());
+        }
+
+        /// <summary>
+        /// New code to not have the need to fetch the outfits each time.
+        /// </summary>
+        /// <param name="outfits">The instanced outfits already obtained from a user.</param>
+        public void UpdateSharedOutfits(List<Outfit> outfits)
+        {
+            FashionSense.modHelper.Data.WriteJsonFile(_sharedOutfitDataPath, outfits.Where(o => o.IsBeingShared).ToList());
         }
 
         public void SerializeOutfits(Farmer who, List<Outfit> outfits)
         {
             who.modData[ModDataKeys.OUTFITS] = JsonConvert.SerializeObject(outfits);
 
-            UpdateSharedOutfits(who);
+            // Move to use the new code.
+            UpdateSharedOutfits(outfits);
         }
 
         public void SetOutfit(Farmer who, Outfit outfit)

@@ -150,7 +150,7 @@ namespace FashionSense.Framework.Utilities
             // Get AnimationModel for this index
             var animationModel = animations.ElementAtOrDefault(iterator) is null ? animations.ElementAtOrDefault(0) : animations.ElementAtOrDefault(iterator);
 
-            // Handle animations that are syncing with other appearances 
+            // Handle animations that are syncing with other appearances
             bool defaultToEndWhenFarmerFrameUpdates = false;
             if (appearanceModel.AppearanceSyncing.FirstOrDefault(a => a.AnimationType == animationType) is AppearanceSync appearanceSync && appearanceSync is not null)
             {
@@ -848,7 +848,7 @@ namespace FashionSense.Framework.Utilities
                     dyed_shirt_source_rect = shirtSourceRect;
                     dyed_shirt_source_rect.Offset(128, 0);
 
-                    if ((int)who.accessory >= 0)
+                    if (who.accessory.Get() >= 0) // Deprecated code
                     {
                         accessorySourceRect.Offset(0, 16);
                     }
@@ -880,7 +880,7 @@ namespace FashionSense.Framework.Utilities
                         dyed_shirt_source_rect = shirtSourceRect;
                         dyed_shirt_source_rect.Offset(128, 0);
 
-                        if ((int)who.accessory >= 0)
+                        if (who.accessory.Get() >= 0) // Deprecated code
                         {
                             accessorySourceRect.Offset(0, 16);
                         }
@@ -928,7 +928,7 @@ namespace FashionSense.Framework.Utilities
             var type = model.GetPackType();
             if (type is IApi.Type.Hat)
             {
-                return new Vector2(-8 + ((!flip) ? 1 : (-1)) * FarmerRenderer.featureXOffsetPerFrame[currentFrame] * 4, -16 + FarmerRenderer.featureYOffsetPerFrame[currentFrame] * 4 + 4 + (int)renderer.heightOffset);
+                return new Vector2(-8 + ((!flip) ? 1 : (-1)) * FarmerRenderer.featureXOffsetPerFrame[currentFrame] * 4, -16 + FarmerRenderer.featureYOffsetPerFrame[currentFrame] * 4 + 4 + renderer.heightOffset.Get());
             }
 
             if (type is IApi.Type.Shirt)
@@ -936,13 +936,13 @@ namespace FashionSense.Framework.Utilities
                 switch (facingDirection)
                 {
                     case 0:
-                        return new Vector2(16f * scale + (float)(FarmerRenderer.featureXOffsetPerFrame[currentFrame] * 4), (float)(56 + FarmerRenderer.featureYOffsetPerFrame[currentFrame] * 4) + (float)(int)renderer.heightOffset * scale);
+                        return new Vector2(16f * scale + (float)(FarmerRenderer.featureXOffsetPerFrame[currentFrame] * 4), (float)(56 + FarmerRenderer.featureYOffsetPerFrame[currentFrame] * 4) + (float)renderer.heightOffset.Get() * scale); // Deprecated code
                     case 1:
-                        return new Vector2(16f * scale + (float)(FarmerRenderer.featureXOffsetPerFrame[currentFrame] * 4), 56f * scale + (float)(FarmerRenderer.featureYOffsetPerFrame[currentFrame] * 4) + (float)(int)renderer.heightOffset * scale);
+                        return new Vector2(16f * scale + (float)(FarmerRenderer.featureXOffsetPerFrame[currentFrame] * 4), 56f * scale + (float)(FarmerRenderer.featureYOffsetPerFrame[currentFrame] * 4) + (float)renderer.heightOffset.Get() * scale); // Deprecated code
                     case 2:
-                        return new Vector2(16 + FarmerRenderer.featureXOffsetPerFrame[currentFrame] * 4, (float)(56 + FarmerRenderer.featureYOffsetPerFrame[currentFrame] * 4) + (float)(int)renderer.heightOffset * scale);
+                        return new Vector2(16 + FarmerRenderer.featureXOffsetPerFrame[currentFrame] * 4, (float)(56 + FarmerRenderer.featureYOffsetPerFrame[currentFrame] * 4) + (float)renderer.heightOffset.Get() * scale); // Deprecated code
                     case 3:
-                        return new Vector2(16 - FarmerRenderer.featureXOffsetPerFrame[currentFrame] * 4, 56 + FarmerRenderer.featureYOffsetPerFrame[currentFrame] * 4 + (int)renderer.heightOffset);
+                        return new Vector2(16 - FarmerRenderer.featureXOffsetPerFrame[currentFrame] * 4, 56 + FarmerRenderer.featureYOffsetPerFrame[currentFrame] * 4 + renderer.heightOffset.Get()); // Deprecated code
                 }
             }
             else if (type is not IApi.Type.Sleeves)
@@ -977,7 +977,7 @@ namespace FashionSense.Framework.Utilities
                         break;
                 }
 
-                offset.Y += renderer.heightOffset;
+                offset.Y += renderer.heightOffset.Get(); // Deprecated code
             }
 
             return offset;

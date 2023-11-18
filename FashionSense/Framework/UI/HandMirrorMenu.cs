@@ -324,7 +324,7 @@ namespace FashionSense.Framework.UI
             switch (GetNameOfEnabledFilter())
             {
                 case HAIR_FILTER_BUTTON:
-                    colorPicker.SetColor(Game1.player.hairstyleColor);
+                    colorPicker.SetColor(Game1.player.hairstyleColor.Get()); // Deprecated code
                     break;
                 case ACCESSORY_FILTER_BUTTON:
                     colorPicker.SetColor(FashionSense.accessoryManager.GetColorFromIndex(Game1.player, GetAccessoryIndex()));
@@ -378,7 +378,7 @@ namespace FashionSense.Framework.UI
             switch (GetNameOfEnabledFilter())
             {
                 case HAIR_FILTER_BUTTON:
-                    colorPicker.SetColor(Game1.player.hairstyleColor);
+                    colorPicker.SetColor(Game1.player.hairstyleColor.Get()); // Deprecated code
                     colorPicker.SetColor(AppearanceHelpers.GetAppearanceColorByLayer(GetActiveModel(), Game1.player, maskLayerIndex: currentColorMaskLayerIndex));
                     break;
                 case ACCESSORY_FILTER_BUTTON:
@@ -420,7 +420,7 @@ namespace FashionSense.Framework.UI
                 case HAIR_FILTER_BUTTON:
                     Game1.player.modData[ModDataKeys.UI_HAND_MIRROR_FILTER_BUTTON] = HAIR_FILTER_BUTTON;
 
-                    colorPicker.SetColor(Game1.player.hairstyleColor);
+                    colorPicker.SetColor(Game1.player.hairstyleColor.Get()); // Deprecated code
 
                     filterButton = filterButtons.First(b => b.name == HAIR_FILTER_BUTTON) as ClickableTextureComponent;
                     break;
@@ -876,7 +876,7 @@ namespace FashionSense.Framework.UI
                         case HAIR_FILTER_BUTTON:
                             Game1.player.modData[ModDataKeys.UI_HAND_MIRROR_FILTER_BUTTON] = HAIR_FILTER_BUTTON;
 
-                            colorPicker.SetColor(Game1.player.hairstyleColor);
+                            colorPicker.SetColor(Game1.player.hairstyleColor.Get()); // Deprecated code
                             break;
                         case ACCESSORY_FILTER_BUTTON:
                             Game1.player.modData[ModDataKeys.UI_HAND_MIRROR_FILTER_BUTTON] = ACCESSORY_FILTER_BUTTON;

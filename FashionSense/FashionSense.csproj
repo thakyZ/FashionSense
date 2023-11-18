@@ -45,8 +45,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
-		<PackageReference Include="Pathoschild.Stardew.ModBuildConfig" Version="4.0.2" />
+		<!-- Update the packages -->
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+		<PackageReference Include="Pathoschild.Stardew.ModBuildConfig" Version="4.1.1" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -84,18 +85,19 @@
 			$(PostBuildEventDependsOn);
 			PostBuildMacros;
 		</PostBuildEventDependsOn>
+		<!-- Better powershell syntax -->
 		<PostBuildEvent>
 			powershell -Command "(ls *manifest.json -rec | foreach-object { $f=$_.FullName; (gc -LiteralPath \"$f\") -replace 'REPLACE_ME_WITH_VERSION',  '$(Version)' | sc -LiteralPath \"$f\" })"
 
-			powershell Remove-Item -Path 'C:\Users\Floogen\Documents\GitHub Repos\FashionSense\FashionSense\releases\latest\FashionSense"' -Recurse -Force
-			xcopy /s /y /i "C:\Users\Floogen\Documents\GitHub Repos\FashionSense\FashionSense\bin\Debug\net5.0" "C:\Users\Floogen\Documents\GitHub Repos\FashionSense\FashionSense\releases\latest\FashionSense"
-			7z a -tzip "C:\Users\Floogen\Documents\GitHub Repos\FashionSense\FashionSense\releases\FashionSense-$(Version).zip" "C:\Users\Floogen\Documents\GitHub Repos\FashionSense\FashionSense\releases\latest\FashionSense"
+			powershell -Command "Remove-Item -Path '$(SolutionDir)releases\latest\FashionSense' -Recurse -Force -ErrorAction Continue"
+			xcopy /s /y /i "$(SolutionDir)bin\Debug\net5.0" "$(SolutionDir)releases\latest\FashionSense"
+			7z a -tzip "$(SolutionDir)releases\FashionSense-$(Version).zip" "$(SolutionDir)releases\latest\FashionSense"
 
-			powershell Remove-Item -Path '$(GameModsPath)\FashionSense' -Recurse -Exclude "Outfits.json", "Data" -Force
-			powershell Remove-Item -Path '$(GameModsPath)\Fashion Sense Examples' -Recurse -Force
+			powershell "Remove-Item -Path '$(GameModsPath)\FashionSense' -Recurse -Exclude @('Outfits.json', 'Data') -Force -ErrorAction Continue"
+			powershell "Remove-Item -Path '$(GameModsPath)\Fashion Sense Examples' -Recurse -Force -ErrorAction Continue"
 
-			xcopy /s /y /i "C:\Users\Floogen\Documents\GitHub Repos\FashionSense\FashionSense\releases\latest\FashionSense" "$(GameModsPath)\FashionSense"
-			xcopy /s /y /i "C:\Users\Floogen\Documents\GitHub Repos\FashionSense\FashionSense\Examples\*" "$(GameModsPath)\Fashion Sense Examples"
+			xcopy /s /y /i "$(SolutionDir)releases\latest\FashionSense" "$(GameModsPath)\FashionSense"
+			xcopy /s /y /i "$(SolutionDir)Examples\*" "$(GameModsPath)\Fashion Sense Examples"
 		</PostBuildEvent>
 	</PropertyGroup>
 </Project>

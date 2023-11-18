@@ -230,10 +230,11 @@ namespace FashionSense.Framework.UI
                         // Check if the functional buttons are being clicked
 
                         var outfit = FashionSense.outfitManager.GetOutfit(Game1.player, _pages[_currentPage][i].Name);
-                        if (outfit.IsGlobal is false)
-                        {
-                            if (outfit.IsBeingShared is false)
-                            {
+                        // Allow the editing of shared outfits.
+                        //if (outfit.IsGlobal is false)
+                        //{
+                            //if (outfit.IsBeingShared is false)
+                            //{
                                 if (saveButtons[i].containsPoint(x, y))
                                 {
                                     FashionSense.outfitManager.OverrideOutfit(Game1.player, _pages[_currentPage][i].Name);
@@ -253,14 +254,14 @@ namespace FashionSense.Framework.UI
                                     PaginatePacks();
                                     return;
                                 }
-                            }
+                            //}
                             if (shareButtons[i].containsPoint(x, y))
                             {
                                 FashionSense.outfitManager.SetOutfitShareState(Game1.player, _pages[_currentPage][i].Name, !outfit.IsBeingShared);
 
                                 return;
                             }
-                        }
+                        //}
 
                         FashionSense.outfitManager.SetOutfit(Game1.player, _pages[_currentPage][i]);
                         _callbackMenu.Reset();
@@ -319,10 +320,11 @@ namespace FashionSense.Framework.UI
 
                     // Check if the functional buttons are being hovered
                     var outfit = FashionSense.outfitManager.GetOutfit(Game1.player, _pages[_currentPage][i].Name);
-                    if (outfit.IsGlobal is false)
-                    {
-                        if (outfit.IsBeingShared is false)
-                        {
+                    // Allow the editing of shared outfits
+                    //if (outfit.IsGlobal is false)
+                    //{
+                        //if (outfit.IsBeingShared is false)
+                        //{
                             if (saveButtons[i].containsPoint(x, y))
                             {
                                 _hoverText = FashionSense.modHelper.Translation.Get("ui.fashion_sense.outfit_info.save");
@@ -338,13 +340,13 @@ namespace FashionSense.Framework.UI
                                 _hoverText = FashionSense.modHelper.Translation.Get("ui.fashion_sense.outfit_info.delete");
                                 return;
                             }
-                        }
+                        //}
                         if (shareButtons[i].containsPoint(x, y))
                         {
                             _hoverText = outfit.IsBeingShared ? FashionSense.modHelper.Translation.Get("ui.fashion_sense.outfit_info.share.active") : FashionSense.modHelper.Translation.Get("ui.fashion_sense.outfit_info.share.inactive");
                             return;
                         }
-                    }
+                    //}
 
                     if (_pages[_currentPage][i].Name.Length > 18)
                     {
@@ -418,20 +420,21 @@ namespace FashionSense.Framework.UI
                     SpriteText.drawString(b, packName, outfitButtons[j].bounds.X + 32, outfitButtons[j].bounds.Y + 20);
 
                     // Draw the functional buttons
-                    if (outfit.IsGlobal is false)
-                    {
-                        if (outfit.IsBeingShared is false)
-                        {
+                    // Allow the editing of shared outfits
+                    //if (outfit.IsGlobal is false)
+                    //{
+                        //if (outfit.IsBeingShared is false)
+                        //{
                             saveButtons[j].draw(b);
                             renameButtons[j].draw(b);
                             deleteButtons[j].draw(b);
-                        }
+                        //}
                         shareButtons[j].draw(b, outfit.IsBeingShared ? Color.White : new Color(55, 55, 55, 55), 1f);
-                    }
-                    else
-                    {
-                        SpriteText.drawString(b, FashionSense.modHelper.Translation.Get("ui.fashion_sense.outfit_info.shared"), outfitButtons[j].bounds.Width + 135, outfitButtons[j].bounds.Y + 20);
-                    }
+                    //}
+                    //else
+                    //{
+                    //    SpriteText.drawString(b, FashionSense.modHelper.Translation.Get("ui.fashion_sense.outfit_info.shared"), outfitButtons[j].bounds.Width + 135, outfitButtons[j].bounds.Y + 20);
+                    //}
                 }
             }
 
