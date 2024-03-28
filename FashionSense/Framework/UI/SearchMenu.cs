@@ -119,16 +119,24 @@ namespace FashionSense.Framework.UI
                         leftNeighborID = c > 0 ? componentId - 1 : 9998
                     });
 
-                    var fakeFarmer = _displayFarmer.CreateFakeEventFarmer();
-                    fakeFarmer.faceDirection(who.FacingDirection);
-                    foreach (var key in _displayFarmer.modData.Keys)
+                    try
                     {
-                        fakeFarmer.modData[key] = _displayFarmer.modData[key];
-                    }
-                    FashionSense.accessoryManager.CopyAccessories(_displayFarmer, fakeFarmer);
-                    FashionSense.colorManager.CopyColors(_displayFarmer, fakeFarmer);
+                        var fakeFarmer = _displayFarmer.CreateFakeEventFarmer();
+                        fakeFarmer.faceDirection(who.FacingDirection);
+                        foreach (var key in _displayFarmer.modData.Keys)
+                        {
+                            fakeFarmer.modData[key] = _displayFarmer.modData[key];
+                        }
+                        FashionSense.accessoryManager.CopyAccessories(_displayFarmer, fakeFarmer);
+                        FashionSense.colorManager.CopyColors(_displayFarmer, fakeFarmer);
 
-                    fakeFarmers.Add(fakeFarmer);
+                        fakeFarmers.Add(fakeFarmer);
+                    }
+                    catch (Exception ex)
+                    {
+                        FashionSense.monitor.Log($"Failed to create display farmers for search menu:\n{ex}", StardewModdingAPI.LogLevel.Trace);
+                        base.exitThisMenu();
+                    }
                 }
             }
             UpdateDisplayFarmers();
