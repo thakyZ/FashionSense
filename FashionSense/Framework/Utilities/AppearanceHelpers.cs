@@ -948,7 +948,7 @@ namespace FashionSense.Framework.Utilities
             var type = model.GetPackType();
             if (type is IApi.Type.Hat)
             {
-                return new Vector2(-8 + ((!flip) ? 1 : (-1)) * FarmerRenderer.featureXOffsetPerFrame[currentFrame] * 4, -16 + FarmerRenderer.featureYOffsetPerFrame[currentFrame] * 4 + 4 + (int)renderer.heightOffset);
+                return new Vector2(-8 + ((!flip) ? 1 : (-1)) * AppearanceHelpers.GetFarmerRendererXFeatureOffset(currentFrame) * 4, -16 + AppearanceHelpers.GetFarmerRendererYFeatureOffset(currentFrame) * 4 + 4 + (int)renderer.heightOffset);
             }
 
             if (type is IApi.Type.Shirt)
@@ -956,13 +956,13 @@ namespace FashionSense.Framework.Utilities
                 switch (facingDirection)
                 {
                     case 0:
-                        return new Vector2(16f * scale + (float)(FarmerRenderer.featureXOffsetPerFrame[currentFrame] * 4), (float)(56 + FarmerRenderer.featureYOffsetPerFrame[currentFrame] * 4) + (float)(int)renderer.heightOffset * scale);
+                        return new Vector2(16f * scale + (float)(AppearanceHelpers.GetFarmerRendererXFeatureOffset(currentFrame) * 4), (float)(56 + AppearanceHelpers.GetFarmerRendererYFeatureOffset(currentFrame) * 4) + (float)(int)renderer.heightOffset * scale);
                     case 1:
-                        return new Vector2(16f * scale + (float)(FarmerRenderer.featureXOffsetPerFrame[currentFrame] * 4), 56f * scale + (float)(FarmerRenderer.featureYOffsetPerFrame[currentFrame] * 4) + (float)(int)renderer.heightOffset * scale);
+                        return new Vector2(16f * scale + (float)(AppearanceHelpers.GetFarmerRendererXFeatureOffset(currentFrame) * 4), 56f * scale + (float)(AppearanceHelpers.GetFarmerRendererYFeatureOffset(currentFrame) * 4) + (float)(int)renderer.heightOffset * scale);
                     case 2:
-                        return new Vector2(16 + FarmerRenderer.featureXOffsetPerFrame[currentFrame] * 4, (float)(56 + FarmerRenderer.featureYOffsetPerFrame[currentFrame] * 4) + (float)(int)renderer.heightOffset * scale);
+                        return new Vector2(16 + AppearanceHelpers.GetFarmerRendererXFeatureOffset(currentFrame) * 4, (float)(56 + AppearanceHelpers.GetFarmerRendererYFeatureOffset(currentFrame) * 4) + (float)(int)renderer.heightOffset * scale);
                     case 3:
-                        return new Vector2(16 - FarmerRenderer.featureXOffsetPerFrame[currentFrame] * 4, 56 + FarmerRenderer.featureYOffsetPerFrame[currentFrame] * 4 + (int)renderer.heightOffset);
+                        return new Vector2(16 - AppearanceHelpers.GetFarmerRendererXFeatureOffset(currentFrame) * 4, 56 + AppearanceHelpers.GetFarmerRendererYFeatureOffset(currentFrame) * 4 + (int)renderer.heightOffset);
                 }
             }
             else if (type is not IApi.Type.Sleeves)
@@ -970,16 +970,16 @@ namespace FashionSense.Framework.Utilities
                 switch (facingDirection)
                 {
                     case 0:
-                        offset = new Vector2(FarmerRenderer.featureXOffsetPerFrame[currentFrame] * 4, FarmerRenderer.featureYOffsetPerFrame[currentFrame] * 4);
+                        offset = new Vector2(AppearanceHelpers.GetFarmerRendererXFeatureOffset(currentFrame) * 4, AppearanceHelpers.GetFarmerRendererYFeatureOffset(currentFrame) * 4);
                         break;
                     case 1:
-                        offset = new Vector2(FarmerRenderer.featureXOffsetPerFrame[currentFrame] * 4, 4 + FarmerRenderer.featureYOffsetPerFrame[currentFrame] * 4);
+                        offset = new Vector2(AppearanceHelpers.GetFarmerRendererXFeatureOffset(currentFrame) * 4, 4 + AppearanceHelpers.GetFarmerRendererYFeatureOffset(currentFrame) * 4);
                         break;
                     case 2:
-                        offset = new Vector2(FarmerRenderer.featureXOffsetPerFrame[currentFrame] * 4, FarmerRenderer.featureYOffsetPerFrame[currentFrame] * 4);
+                        offset = new Vector2(AppearanceHelpers.GetFarmerRendererXFeatureOffset(currentFrame) * 4, AppearanceHelpers.GetFarmerRendererYFeatureOffset(currentFrame) * 4);
                         break;
                     case 3:
-                        offset = new Vector2(-FarmerRenderer.featureXOffsetPerFrame[currentFrame] * 4, (flip ? 4 : 0) + FarmerRenderer.featureYOffsetPerFrame[currentFrame] * 4);
+                        offset = new Vector2(-AppearanceHelpers.GetFarmerRendererXFeatureOffset(currentFrame) * 4, (flip ? 4 : 0) + AppearanceHelpers.GetFarmerRendererYFeatureOffset(currentFrame) * 4);
                         break;
                 }
             }
@@ -1001,6 +1001,26 @@ namespace FashionSense.Framework.Utilities
             }
 
             return offset;
+        }
+
+        public static int GetFarmerRendererXFeatureOffset(int frame)
+        {
+            if (frame >= 0 && frame < FarmerRenderer.featureXOffsetPerFrame.Length)
+            {
+                return FarmerRenderer.featureXOffsetPerFrame[frame];
+            }
+
+            return 0;
+        }
+
+        public static int GetFarmerRendererYFeatureOffset(int frame)
+        {
+            if (frame >= 0 && frame < FarmerRenderer.featureYOffsetPerFrame.Length)
+            {
+                return FarmerRenderer.featureYOffsetPerFrame[frame];
+            }
+
+            return 0;
         }
 
         public static Vector2 GetScaledPosition(Vector2 position, AppearanceModel model, bool isDrawingForUI)

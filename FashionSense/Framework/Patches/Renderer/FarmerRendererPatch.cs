@@ -87,7 +87,7 @@ namespace FashionSense.Framework.Patches.Renderer
             {
                 case 0:
                     yOffset = 64;
-                    feature_y_offset = FarmerRenderer.featureYOffsetPerFrame[12];
+                    feature_y_offset = AppearanceHelpers.GetFarmerRendererYFeatureOffset(12);
                     break;
                 case 3:
                     if (hair_metadata != null && hair_metadata.usesUniqueLeftSprite)
@@ -98,15 +98,15 @@ namespace FashionSense.Framework.Patches.Renderer
                     {
                         yOffset = 32;
                     }
-                    feature_y_offset = FarmerRenderer.featureYOffsetPerFrame[6];
+                    feature_y_offset = AppearanceHelpers.GetFarmerRendererYFeatureOffset(6);
                     break;
                 case 1:
                     yOffset = 32;
-                    feature_y_offset = FarmerRenderer.featureYOffsetPerFrame[6];
+                    feature_y_offset = AppearanceHelpers.GetFarmerRendererYFeatureOffset(6);
                     break;
                 case 2:
                     yOffset = 0;
-                    feature_y_offset = FarmerRenderer.featureYOffsetPerFrame[0];
+                    feature_y_offset = AppearanceHelpers.GetFarmerRendererYFeatureOffset(0);
                     break;
             }
             feature_y_offset -= who.IsMale ? 1 : 0;
