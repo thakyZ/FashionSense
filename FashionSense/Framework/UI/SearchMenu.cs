@@ -41,6 +41,7 @@ namespace FashionSense.Framework.UI
         private int _startingRow = 0;
         private int _texturesPerRow = 4;
         private int _maxRows = 2;
+        private int _rowChangePerScroll = 2;
 
         private string _appearanceFilter;
         private Farmer _displayFarmer;
@@ -347,14 +348,14 @@ namespace FashionSense.Framework.UI
 
             if (_startingRow > 0 && backButton.containsPoint(x, y))
             {
-                _startingRow--;
+                _startingRow = Math.Max(_startingRow - _rowChangePerScroll, 0);
                 UpdateDisplayFarmers();
                 Game1.playSound("shiny4");
                 return;
             }
             if ((_maxRows + _startingRow) * _texturesPerRow < filteredTextureOptions.Count && forwardButton.containsPoint(x, y))
             {
-                _startingRow++;
+                _startingRow += _rowChangePerScroll;
                 UpdateDisplayFarmers();
                 Game1.playSound("shiny4");
                 return;
@@ -395,13 +396,13 @@ namespace FashionSense.Framework.UI
             base.receiveScrollWheelAction(direction);
             if (direction > 0 && _startingRow > 0)
             {
-                _startingRow--;
+                _startingRow = Math.Max(_startingRow - _rowChangePerScroll, 0);
                 UpdateDisplayFarmers();
                 Game1.playSound("shiny4");
             }
             else if (direction < 0 && (_maxRows + _startingRow) * _texturesPerRow < filteredTextureOptions.Count)
             {
-                _startingRow++;
+                _startingRow += _rowChangePerScroll;
                 UpdateDisplayFarmers();
                 Game1.playSound("shiny4");
             }
@@ -418,13 +419,13 @@ namespace FashionSense.Framework.UI
 
             if ((b == Buttons.RightTrigger || b == Buttons.RightShoulder) && (_maxRows + _startingRow) * _texturesPerRow < filteredTextureOptions.Count)
             {
-                _startingRow++;
+                _startingRow += _rowChangePerScroll;
                 UpdateDisplayFarmers();
                 Game1.playSound("shiny4");
             }
             else if ((b == Buttons.LeftTrigger || b == Buttons.LeftShoulder) && _startingRow > 0)
             {
-                _startingRow--;
+                _startingRow = Math.Max(_startingRow - _rowChangePerScroll, 0);
                 UpdateDisplayFarmers();
                 Game1.playSound("shiny4");
             }
