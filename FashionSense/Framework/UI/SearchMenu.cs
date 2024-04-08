@@ -48,9 +48,14 @@ namespace FashionSense.Framework.UI
         private HandMirrorMenu _callbackMenu;
 
         private FilterDropDown _searchFilterOptions;
+        private ClickableComponent _changeDirectionButton;
 
         public SearchMenu(Farmer who, string appearanceFilter, HandMirrorMenu callbackMenu) : base(0, 0, 832, 576, showUpperRightCloseButton: true)
         {
+            _displayFarmer = who;
+            _appearanceFilter = appearanceFilter;
+            _callbackMenu = callbackMenu;
+
             if (Game1.viewport.Height >= 720)
             {
                 int adjustedHeight = Game1.viewport.Height - 150;
@@ -100,10 +105,6 @@ namespace FashionSense.Framework.UI
                 filteredTextureOptions.Add(appearancePacks[m]);
                 cachedTextureOptions.Add(appearancePacks[m]);
             }
-
-            _displayFarmer = who;
-            _appearanceFilter = appearanceFilter;
-            _callbackMenu = callbackMenu;
 
             var drawingScale = 4f;
             var widthOffsetScale = 3;
@@ -187,6 +188,8 @@ namespace FashionSense.Framework.UI
             Game1.keyboardDispatcher.Subscriber = _searchBox;
             _searchBox.Selected = true;
 
+            _changeDirectionButton = new ClickableComponent(new Rectangle(base.xPositionOnScreen + base.width - 256, base.yPositionOnScreen - 42, 256, 45), "changeDirectionButton");
+
             // Handle GamePad integration
             if (Game1.options.snappyMenus && Game1.options.gamepadControls)
             {
@@ -237,6 +240,14 @@ namespace FashionSense.Framework.UI
                     FashionSense.ResetAnimationModDataFields(fakeFarmers[i], 0, AnimationModel.Type.Idle, fakeFarmers[i].FacingDirection);
                     FashionSense.SetSpriteDirty();
                 }
+            }
+        }
+
+        private void ChangeDisplayFarmersDirection()
+        {
+            for (int i = 0; i < availableTextures.Count; i++)
+            {
+                fakeFarmers[i].faceDirection(fakeFarmers[i].FacingDirection == 3 ? 0 : fakeFarmers[i].FacingDirection + 1);
             }
         }
 
@@ -369,6 +380,12 @@ namespace FashionSense.Framework.UI
             {
                 _searchFilterOptions.receiveLeftClick(x, y);
             }
+
+            // Handle change direction button
+            if (_changeDirectionButton.containsPoint(x, y))
+            {
+                ChangeDisplayFarmersDirection();
+            }
         }
 
         public override void leftClickHeld(int x, int y)
@@ -478,6 +495,10 @@ namespace FashionSense.Framework.UI
 
             // Draw the filter options box
             _searchFilterOptions.draw(b, 0, 0);
+
+            // Draw change direction button
+            IClickableMenu.drawTextureBox(b, Game1.mouseCursors, new Rectangle(432, 439, 9, 9), _changeDirectionButton.bounds.X, _changeDirectionButton.bounds.Y, _changeDirectionButton.bounds.Width, _changeDirectionButton.bounds.Height, Color.White, 4f, drawShadow: false);
+            Utility.drawTextWithShadow(b, "Change Direction", Game1.smallFont, new Vector2(_changeDirectionButton.bounds.X + 25, _changeDirectionButton.bounds.Y + 5), Game1.textColor);
 
             // Draw hover text
             if (!_hoverText.Equals(""))
