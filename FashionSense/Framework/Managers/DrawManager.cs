@@ -308,7 +308,7 @@ namespace FashionSense.Framework.Managers
             }
 
             // Handle the vanilla sleeve / arm drawing, if a custom sleeve model isn't given
-            if (sleevesModel is null && _hideSleeves is false)
+            if (sleevesModel is null && _hideSleeves is false && who.bathingClothes.Value is false)
             {
                 DrawSlingshotVanilla(who);
             }
