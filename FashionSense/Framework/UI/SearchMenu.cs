@@ -51,10 +51,13 @@ namespace FashionSense.Framework.UI
 
         public SearchMenu(Farmer who, string appearanceFilter, HandMirrorMenu callbackMenu) : base(0, 0, 832, 576, showUpperRightCloseButton: true)
         {
-            // Set up menu structure
-            if (LocalizedContentManager.CurrentLanguageCode == LocalizedContentManager.LanguageCode.ko || LocalizedContentManager.CurrentLanguageCode == LocalizedContentManager.LanguageCode.fr)
+            if (Game1.viewport.Height >= 720)
             {
-                base.height += 64;
+                int adjustedHeight = Game1.viewport.Height - 150;
+
+                _maxRows = adjustedHeight / 240;
+                _rowChangePerScroll = _maxRows;
+                base.height = adjustedHeight;
             }
 
             Vector2 topLeft = Utility.getTopLeftPositionForCenteringOnScreen(base.width, base.height);
@@ -111,7 +114,7 @@ namespace FashionSense.Framework.UI
                 for (int c = 0; c < _texturesPerRow; c++)
                 {
                     var componentId = c + r * _texturesPerRow;
-                    availableTextures.Add(new ClickableTextureComponent(new Rectangle(32 + base.xPositionOnScreen + IClickableMenu.borderWidth + componentId % _texturesPerRow * 64 * widthOffsetScale, base.yPositionOnScreen + sourceRect.Height / 2 + componentId + (r * sourceRect.Height) + (r > 0 ? 64 : 32) - 32, sourceRect.Width, sourceRect.Height), null, new Rectangle(), drawingScale, false)
+                    availableTextures.Add(new ClickableTextureComponent(new Rectangle(32 + base.xPositionOnScreen + IClickableMenu.borderWidth + componentId % _texturesPerRow * 64 * widthOffsetScale, base.yPositionOnScreen + sourceRect.Height / 2 + componentId + (r * sourceRect.Height) + (r > 0 ? (r + 1) * 32 : 32) - 32, sourceRect.Width, sourceRect.Height), null, new Rectangle(), drawingScale, false)
                     {
                         myID = componentId,
                         downNeighborID = componentId + _texturesPerRow,
