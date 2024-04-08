@@ -145,7 +145,7 @@ namespace FashionSense.Framework.UI
             }
             UpdateDisplayFarmers();
 
-            backButton = new ClickableTextureComponent(new Rectangle(base.xPositionOnScreen - 64, base.yPositionOnScreen + 8, 48, 44), Game1.mouseCursors, new Rectangle(352, 495, 12, 11), 4f)
+            backButton = new ClickableTextureComponent(new Rectangle(base.xPositionOnScreen - 64, base.yPositionOnScreen + base.height - 48, 48, 44), Game1.mouseCursors, new Rectangle(352, 495, 12, 11), 4f)
             {
                 myID = 9998,
                 rightNeighborID = 0,
@@ -472,14 +472,9 @@ namespace FashionSense.Framework.UI
                 _searchBox.Draw(b);
             }
 
-            if (_startingRow > 0)
-            {
-                backButton.draw(b);
-            }
-            if ((_maxRows + _startingRow) * _texturesPerRow < filteredTextureOptions.Count)
-            {
-                forwardButton.draw(b);
-            }
+            // Draw scroll buttons
+            backButton.draw(b, _startingRow > 0 ? Color.White : Color.Gray, 1f, 0, 0);
+            forwardButton.draw(b, (_maxRows + _startingRow) * _texturesPerRow < filteredTextureOptions.Count ? Color.White : Color.Gray, 1f, 0, 0);
 
             // Draw the filter options box
             _searchFilterOptions.draw(b, 0, 0);
