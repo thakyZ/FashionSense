@@ -12,7 +12,6 @@ using FashionSense.Framework.Models.Appearances.Shirt;
 using FashionSense.Framework.Models.Appearances.Shoes;
 using FashionSense.Framework.Models.Appearances.Sleeves;
 using FashionSense.Framework.Models.General;
-using FashionSense.Framework.Models.Messages;
 using FashionSense.Framework.Patches.Core;
 using FashionSense.Framework.Patches.Entities;
 using FashionSense.Framework.Patches.GameLocations;
@@ -52,6 +51,7 @@ namespace FashionSense
         internal static AssetManager assetManager;
         internal static ColorManager colorManager;
         internal static LayerManager layerManager;
+        internal static MessageManager messageManager;
         internal static OutfitManager outfitManager;
         internal static TextureManager textureManager;
 
@@ -84,6 +84,7 @@ namespace FashionSense
             assetManager = new AssetManager(modHelper);
             colorManager = new ColorManager(monitor);
             layerManager = new LayerManager(monitor);
+            messageManager = new MessageManager(monitor, helper, ModManifest.UniqueID);
             outfitManager = new OutfitManager(monitor);
             textureManager = new TextureManager(monitor);
 
@@ -113,7 +114,7 @@ namespace FashionSense
                 new SaveFileSlotPatch(monitor, modHelper).Apply(harmony);
 
                 // Apply entity related patches
-                new CharacterPatch(monitor, modHelper).Apply(harmony);
+                new FarmerPatch(monitor, modHelper).Apply(harmony);
 
                 // Apply object related patches
                 new ObjectPatch(monitor, modHelper).Apply(harmony);
@@ -148,16 +149,9 @@ namespace FashionSense
 
         private void OnModMessageReceived(object sender, ModMessageReceivedEventArgs e)
         {
-            if (e.FromModID == this.ModManifest.UniqueID && e.Type == "ColorChangeMessage")
+            if (e.FromModID == ModManifest.UniqueID)
             {
-                ColorChangeMessage message = e.ReadAs<ColorChangeMessage>();
-
-                var farmer = Game1.getFarmer(message.FarmerID);
-                if (farmer is null)
-                {
-                    return;
-                }
-                colorManager.SetColor(farmer, message.ColorKey, message.ColorValue);
+                messageManager.HandleIncomingMessage(e);
             }
         }
 

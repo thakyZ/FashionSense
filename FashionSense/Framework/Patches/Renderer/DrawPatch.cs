@@ -48,6 +48,14 @@ namespace FashionSense.Framework.Patches.Renderer
         {
             // Since the game doesn't pass the farmer over to the native ApplyShoeColor method, we have to find it by matching the FarmerRender instance
             Farmer who = Game1.player;
+            foreach (var farmer in Game1.getOnlineFarmers())
+            {
+                if (farmer.FarmerRenderer == __instance)
+                {
+                    who = farmer;
+                }
+            }
+
             if (who.FarmerRenderer != __instance && Game1.activeClickableMenu is SearchMenu searchMenu && searchMenu is not null)
             {
                 foreach (var fakeFarmer in searchMenu.fakeFarmers)
@@ -69,10 +77,10 @@ namespace FashionSense.Framework.Patches.Renderer
                 return true;
             }
 
-            if (!uint.TryParse(Game1.player.modData[shoeColorKey], out uint shoeColorValue))
+            if (!uint.TryParse(who.modData[shoeColorKey], out uint shoeColorValue))
             {
-                shoeColorValue = Game1.player.hairstyleColor.Value.PackedValue;
-                Game1.player.modData[shoeColorKey] = shoeColorValue.ToString();
+                shoeColorValue = who.hairstyleColor.Value.PackedValue;
+                who.modData[shoeColorKey] = shoeColorValue.ToString();
             }
 
             var shoeColor = new Color() { PackedValue = shoeColorValue };
@@ -159,7 +167,7 @@ namespace FashionSense.Framework.Patches.Renderer
             }
 
             // Get the currently equipped models
-            List<AppearanceMetadata> equippedModels = GetCurrentlyEquippedModels(who, facingDirection);
+            List<AppearanceMetadata> equippedModels = AppearanceHelpers.GetCurrentlyEquippedModels(who, facingDirection);
 
             if (equippedModels.Count > 0)
             {
@@ -264,6 +272,9 @@ namespace FashionSense.Framework.Patches.Renderer
                 return;
             }
 
+            // Draw the player's shadow
+            HandlePlayerShadowDraw(b, who, drawManager.LayerDepth);
+
             // Draw all sorted layers
             drawManager.DrawLayers(who, layers);
 
@@ -274,7 +285,37 @@ namespace FashionSense.Framework.Patches.Renderer
                 Game1.drawPlayerHeldObject(who);
             }
 
+            // Slightly offset the drawLayerDisambiguator when the player is facing downwards
+            if (facingDirection == 2 && who.UsingTool)
+            {
+                who.drawLayerDisambiguator += 0.01f;
+            }
+
             FarmerRendererPatch.AreColorMasksPendingRefresh = false;
+        }
+
+        private static void HandlePlayerShadowDraw(SpriteBatch b, Farmer who, float layerDepth)
+        {
+            // Hide the player's shadow if required
+            if (who.modData.ContainsKey(ModDataKeys.CUSTOM_PANTS_ID) && FashionSense.textureManager.GetSpecificAppearanceModel<PantsContentPack>(who.modData[ModDataKeys.CUSTOM_PANTS_ID]) is PantsContentPack pPack && pPack != null)
+            {
+                PantsModel pantsModel = pPack.GetPantsFromFacingDirection(who.FacingDirection);
+
+                if (pantsModel is not null && pantsModel.HideShadow)
+                {
+                    return;
+                }
+            }
+
+            // Check the vanilla conditions for drawing player's shadow
+            bool shouldHideCharacters = who.currentLocation is not null && who.currentLocation.shouldHideCharacters();
+            if (FarmerRenderer.isDrawingForUI is false && shouldHideCharacters is false)
+            {
+                if (who.swimming.Value is false && who.isRidingHorse() is false && who.IsSitting() is false)
+                {
+                    b.Draw(Game1.shadowTexture, Game1.GlobalToLocal(who.GetShadowOffset() + who.Position + new Vector2(32f, 24f)), Game1.shadowTexture.Bounds, Color.White, 0f, new Vector2(Game1.shadowTexture.Bounds.Center.X, Game1.shadowTexture.Bounds.Center.Y), 4f - (((who.running || who.UsingTool) && who.FarmerSprite.currentAnimationIndex > 1) ? ((float)Math.Abs(FarmerRenderer.featureYOffsetPerFrame[who.FarmerSprite.CurrentFrame]) * 0.5f) : 0f), SpriteEffects.None, layerDepth);
+                }
+            }
         }
 
         private static List<LayerData> GenerateDrawLayers(List<AppearanceMetadata> metadata, FarmerRenderer __instance, ref Dictionary<AppearanceModel, AnimationModel> appearanceTypeToAnimationModels, bool ___isDrawingForUI, Vector2 ___positionOffset, Vector2 ___rotationAdjustment, LocalizedContentManager ___farmerTextureManager, Texture2D ___baseTexture, NetInt ___skin, bool ____sickFrame, ref Rectangle ___hairstyleSourceRect, ref Rectangle ___shirtSourceRect, ref Rectangle ___accessorySourceRect, ref Rectangle ___hatSourceRect, SpriteBatch b, int facingDirection, Farmer who, Vector2 position, Vector2 origin, float scale, int currentFrame, float rotation, Color overrideColor, float layerDepth)
@@ -357,94 +398,6 @@ namespace FashionSense.Framework.Patches.Renderer
             return null;
         }
 
-        internal static List<AppearanceMetadata> GetCurrentlyEquippedModels(Farmer who, int facingDirection)
-        {
-            // Set up each AppearanceModel
-            List<AppearanceMetadata> models = new List<AppearanceMetadata>();
-
-            // Pants pack
-            if (who.modData.ContainsKey(ModDataKeys.CUSTOM_PANTS_ID) && FashionSense.textureManager.GetSpecificAppearanceModel<PantsContentPack>(who.modData[ModDataKeys.CUSTOM_PANTS_ID]) is PantsContentPack pPack && pPack != null)
-            {
-                var pantModel = pPack.GetPantsFromFacingDirection(facingDirection);
-                models.Add(new AppearanceMetadata(pantModel, AppearanceHelpers.GetAllAppearanceColors(who, pantModel)));
-            }
-
-            // Hair pack
-            if (who.modData.ContainsKey(ModDataKeys.CUSTOM_HAIR_ID) && FashionSense.textureManager.GetSpecificAppearanceModel<HairContentPack>(who.modData[ModDataKeys.CUSTOM_HAIR_ID]) is HairContentPack hPack && hPack != null)
-            {
-                var hairModel = hPack.GetHairFromFacingDirection(facingDirection);
-                models.Add(new AppearanceMetadata(hairModel, AppearanceHelpers.GetAllAppearanceColors(who, hairModel)));
-            }
-
-            // Accessory packs
-            if (who.modData.ContainsKey(ModDataKeys.CUSTOM_ACCESSORY_COLLECTIVE_ID))
-            {
-                try
-                {
-                    foreach (int index in FashionSense.accessoryManager.GetActiveAccessoryIndices(who))
-                    {
-                        var accessoryKey = FashionSense.accessoryManager.GetAccessoryIdByIndex(who, index);
-                        if (FashionSense.textureManager.GetSpecificAppearanceModel<AccessoryContentPack>(accessoryKey) is AccessoryContentPack aPack && aPack != null)
-                        {
-                            AccessoryModel accessoryModel = aPack.GetAccessoryFromFacingDirection(facingDirection);
-                            if (accessoryModel is null)
-                            {
-                                continue;
-                            }
-
-                            var colors = new List<Color>();
-                            if (accessoryModel.ColorMaskLayers.Count > 0)
-                            {
-                                for (int x = 0; x < accessoryModel.ColorMaskLayers.Count; x++)
-                                {
-                                    colors.Add(FashionSense.accessoryManager.GetColorFromIndex(who, index, x));
-                                }
-                            }
-                            else
-                            {
-                                colors.Add(FashionSense.accessoryManager.GetColorFromIndex(who, index));
-                            }
-
-                            models.Add(new AppearanceMetadata(accessoryModel, colors));
-                        }
-                    }
-                }
-                catch (Exception)
-                {
-                    // TODO: Flag error here
-                }
-            }
-
-            // Hat pack
-            if (who.modData.ContainsKey(ModDataKeys.CUSTOM_HAT_ID) && FashionSense.textureManager.GetSpecificAppearanceModel<HatContentPack>(who.modData[ModDataKeys.CUSTOM_HAT_ID]) is HatContentPack tPack && tPack != null)
-            {
-                var hatModel = tPack.GetHatFromFacingDirection(facingDirection);
-                models.Add(new AppearanceMetadata(hatModel, AppearanceHelpers.GetAllAppearanceColors(who, hatModel)));
-            }
-
-            // Shirt pack
-            if (who.modData.ContainsKey(ModDataKeys.CUSTOM_SHIRT_ID) && FashionSense.textureManager.GetSpecificAppearanceModel<ShirtContentPack>(who.modData[ModDataKeys.CUSTOM_SHIRT_ID]) is ShirtContentPack sPack && sPack != null)
-            {
-                var shirtModel = sPack.GetShirtFromFacingDirection(facingDirection);
-                models.Add(new AppearanceMetadata(shirtModel, AppearanceHelpers.GetAllAppearanceColors(who, shirtModel)));
-            }
-
-            // Sleeves pack
-            if (who.modData.ContainsKey(ModDataKeys.CUSTOM_SLEEVES_ID) && FashionSense.textureManager.GetSpecificAppearanceModel<SleevesContentPack>(who.modData[ModDataKeys.CUSTOM_SLEEVES_ID]) is SleevesContentPack slPack && slPack != null)
-            {
-                var slModel = slPack.GetSleevesFromFacingDirection(facingDirection);
-                models.Add(new AppearanceMetadata(slModel, AppearanceHelpers.GetAllAppearanceColors(who, slModel)));
-            }
-
-            // Shoes pack
-            if (who.modData.ContainsKey(ModDataKeys.CUSTOM_SHOES_ID) && FashionSense.textureManager.GetSpecificAppearanceModel<ShoesContentPack>(who.modData[ModDataKeys.CUSTOM_SHOES_ID]) is ShoesContentPack shPack && shPack != null)
-            {
-                var shModel = shPack.GetShoesFromFacingDirection(facingDirection);
-                models.Add(new AppearanceMetadata(shModel, AppearanceHelpers.GetAllAppearanceColors(who, shModel)));
-            }
-
-            return models.Where(m => m is not null && m.Model is not null && m.Model.Pack is not null).ToList();
-        }
 
         internal static SkinToneModel GetSkinTone(LocalizedContentManager farmerTextureManager, Texture2D baseTexture, Color[] pixels, NetInt skin, bool sickFrame)
         {
