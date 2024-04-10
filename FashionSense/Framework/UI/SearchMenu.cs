@@ -56,9 +56,9 @@ namespace FashionSense.Framework.UI
             _appearanceFilter = appearanceFilter;
             _callbackMenu = callbackMenu;
 
-            if (Game1.viewport.Height >= 720)
+            if (Game1.uiViewport.Height >= 720)
             {
-                int adjustedHeight = Game1.viewport.Height - 150;
+                int adjustedHeight = Game1.uiViewport.Height - 150;
 
                 _maxRows = adjustedHeight / 240;
                 _rowChangePerScroll = _maxRows;
