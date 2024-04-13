@@ -118,6 +118,7 @@ namespace FashionSense
 
                 // Apply object related patches
                 new ObjectPatch(monitor, modHelper).Apply(harmony);
+                new ColoredObjectPatch(monitor, modHelper).Apply(harmony);
 
                 // Apply core related patches
                 new GamePatch(monitor, modHelper).Apply(harmony);

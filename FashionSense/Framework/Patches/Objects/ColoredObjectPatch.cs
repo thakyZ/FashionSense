@@ -4,24 +4,25 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StardewModdingAPI;
 using StardewValley;
+using StardewValley.Objects;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Emit;
 
 namespace FashionSense.Framework.Patches.Objects
 {
-    internal class ObjectPatch : PatchTemplate
+    internal class ColoredObjectPatch : PatchTemplate
     {
-        private readonly System.Type _entity = typeof(Object);
+        private readonly System.Type _entity = typeof(ColoredObject);
 
-        internal ObjectPatch(IMonitor modMonitor, IModHelper modHelper) : base(modMonitor, modHelper)
+        internal ColoredObjectPatch(IMonitor modMonitor, IModHelper modHelper) : base(modMonitor, modHelper)
         {
 
         }
 
         internal void Apply(Harmony harmony)
         {
-            harmony.Patch(AccessTools.Method(_entity, nameof(Object.drawWhenHeld), new[] { typeof(SpriteBatch), typeof(Vector2), typeof(Farmer) }), transpiler: new HarmonyMethod(GetType(), nameof(DrawWhenHeldTranspiler)));
+            harmony.Patch(AccessTools.Method(_entity, nameof(ColoredObject.drawWhenHeld), new[] { typeof(SpriteBatch), typeof(Vector2), typeof(Farmer) }), transpiler: new HarmonyMethod(GetType(), nameof(DrawWhenHeldTranspiler)));
 
             // Handle BAGI objects, as they prefix (and skip) the vanilla Object.drawWhenHeld method for their items
             if (PatchTemplate.IsBAGIUsed())
@@ -55,9 +56,14 @@ namespace FashionSense.Framework.Patches.Objects
 
                 // Get the indices to insert at
                 List<int> indices = new List<int>();
+                List<int> replaceIndices = new List<int>();
                 for (int i = 0; i < list.Count; i++)
                 {
                     if (list[i].opcode == OpCodes.Call && list[i].operand is not null && list[i].operand.ToString().Contains("Max", System.StringComparison.OrdinalIgnoreCase))
+                    {
+                        indices.Add(i);
+                    }
+                    else if (list[i].opcode == OpCodes.Callvirt && list[i].operand is not null && list[i].operand.ToString().Contains("getDrawLayer", System.StringComparison.OrdinalIgnoreCase))
                     {
                         indices.Add(i);
                     }
@@ -66,9 +72,8 @@ namespace FashionSense.Framework.Patches.Objects
                 // Insert the changes at the specified indices
                 foreach (var index in indices.OrderByDescending(i => i))
                 {
-                    list.Insert(index + 1, new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(ObjectPatch), nameof(AdjustLayerDepthForHeldObjects))));
+                    list.Insert(index + 1, new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(ObjectPatch), nameof(ObjectPatch.AdjustLayerDepthForHeldObjects))));
                 }
-
                 return list;
             }
             catch (System.Exception e)
@@ -76,17 +81,6 @@ namespace FashionSense.Framework.Patches.Objects
                 _monitor.Log($"There was an issue modifying the instructions for StardewValley.Object.drawPlayerHeldObject: {e}", LogLevel.Error);
                 return instructions;
             }
-        }
-
-        internal static float AdjustLayerDepthForHeldObjects(float layerDepth)
-        {
-            if (DrawPatch.lastCustomLayerDepth is null)
-            {
-                return layerDepth;
-            }
-
-            DrawPatch.lastCustomLayerDepth += 0.0001f;
-            return DrawPatch.lastCustomLayerDepth.Value;
         }
     }
 }
