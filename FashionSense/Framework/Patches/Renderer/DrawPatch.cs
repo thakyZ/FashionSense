@@ -296,21 +296,21 @@ namespace FashionSense.Framework.Patches.Renderer
 
         private static void HandlePlayerShadowDraw(SpriteBatch b, Farmer who, float layerDepth)
         {
-            // Hide the player's shadow if required
-            if (who.modData.ContainsKey(ModDataKeys.CUSTOM_PANTS_ID) && FashionSense.textureManager.GetSpecificAppearanceModel<PantsContentPack>(who.modData[ModDataKeys.CUSTOM_PANTS_ID]) is PantsContentPack pPack && pPack != null)
-            {
-                PantsModel pantsModel = pPack.GetPantsFromFacingDirection(who.FacingDirection);
-
-                if (pantsModel is not null && pantsModel.HideShadow)
-                {
-                    return;
-                }
-            }
-
             // Check the vanilla conditions for drawing player's shadow
             bool shouldHideCharacters = who.currentLocation is not null && who.currentLocation.shouldHideCharacters();
-            if (FarmerRenderer.isDrawingForUI is false && shouldHideCharacters is false)
+            if (Game1.activeClickableMenu is null && shouldHideCharacters is false)
             {
+                // Hide the player's shadow if required
+                if (who.modData.ContainsKey(ModDataKeys.CUSTOM_PANTS_ID) && FashionSense.textureManager.GetSpecificAppearanceModel<PantsContentPack>(who.modData[ModDataKeys.CUSTOM_PANTS_ID]) is PantsContentPack pPack && pPack != null)
+                {
+                    PantsModel pantsModel = pPack.GetPantsFromFacingDirection(who.FacingDirection);
+
+                    if (pantsModel is not null && pantsModel.HideShadow)
+                    {
+                        return;
+                    }
+                }
+
                 if (who.swimming.Value is false && who.isRidingHorse() is false && who.IsSitting() is false)
                 {
                     b.Draw(Game1.shadowTexture, Game1.GlobalToLocal(who.GetShadowOffset() + who.Position + new Vector2(32f, 24f)), Game1.shadowTexture.Bounds, Color.White, 0f, new Vector2(Game1.shadowTexture.Bounds.Center.X, Game1.shadowTexture.Bounds.Center.Y), 4f - (((who.running || who.UsingTool) && who.FarmerSprite.currentAnimationIndex > 1) ? ((float)Math.Abs(FarmerRenderer.featureYOffsetPerFrame[who.FarmerSprite.CurrentFrame]) * 0.5f) : 0f), SpriteEffects.None, layerDepth);
