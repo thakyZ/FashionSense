@@ -349,7 +349,8 @@ namespace FashionSense.Framework.Patches.Renderer
             DrawPatch.ExecuteRecolorActionsReversePatch(__instance, who);
 
             // Set the source rectangles for vanilla shirts, accessories and hats
-            ___shirtSourceRect = new Rectangle(who.GetShirtIndex() * 8 % 128, who.GetShirtIndex() * 8 / 128 * 32, 8, 8);
+            who.GetDisplayShirt(out var shirtTexture, out var shirtIndex);
+            ___shirtSourceRect = new Rectangle(shirtIndex * 8 % 128, shirtIndex * 8 / 128 * 32, 8, 8);
             if ((int)who.accessory.Value >= 0)
             {
                 ___accessorySourceRect = new Rectangle((int)who.accessory.Value * 16 % FarmerRenderer.accessoriesTexture.Width, (int)who.accessory.Value * 16 / FarmerRenderer.accessoriesTexture.Width * 32, 16, 16);

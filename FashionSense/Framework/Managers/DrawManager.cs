@@ -13,6 +13,7 @@ using FashionSense.Framework.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StardewValley;
+using StardewValley.ItemTypeDefinitions;
 using StardewValley.Tools;
 using System;
 using System.Collections.Generic;
@@ -375,13 +376,15 @@ namespace FashionSense.Framework.Managers
 
         private void DrawShirtVanilla(Farmer who)
         {
+            who.GetDisplayShirt(out var shirtTexture, out var shirtIndex);
+
             switch (DrawTool.FacingDirection)
             {
                 case 0:
                     if (!who.bathingClothes)
                     {
-                        DrawTool.SpriteBatch.Draw(FarmerRenderer.shirtsTexture, DrawTool.Position + DrawTool.Origin + DrawTool.PositionOffset + new Vector2(16f * DrawTool.Scale + (float)(AppearanceHelpers.GetFarmerRendererXFeatureOffset(DrawTool.CurrentFrame) * 4), (float)(56 + AppearanceHelpers.GetFarmerRendererYFeatureOffset(DrawTool.CurrentFrame) * 4) + (float)(int)DrawTool.FarmerRenderer.heightOffset * DrawTool.Scale), _shirtSourceRectangle, DrawTool.OverrideColor.Equals(Color.White) ? Color.White : DrawTool.OverrideColor, DrawTool.Rotation, DrawTool.Origin, 4f * DrawTool.Scale, SpriteEffects.None, IncrementAndGetLayerDepth());
-                        DrawTool.SpriteBatch.Draw(FarmerRenderer.shirtsTexture, DrawTool.Position + DrawTool.Origin + DrawTool.PositionOffset + new Vector2(16f * DrawTool.Scale + (float)(AppearanceHelpers.GetFarmerRendererXFeatureOffset(DrawTool.CurrentFrame) * 4), (float)(56 + AppearanceHelpers.GetFarmerRendererYFeatureOffset(DrawTool.CurrentFrame) * 4) + (float)(int)DrawTool.FarmerRenderer.heightOffset * DrawTool.Scale), _dyedShirtSourceRectangle, DrawTool.OverrideColor.Equals(Color.White) ? Utility.MakeCompletelyOpaque(who.GetShirtColor()) : DrawTool.OverrideColor, DrawTool.Rotation, DrawTool.Origin, 4f * DrawTool.Scale, SpriteEffects.None, IncrementAndGetLayerDepth());
+                        DrawTool.SpriteBatch.Draw(shirtTexture, DrawTool.Position + DrawTool.Origin + DrawTool.PositionOffset + new Vector2(16f * DrawTool.Scale + (float)(AppearanceHelpers.GetFarmerRendererXFeatureOffset(DrawTool.CurrentFrame) * 4), (float)(56 + AppearanceHelpers.GetFarmerRendererYFeatureOffset(DrawTool.CurrentFrame) * 4) + (float)(int)DrawTool.FarmerRenderer.heightOffset * DrawTool.Scale), _shirtSourceRectangle, DrawTool.OverrideColor.Equals(Color.White) ? Color.White : DrawTool.OverrideColor, DrawTool.Rotation, DrawTool.Origin, 4f * DrawTool.Scale, SpriteEffects.None, IncrementAndGetLayerDepth());
+                        DrawTool.SpriteBatch.Draw(shirtTexture, DrawTool.Position + DrawTool.Origin + DrawTool.PositionOffset + new Vector2(16f * DrawTool.Scale + (float)(AppearanceHelpers.GetFarmerRendererXFeatureOffset(DrawTool.CurrentFrame) * 4), (float)(56 + AppearanceHelpers.GetFarmerRendererYFeatureOffset(DrawTool.CurrentFrame) * 4) + (float)(int)DrawTool.FarmerRenderer.heightOffset * DrawTool.Scale), _dyedShirtSourceRectangle, DrawTool.OverrideColor.Equals(Color.White) ? Utility.MakeCompletelyOpaque(who.GetShirtColor()) : DrawTool.OverrideColor, DrawTool.Rotation, DrawTool.Origin, 4f * DrawTool.Scale, SpriteEffects.None, IncrementAndGetLayerDepth());
                     }
                     break;
                 case 1:
@@ -395,15 +398,15 @@ namespace FashionSense.Framework.Managers
                     }
                     if (!who.bathingClothes)
                     {
-                        DrawTool.SpriteBatch.Draw(FarmerRenderer.shirtsTexture, DrawTool.Position + DrawTool.Origin + DrawTool.PositionOffset + _rotationAdjustment + new Vector2(16f * DrawTool.Scale + (float)(AppearanceHelpers.GetFarmerRendererXFeatureOffset(DrawTool.CurrentFrame) * 4), 56f * DrawTool.Scale + (float)(AppearanceHelpers.GetFarmerRendererYFeatureOffset(DrawTool.CurrentFrame) * 4) + (float)(int)DrawTool.FarmerRenderer.heightOffset * DrawTool.Scale), _shirtSourceRectangle, DrawTool.OverrideColor.Equals(Color.White) ? Color.White : DrawTool.OverrideColor, DrawTool.Rotation, DrawTool.Origin, 4f * DrawTool.Scale + ((DrawTool.Rotation != 0f) ? 0f : 0f), SpriteEffects.None, IncrementAndGetLayerDepth());
-                        DrawTool.SpriteBatch.Draw(FarmerRenderer.shirtsTexture, DrawTool.Position + DrawTool.Origin + DrawTool.PositionOffset + _rotationAdjustment + new Vector2(16f * DrawTool.Scale + (float)(AppearanceHelpers.GetFarmerRendererXFeatureOffset(DrawTool.CurrentFrame) * 4), 56f * DrawTool.Scale + (float)(AppearanceHelpers.GetFarmerRendererYFeatureOffset(DrawTool.CurrentFrame) * 4) + (float)(int)DrawTool.FarmerRenderer.heightOffset * DrawTool.Scale), _dyedShirtSourceRectangle, DrawTool.OverrideColor.Equals(Color.White) ? Utility.MakeCompletelyOpaque(who.GetShirtColor()) : DrawTool.OverrideColor, DrawTool.Rotation, DrawTool.Origin, 4f * DrawTool.Scale + ((DrawTool.Rotation != 0f) ? 0f : 0f), SpriteEffects.None, IncrementAndGetLayerDepth());
+                        DrawTool.SpriteBatch.Draw(shirtTexture, DrawTool.Position + DrawTool.Origin + DrawTool.PositionOffset + _rotationAdjustment + new Vector2(16f * DrawTool.Scale + (float)(AppearanceHelpers.GetFarmerRendererXFeatureOffset(DrawTool.CurrentFrame) * 4), 56f * DrawTool.Scale + (float)(AppearanceHelpers.GetFarmerRendererYFeatureOffset(DrawTool.CurrentFrame) * 4) + (float)(int)DrawTool.FarmerRenderer.heightOffset * DrawTool.Scale), _shirtSourceRectangle, DrawTool.OverrideColor.Equals(Color.White) ? Color.White : DrawTool.OverrideColor, DrawTool.Rotation, DrawTool.Origin, 4f * DrawTool.Scale + ((DrawTool.Rotation != 0f) ? 0f : 0f), SpriteEffects.None, IncrementAndGetLayerDepth());
+                        DrawTool.SpriteBatch.Draw(shirtTexture, DrawTool.Position + DrawTool.Origin + DrawTool.PositionOffset + _rotationAdjustment + new Vector2(16f * DrawTool.Scale + (float)(AppearanceHelpers.GetFarmerRendererXFeatureOffset(DrawTool.CurrentFrame) * 4), 56f * DrawTool.Scale + (float)(AppearanceHelpers.GetFarmerRendererYFeatureOffset(DrawTool.CurrentFrame) * 4) + (float)(int)DrawTool.FarmerRenderer.heightOffset * DrawTool.Scale), _dyedShirtSourceRectangle, DrawTool.OverrideColor.Equals(Color.White) ? Utility.MakeCompletelyOpaque(who.GetShirtColor()) : DrawTool.OverrideColor, DrawTool.Rotation, DrawTool.Origin, 4f * DrawTool.Scale + ((DrawTool.Rotation != 0f) ? 0f : 0f), SpriteEffects.None, IncrementAndGetLayerDepth());
                     }
                     break;
                 case 2:
                     if (!who.bathingClothes)
                     {
-                        DrawTool.SpriteBatch.Draw(FarmerRenderer.shirtsTexture, DrawTool.Position + DrawTool.Origin + DrawTool.PositionOffset + new Vector2(16 + AppearanceHelpers.GetFarmerRendererXFeatureOffset(DrawTool.CurrentFrame) * 4, (float)(56 + AppearanceHelpers.GetFarmerRendererYFeatureOffset(DrawTool.CurrentFrame) * 4) + (float)(int)DrawTool.FarmerRenderer.heightOffset * DrawTool.Scale - (float)(who.IsMale ? 0 : 0)), _shirtSourceRectangle, DrawTool.OverrideColor.Equals(Color.White) ? Color.White : DrawTool.OverrideColor, DrawTool.Rotation, DrawTool.Origin, 4f * DrawTool.Scale, SpriteEffects.None, IncrementAndGetLayerDepth() + 1.5E-07f);
-                        DrawTool.SpriteBatch.Draw(FarmerRenderer.shirtsTexture, DrawTool.Position + DrawTool.Origin + DrawTool.PositionOffset + new Vector2(16 + AppearanceHelpers.GetFarmerRendererXFeatureOffset(DrawTool.CurrentFrame) * 4, (float)(56 + AppearanceHelpers.GetFarmerRendererYFeatureOffset(DrawTool.CurrentFrame) * 4) + (float)(int)DrawTool.FarmerRenderer.heightOffset * DrawTool.Scale - (float)(who.IsMale ? 0 : 0)), _dyedShirtSourceRectangle, DrawTool.OverrideColor.Equals(Color.White) ? Utility.MakeCompletelyOpaque(who.GetShirtColor()) : DrawTool.OverrideColor, DrawTool.Rotation, DrawTool.Origin, 4f * DrawTool.Scale, SpriteEffects.None, IncrementAndGetLayerDepth() + 1.5E-07f);
+                        DrawTool.SpriteBatch.Draw(shirtTexture, DrawTool.Position + DrawTool.Origin + DrawTool.PositionOffset + new Vector2(16 + AppearanceHelpers.GetFarmerRendererXFeatureOffset(DrawTool.CurrentFrame) * 4, (float)(56 + AppearanceHelpers.GetFarmerRendererYFeatureOffset(DrawTool.CurrentFrame) * 4) + (float)(int)DrawTool.FarmerRenderer.heightOffset * DrawTool.Scale - (float)(who.IsMale ? 0 : 0)), _shirtSourceRectangle, DrawTool.OverrideColor.Equals(Color.White) ? Color.White : DrawTool.OverrideColor, DrawTool.Rotation, DrawTool.Origin, 4f * DrawTool.Scale, SpriteEffects.None, IncrementAndGetLayerDepth() + 1.5E-07f);
+                        DrawTool.SpriteBatch.Draw(shirtTexture, DrawTool.Position + DrawTool.Origin + DrawTool.PositionOffset + new Vector2(16 + AppearanceHelpers.GetFarmerRendererXFeatureOffset(DrawTool.CurrentFrame) * 4, (float)(56 + AppearanceHelpers.GetFarmerRendererYFeatureOffset(DrawTool.CurrentFrame) * 4) + (float)(int)DrawTool.FarmerRenderer.heightOffset * DrawTool.Scale - (float)(who.IsMale ? 0 : 0)), _dyedShirtSourceRectangle, DrawTool.OverrideColor.Equals(Color.White) ? Utility.MakeCompletelyOpaque(who.GetShirtColor()) : DrawTool.OverrideColor, DrawTool.Rotation, DrawTool.Origin, 4f * DrawTool.Scale, SpriteEffects.None, IncrementAndGetLayerDepth() + 1.5E-07f);
                     }
                     break;
                 case 3:
@@ -418,8 +421,8 @@ namespace FashionSense.Framework.Managers
                         }
                         if (!who.bathingClothes)
                         {
-                            DrawTool.SpriteBatch.Draw(FarmerRenderer.shirtsTexture, DrawTool.Position + DrawTool.Origin + DrawTool.PositionOffset + _rotationAdjustment + new Vector2(16 - AppearanceHelpers.GetFarmerRendererXFeatureOffset(DrawTool.CurrentFrame) * 4, 56 + AppearanceHelpers.GetFarmerRendererYFeatureOffset(DrawTool.CurrentFrame) * 4 + (int)DrawTool.FarmerRenderer.heightOffset), _shirtSourceRectangle, DrawTool.OverrideColor.Equals(Color.White) ? Color.White : DrawTool.OverrideColor, DrawTool.Rotation, DrawTool.Origin, 4f * DrawTool.Scale + ((DrawTool.Rotation != 0f) ? 0f : 0f), SpriteEffects.None, IncrementAndGetLayerDepth() + 1.5E-07f);
-                            DrawTool.SpriteBatch.Draw(FarmerRenderer.shirtsTexture, DrawTool.Position + DrawTool.Origin + DrawTool.PositionOffset + _rotationAdjustment + new Vector2(16 - AppearanceHelpers.GetFarmerRendererXFeatureOffset(DrawTool.CurrentFrame) * 4, 56 + AppearanceHelpers.GetFarmerRendererYFeatureOffset(DrawTool.CurrentFrame) * 4 + (int)DrawTool.FarmerRenderer.heightOffset), _dyedShirtSourceRectangle, DrawTool.OverrideColor.Equals(Color.White) ? Utility.MakeCompletelyOpaque(who.GetShirtColor()) : DrawTool.OverrideColor, DrawTool.Rotation, DrawTool.Origin, 4f * DrawTool.Scale + ((DrawTool.Rotation != 0f) ? 0f : 0f), SpriteEffects.None, IncrementAndGetLayerDepth() + 1.5E-07f);
+                            DrawTool.SpriteBatch.Draw(shirtTexture, DrawTool.Position + DrawTool.Origin + DrawTool.PositionOffset + _rotationAdjustment + new Vector2(16 - AppearanceHelpers.GetFarmerRendererXFeatureOffset(DrawTool.CurrentFrame) * 4, 56 + AppearanceHelpers.GetFarmerRendererYFeatureOffset(DrawTool.CurrentFrame) * 4 + (int)DrawTool.FarmerRenderer.heightOffset), _shirtSourceRectangle, DrawTool.OverrideColor.Equals(Color.White) ? Color.White : DrawTool.OverrideColor, DrawTool.Rotation, DrawTool.Origin, 4f * DrawTool.Scale + ((DrawTool.Rotation != 0f) ? 0f : 0f), SpriteEffects.None, IncrementAndGetLayerDepth() + 1.5E-07f);
+                            DrawTool.SpriteBatch.Draw(shirtTexture, DrawTool.Position + DrawTool.Origin + DrawTool.PositionOffset + _rotationAdjustment + new Vector2(16 - AppearanceHelpers.GetFarmerRendererXFeatureOffset(DrawTool.CurrentFrame) * 4, 56 + AppearanceHelpers.GetFarmerRendererYFeatureOffset(DrawTool.CurrentFrame) * 4 + (int)DrawTool.FarmerRenderer.heightOffset), _dyedShirtSourceRectangle, DrawTool.OverrideColor.Equals(Color.White) ? Utility.MakeCompletelyOpaque(who.GetShirtColor()) : DrawTool.OverrideColor, DrawTool.Rotation, DrawTool.Origin, 4f * DrawTool.Scale + ((DrawTool.Rotation != 0f) ? 0f : 0f), SpriteEffects.None, IncrementAndGetLayerDepth() + 1.5E-07f);
                         }
                         break;
                     }
@@ -496,22 +499,63 @@ namespace FashionSense.Framework.Managers
 
         private void DrawHatVanilla(Farmer who)
         {
-            if (who.hat.Value != null && !who.bathingClothes)
+            Texture2D hatTexture = FarmerRenderer.hatsTexture;
+            Rectangle hatSourceRect = _hatSourceRectangle;
+
+            bool isErrorHat = false;
+            if (who.hat.Value != null)
+            {
+                ParsedItemData itemData = ItemRegistry.GetDataOrErrorItem(who.hat.Value.QualifiedItemId);
+                int spriteIndex = itemData.SpriteIndex;
+                hatTexture = itemData.GetTexture();
+                hatSourceRect = new Rectangle(20 * spriteIndex % hatTexture.Width, 20 * spriteIndex / hatTexture.Width * 20 * 4, 20, 20);
+                if (itemData.IsErrorItem)
+                {
+                    hatSourceRect = itemData.GetSourceRect();
+                    isErrorHat = true;
+                }
+            }
+
+            switch (DrawTool.FacingDirection)
+            {
+                case 0:
+                    if (!isErrorHat && who.hat.Value != null)
+                    {
+                        hatSourceRect.Offset(0, 60);
+                    }
+                    break;
+                case 1:
+                    if (!isErrorHat && who.hat.Value != null)
+                    {
+                        hatSourceRect.Offset(0, 20);
+                    }
+                    break;
+                case 2:
+                    break;
+                case 3:
+                    if (!isErrorHat && who.hat.Value != null)
+                    {
+                        hatSourceRect.Offset(0, 40);
+                    }
+                    break;
+            }
+
+            if (who.hat.Value != null && !who.bathingClothes.Value)
             {
                 bool flip = who.FarmerSprite.CurrentAnimationFrame.flip;
-                if (who.hat.Value.isMask && DrawTool.FacingDirection == 0)
+                if (!isErrorHat && who.hat.Value.isMask && DrawTool.FacingDirection == 0)
                 {
-                    Rectangle mask_draw_rect = _hatSourceRectangle;
+                    Rectangle mask_draw_rect = hatSourceRect;
                     mask_draw_rect.Height -= 11;
                     mask_draw_rect.Y += 11;
-                    DrawTool.SpriteBatch.Draw(FarmerRenderer.hatsTexture, DrawTool.Position + DrawTool.Origin + DrawTool.PositionOffset + new Vector2(0f, 44f) + new Vector2(-8 + ((!flip) ? 1 : (-1)) * AppearanceHelpers.GetFarmerRendererXFeatureOffset(DrawTool.CurrentFrame) * 4, -16 + AppearanceHelpers.GetFarmerRendererYFeatureOffset(DrawTool.CurrentFrame) * 4 + ((!who.hat.Value.ignoreHairstyleOffset) ? FarmerRenderer.hairstyleHatOffset[(int)who.hair % 16] : 0) + 4 + (int)DrawTool.FarmerRenderer.heightOffset), mask_draw_rect, Color.White, DrawTool.Rotation, DrawTool.Origin, 4f * DrawTool.Scale, SpriteEffects.None, IncrementAndGetLayerDepth());
-                    mask_draw_rect = _hatSourceRectangle;
+                    DrawTool.SpriteBatch.Draw(hatTexture, DrawTool.Position + DrawTool.Origin + DrawTool.PositionOffset + new Vector2(0f, 44f) + new Vector2(-8 + ((!flip) ? 1 : (-1)) * AppearanceHelpers.GetFarmerRendererXFeatureOffset(DrawTool.CurrentFrame) * 4, -16 + AppearanceHelpers.GetFarmerRendererYFeatureOffset(DrawTool.CurrentFrame) * 4 + ((!who.hat.Value.ignoreHairstyleOffset) ? FarmerRenderer.hairstyleHatOffset[(int)who.hair % 16] : 0) + 4 + (int)DrawTool.FarmerRenderer.heightOffset), mask_draw_rect, Color.White, DrawTool.Rotation, DrawTool.Origin, 4f * DrawTool.Scale, SpriteEffects.None, IncrementAndGetLayerDepth());
+                    mask_draw_rect = hatSourceRect;
                     mask_draw_rect.Height = 11;
-                    DrawTool.SpriteBatch.Draw(FarmerRenderer.hatsTexture, DrawTool.Position + DrawTool.Origin + DrawTool.PositionOffset + new Vector2(-8 + ((!flip) ? 1 : (-1)) * AppearanceHelpers.GetFarmerRendererXFeatureOffset(DrawTool.CurrentFrame) * 4, -16 + AppearanceHelpers.GetFarmerRendererYFeatureOffset(DrawTool.CurrentFrame) * 4 + ((!who.hat.Value.ignoreHairstyleOffset) ? FarmerRenderer.hairstyleHatOffset[(int)who.hair % 16] : 0) + 4 + (int)DrawTool.FarmerRenderer.heightOffset), mask_draw_rect, who.hat.Value.isPrismatic ? Utility.GetPrismaticColor() : Color.White, DrawTool.Rotation, DrawTool.Origin, 4f * DrawTool.Scale, SpriteEffects.None, IncrementAndGetLayerDepth());
+                    DrawTool.SpriteBatch.Draw(hatTexture, DrawTool.Position + DrawTool.Origin + DrawTool.PositionOffset + new Vector2(-8 + ((!flip) ? 1 : (-1)) * AppearanceHelpers.GetFarmerRendererXFeatureOffset(DrawTool.CurrentFrame) * 4, -16 + AppearanceHelpers.GetFarmerRendererYFeatureOffset(DrawTool.CurrentFrame) * 4 + ((!who.hat.Value.ignoreHairstyleOffset) ? FarmerRenderer.hairstyleHatOffset[(int)who.hair % 16] : 0) + 4 + (int)DrawTool.FarmerRenderer.heightOffset), mask_draw_rect, who.hat.Value.isPrismatic ? Utility.GetPrismaticColor() : Color.White, DrawTool.Rotation, DrawTool.Origin, 4f * DrawTool.Scale, SpriteEffects.None, IncrementAndGetLayerDepth());
                 }
                 else
                 {
-                    DrawTool.SpriteBatch.Draw(FarmerRenderer.hatsTexture, DrawTool.Position + DrawTool.Origin + DrawTool.PositionOffset + new Vector2(-8 + ((!flip) ? 1 : (-1)) * AppearanceHelpers.GetFarmerRendererXFeatureOffset(DrawTool.CurrentFrame) * 4, -16 + AppearanceHelpers.GetFarmerRendererYFeatureOffset(DrawTool.CurrentFrame) * 4 + ((!who.hat.Value.ignoreHairstyleOffset) ? FarmerRenderer.hairstyleHatOffset[(int)who.hair % 16] : 0) + 4 + (int)DrawTool.FarmerRenderer.heightOffset), _hatSourceRectangle, who.hat.Value.isPrismatic ? Utility.GetPrismaticColor() : Color.White, DrawTool.Rotation, DrawTool.Origin, 4f * DrawTool.Scale, SpriteEffects.None, IncrementAndGetLayerDepth());
+                    DrawTool.SpriteBatch.Draw(hatTexture, DrawTool.Position + DrawTool.Origin + DrawTool.PositionOffset + new Vector2(-8 + ((!flip) ? 1 : (-1)) * AppearanceHelpers.GetFarmerRendererXFeatureOffset(DrawTool.CurrentFrame) * 4, -16 + AppearanceHelpers.GetFarmerRendererYFeatureOffset(DrawTool.CurrentFrame) * 4 + ((!who.hat.Value.ignoreHairstyleOffset) ? FarmerRenderer.hairstyleHatOffset[(int)who.hair % 16] : 0) + 4 + (int)DrawTool.FarmerRenderer.heightOffset), hatSourceRect, who.hat.Value.isPrismatic ? Utility.GetPrismaticColor() : Color.White, DrawTool.Rotation, DrawTool.Origin, 4f * DrawTool.Scale, SpriteEffects.None, IncrementAndGetLayerDepth());
                 }
             }
         }
