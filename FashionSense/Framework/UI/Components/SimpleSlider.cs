@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using StardewValley;
 using StardewValley.Menus;
 using System;
@@ -9,6 +10,8 @@ namespace FashionSense.Framework.UI.Components
     public class SimpleSlider
     {
         public ClickableTextureComponent handle;
+        public TextBox input;
+        public ClickableComponent inputCC;
         public Rectangle bounds;
         protected float _sliderPosition;
         public int min;
@@ -27,6 +30,17 @@ namespace FashionSense.Framework.UI.Components
                 leftNeighborImmutable = true,
                 rightNeighborImmutable = true
             };
+
+            input = new TextBox(Game1.content.Load<Texture2D>("LooseSprites\\textBox"), null, Game1.smallFont, Game1.textColor)
+            {
+                X = bounds.X + 124,
+                Y = bounds.Y - 24,
+                Text = GetValue().ToString(),
+                Height = 0, // Hides the background
+                Width = 75,
+                numbersOnly = true
+            };
+            inputCC = new ClickableComponent(new Rectangle(input.X, input.Y + 16, 128, 64), "");
 
             this.bounds = bounds;
             this.min = min;
@@ -48,6 +62,17 @@ namespace FashionSense.Framework.UI.Components
             }
 
             return false;
+        }
+
+        public virtual void ReceiveKeyPress(Keys key)
+        {
+            int value;
+            if (int.TryParse(input.Text, out value) is false)
+            {
+                value = 0;
+            }
+
+            SetValue(value);
         }
 
         public virtual void SetValueFromPosition(int x, int y)
@@ -86,13 +111,15 @@ namespace FashionSense.Framework.UI.Components
             {
                 value = min;
             }
+
             _sliderPosition = (float)(value - min) / (float)(max - min);
             handle.bounds.X = (int)Utility.Lerp(bounds.Left, bounds.Right, _sliderPosition) - handle.bounds.Width / 2 * 4;
             handle.bounds.Y = bounds.Top - 6;
 
-            if (_displayedValue != value)
+            if (_displayedValue != value || string.IsNullOrEmpty(input.Text) || input.Text != value.ToString())
             {
                 _displayedValue = value;
+                input.Text = value.ToString();
             }
         }
 
@@ -114,9 +141,11 @@ namespace FashionSense.Framework.UI.Components
                 }
                 b.Draw(Game1.staminaRect, section_bounds, drawn_color);
             }
-            handle.draw(b);
 
-            Utility.drawTextWithShadow(b, GetValue().ToString() ?? "", Game1.smallFont, new Vector2(bounds.X + bounds.Width + 8, bounds.Y - 12), Game1.textColor);
+            handle.draw(b);
+            input.Draw(b);
+
+            //Utility.drawTextWithShadow(b, GetValue().ToString() ?? "", Game1.smallFont, new Vector2(bounds.X + bounds.Width + 8, bounds.Y - 12), Game1.textColor);
         }
 
         public virtual void Update(int x, int y)

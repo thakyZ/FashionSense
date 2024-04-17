@@ -1396,6 +1396,11 @@ namespace FashionSense.Framework.UI
                 colorPicker.Scroll(1);
                 HandleColorPicker();
             }
+            else
+            {
+                colorPicker.KeyPress(key);
+                HandleColorPicker();
+            }
 
             base.receiveKeyPress(key);
         }
