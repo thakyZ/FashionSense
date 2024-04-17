@@ -104,7 +104,7 @@ namespace FashionSense.Framework.Managers
             }
 
             // Add in the shared outfits
-            foreach (Outfit outfit in GetSharedOutfits())
+            foreach (Outfit outfit in GetSharedOutfits(who))
             {
                 if (outfits.Any(o => o.Name.Equals(outfit.Name, StringComparison.Ordinal)) is false)
                 {
@@ -115,12 +115,12 @@ namespace FashionSense.Framework.Managers
             return outfits;
         }
 
-        public List<Outfit> GetSharedOutfits()
+        public List<Outfit> GetSharedOutfits(Farmer who)
         {
             var sharedOutfits = FashionSense.modHelper.Data.ReadJsonFile<List<Outfit>>(_sharedOutfitDataPath) ?? new List<Outfit>();
             foreach (var outfit in sharedOutfits)
             {
-                outfit.IsGlobal = true;
+                outfit.IsGlobal = outfit.Author != who.Name;
             }
 
             return sharedOutfits;
@@ -156,7 +156,7 @@ namespace FashionSense.Framework.Managers
             SerializeOutfits(who, outfits);
         }
 
-        public void SetOutfitShareState(Farmer who, string name, bool shouldBeShared)
+        public void SetOutfitShareState(Farmer who, string name, bool shouldBeShared, bool shouldBeGlobal)
         {
             if (DoesOutfitExist(who, name) is false)
             {
@@ -165,6 +165,8 @@ namespace FashionSense.Framework.Managers
 
             var outfits = GetOutfits(who);
             outfits.First(o => o.Name.Equals(name, StringComparison.Ordinal)).IsBeingShared = shouldBeShared;
+            outfits.First(o => o.Name.Equals(name, StringComparison.Ordinal)).IsGlobal = shouldBeGlobal;
+            outfits.First(o => o.Name.Equals(name, StringComparison.Ordinal)).Author = who.Name;
 
             // Serialize the changes
             SerializeOutfits(who, outfits);
