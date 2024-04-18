@@ -1,7 +1,6 @@
 ﻿using FashionSense.Framework.Models.Appearances.Pants;
 using FashionSense.Framework.Utilities;
 using HarmonyLib;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StardewModdingAPI;
 using StardewValley;
@@ -27,7 +26,16 @@ namespace FashionSense.Framework.Patches.Entities
         {
             if (__instance is not null && AppearanceHelpers.GetCurrentlyEquippedModels(__instance, __instance.FacingDirection).Count > 0)
             {
-                return false;
+                // Hide the player's shadow if required
+                if (__instance.modData.ContainsKey(ModDataKeys.CUSTOM_PANTS_ID) && FashionSense.textureManager.GetSpecificAppearanceModel<PantsContentPack>(__instance.modData[ModDataKeys.CUSTOM_PANTS_ID]) is PantsContentPack pPack && pPack != null)
+                {
+                    PantsModel pantsModel = pPack.GetPantsFromFacingDirection(__instance.FacingDirection);
+
+                    if (pantsModel is not null && pantsModel.HideShadow)
+                    {
+                        return false;
+                    }
+                }
             }
 
             return true;

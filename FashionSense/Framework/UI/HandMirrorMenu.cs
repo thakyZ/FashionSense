@@ -1384,6 +1384,27 @@ namespace FashionSense.Framework.UI
             HandleColorPicker();
         }
 
+        public override void receiveKeyPress(Keys key)
+        {
+            if (key is Keys.Left)
+            {
+                colorPicker.Scroll(-1);
+                HandleColorPicker();
+            }
+            else if (key is Keys.Right)
+            {
+                colorPicker.Scroll(1);
+                HandleColorPicker();
+            }
+            else
+            {
+                colorPicker.KeyPress(key);
+                HandleColorPicker();
+            }
+
+            base.receiveKeyPress(key);
+        }
+
         public override void gamePadButtonHeld(Buttons b)
         {
             base.gamePadButtonHeld(b);

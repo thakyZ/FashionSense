@@ -1,6 +1,5 @@
 ﻿using FashionSense.Framework.Interfaces.API;
 using FashionSense.Framework.Models.Appearances;
-using FashionSense.Framework.Patches.Renderer;
 using FashionSense.Framework.Utilities;
 using Microsoft.Xna.Framework;
 using Newtonsoft.Json;
