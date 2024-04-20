@@ -378,7 +378,11 @@ namespace FashionSense.Framework.UI
             {
                 case HAIR_FILTER_BUTTON:
                     colorPicker.SetColor(Game1.player.hairstyleColor.Value);
-                    colorPicker.SetColor(AppearanceHelpers.GetAppearanceColorByLayer(GetActiveModel(), Game1.player, maskLayerIndex: currentColorMaskLayerIndex));
+                    var hairModel = GetActiveModel();
+                    if (hairModel is not null && hairModel is HairModel)
+                    {
+                        colorPicker.SetColor(AppearanceHelpers.GetAppearanceColorByLayer(hairModel, Game1.player, maskLayerIndex: currentColorMaskLayerIndex));
+                    }
                     break;
                 case ACCESSORY_FILTER_BUTTON:
                     colorPicker.SetColor(FashionSense.accessoryManager.GetColorFromIndex(Game1.player, GetAccessoryIndex(), maskLayerIndex: currentColorMaskLayerIndex));
