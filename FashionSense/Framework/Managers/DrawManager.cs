@@ -287,16 +287,17 @@ namespace FashionSense.Framework.Managers
 
         private void DrawPantsVanilla(Farmer who)
         {
+            who.GetDisplayPants(out var texture, out var pantsIndex);
             Rectangle pants_rect = new Rectangle(DrawTool.FarmerSourceRectangle.X, DrawTool.FarmerSourceRectangle.Y, DrawTool.FarmerSourceRectangle.Width, DrawTool.FarmerSourceRectangle.Height);
-            pants_rect.X += who.GetPantsIndex() % 10 * 192;
-            pants_rect.Y += who.GetPantsIndex() / 10 * 688;
+            pants_rect.X += pantsIndex % 10 * 192;
+            pants_rect.Y += pantsIndex / 10 * 688;
 
             if (!who.IsMale)
             {
                 pants_rect.X += 96;
             }
 
-            DrawTool.SpriteBatch.Draw(FarmerRenderer.pantsTexture, DrawTool.Position + DrawTool.Origin + DrawTool.PositionOffset, pants_rect, DrawTool.OverrideColor.Equals(Color.White) ? Utility.MakeCompletelyOpaque(who.GetPantsColor()) : DrawTool.OverrideColor, DrawTool.Rotation, DrawTool.Origin, 4f * DrawTool.Scale, DrawTool.AnimationFrame.flip ? SpriteEffects.FlipHorizontally : SpriteEffects.None, IncrementAndGetLayerDepth());
+            DrawTool.SpriteBatch.Draw(texture, DrawTool.Position + DrawTool.Origin + DrawTool.PositionOffset, pants_rect, DrawTool.OverrideColor.Equals(Color.White) ? Utility.MakeCompletelyOpaque(who.GetPantsColor()) : DrawTool.OverrideColor, DrawTool.Rotation, DrawTool.Origin, 4f * DrawTool.Scale, DrawTool.AnimationFrame.flip ? SpriteEffects.FlipHorizontally : SpriteEffects.None, IncrementAndGetLayerDepth());
         }
 
         private void DrawSleevesVanilla(Farmer who)
