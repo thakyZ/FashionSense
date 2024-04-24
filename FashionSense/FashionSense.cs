@@ -269,6 +269,7 @@ namespace FashionSense
             SetCachedColor(ModDataKeys.UI_HAND_MIRROR_PANTS_COLOR, IApi.Type.Pants, 0);
             SetCachedColor(ModDataKeys.UI_HAND_MIRROR_SLEEVES_COLOR, IApi.Type.Sleeves, 0);
             SetCachedColor(ModDataKeys.UI_HAND_MIRROR_SHOES_COLOR, IApi.Type.Shoes, 0);
+            SetCachedColor(ModDataKeys.UI_HAND_MIRROR_BODY_COLOR, IApi.Type.Player, 0);
 
             // Cache hair color, as previous versions (5.4 and below) did not utilize a ModData key for it
             colorManager.SetColor(Game1.player, AppearanceModel.GetColorKey(IApi.Type.Hair, 0), Game1.player.hairstyleColor.Value);
@@ -278,6 +279,13 @@ namespace FashionSense
             {
                 shoePack.Name = modHelper.Translation.Get("ui.fashion_sense.color_override.shoes");
                 shoePack.PackName = modHelper.Translation.Get("ui.fashion_sense.color_override.shoes");
+            }
+
+            // Reset the name of the internal shoe override pack
+            if (textureManager.GetSpecificAppearanceModel<BodyContentPack>(ModDataKeys.INTERNAL_COLOR_OVERRIDE_BODY_ID) is BodyContentPack bodyPack && bodyPack is not null)
+            {
+                bodyPack.Name = modHelper.Translation.Get("ui.fashion_sense.color_override.body");
+                bodyPack.PackName = modHelper.Translation.Get("ui.fashion_sense.color_override.body");
             }
         }
 
@@ -400,6 +408,21 @@ namespace FashionSense
                 // Load Shoes
                 Monitor.Log($"Loading shoes from pack: {contentPack.Manifest.Name} {contentPack.Manifest.Version} by {contentPack.Manifest.Author}", LogLevel.Trace);
                 AddShoesContentPacks(contentPack);
+
+                // Add internal body pack for recoloring of vanilla body
+                textureManager.AddAppearanceModel(new BodyContentPack()
+                {
+                    Author = "PeacefulEnd",
+                    Owner = "PeacefulEnd",
+                    Name = modHelper.Translation.Get("ui.fashion_sense.color_override.body"),
+                    PackType = IApi.Type.Player,
+                    PackName = modHelper.Translation.Get("ui.fashion_sense.color_override.body"),
+                    Id = ModDataKeys.INTERNAL_COLOR_OVERRIDE_BODY_ID,
+                    FrontBody = new BodyModel(),
+                    BackBody = new BodyModel(),
+                    LeftBody = new BodyModel(),
+                    RightBody = new BodyModel()
+                });
 
                 // Load Bodies
                 Monitor.Log($"Loading bodies from pack: {contentPack.Manifest.Name} {contentPack.Manifest.Version} by {contentPack.Manifest.Author}", LogLevel.Trace);
@@ -1392,6 +1415,8 @@ namespace FashionSense
             shirtDirty.SetValue(true);
             var shoeDirty = modHelper.Reflection.GetField<bool>(Game1.player.FarmerRenderer, "_shoesDirty");
             shoeDirty.SetValue(true);
+            var skinDirty = modHelper.Reflection.GetField<bool>(Game1.player.FarmerRenderer, "_skinDirty");
+            skinDirty.SetValue(true);
 
             if (skipColorMaskRefresh is false)
             {

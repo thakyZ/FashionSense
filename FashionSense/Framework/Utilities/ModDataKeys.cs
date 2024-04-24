@@ -26,6 +26,7 @@
         internal const string UI_HAND_MIRROR_PANTS_COLOR = "FashionSense.UI.HandMirror.Color.Pants";
         internal const string UI_HAND_MIRROR_SLEEVES_COLOR = "FashionSense.UI.HandMirror.Color.Sleeves";
         internal const string UI_HAND_MIRROR_SHOES_COLOR = "FashionSense.UI.HandMirror.Color.Shoes";
+        internal const string UI_HAND_MIRROR_BODY_COLOR = "FashionSense.UI.HandMirror.Color.Body";
 
         // Tool related keys
         internal const string HAND_MIRROR_FLAG = "FashionSense.Tools.HandMirror";
@@ -37,6 +38,7 @@
         // Etc
         internal const string STARTS_WITH_HAND_MIRROR = "FashionSense.StartsWithHandMirror";
         internal const string INTERNAL_COLOR_OVERRIDE_SHOE_ID = "Override Shoe Color";
+        internal const string INTERNAL_COLOR_OVERRIDE_BODY_ID = "Override Body Color";
         internal const string LETTER_HAND_MIRROR = "FashionSense.Mail.HandMirror";
         internal const string ACTIVE_ACCESSORIES_COUNT = $"FashionSense.Counters.ActiveAccessories";
 

@@ -1,6 +1,7 @@
 ﻿using FashionSense.Framework.Interfaces.API;
 using FashionSense.Framework.Models.Appearances;
 using FashionSense.Framework.Models.Appearances.Accessory;
+using FashionSense.Framework.Models.Appearances.Body;
 using FashionSense.Framework.Models.Appearances.Generic;
 using FashionSense.Framework.Models.Appearances.Hair;
 using FashionSense.Framework.Models.Appearances.Hat;
@@ -105,6 +106,13 @@ namespace FashionSense.Framework.Utilities
             {
                 var shModel = shPack.GetShoesFromFacingDirection(facingDirection);
                 models.Add(new AppearanceMetadata(shModel, AppearanceHelpers.GetAllAppearanceColors(who, shModel)));
+            }
+
+            // Body pack
+            if (who.modData.ContainsKey(ModDataKeys.CUSTOM_BODY_ID) && FashionSense.textureManager.GetSpecificAppearanceModel<BodyContentPack>(who.modData[ModDataKeys.CUSTOM_BODY_ID]) is BodyContentPack bPack && bPack != null)
+            {
+                var bModel = bPack.GetBodyFromFacingDirection(facingDirection);
+                models.Add(new AppearanceMetadata(bModel, AppearanceHelpers.GetAllAppearanceColors(who, bModel)));
             }
 
             return models.Where(m => m is not null && m.Model is not null && m.Model.Pack is not null).ToList();

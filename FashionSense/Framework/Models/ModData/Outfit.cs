@@ -105,6 +105,12 @@ namespace FashionSense.Framework.Models
                 AppearanceToMaskColors[IApi.Type.Shoes] = new List<Color>() { FashionSense.colorManager.GetColor(who, AppearanceModel.GetColorKey(IApi.Type.Shoes)) };
             }
 
+            // Add manual handling for the "Override Shoe Color" artificial ShoePack
+            if (who.modData.ContainsKey(ModDataKeys.CUSTOM_BODY_ID) && who.modData[ModDataKeys.CUSTOM_BODY_ID] == ModDataKeys.INTERNAL_COLOR_OVERRIDE_BODY_ID)
+            {
+                AppearanceToMaskColors[IApi.Type.Player] = new List<Color>() { FashionSense.colorManager.GetColor(who, AppearanceModel.GetColorKey(IApi.Type.Player)) };
+            }
+
             // Set the author's name
             Author = who.Name;
         }

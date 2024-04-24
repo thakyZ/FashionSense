@@ -659,6 +659,10 @@ namespace FashionSense.Framework.UI
             {
                 return shoePack.GetShoesFromFacingDirection(Game1.player.FacingDirection);
             }
+            else if (contentPack is BodyContentPack bodyPack)
+            {
+                return bodyPack.GetBodyFromFacingDirection(Game1.player.FacingDirection);
+            }
 
             return null;
         }
@@ -708,6 +712,11 @@ namespace FashionSense.Framework.UI
                     break;
                 case BODY_FILTER_BUTTON:
                     AppearanceHelpers.SetAppearanceColorForLayer(GetActiveModel(), Game1.player, color, maskLayerIndex: currentColorMaskLayerIndex);
+                    if (Game1.player.modData.ContainsKey(ModDataKeys.CUSTOM_BODY_ID) && Game1.player.modData[ModDataKeys.CUSTOM_BODY_ID] == ModDataKeys.INTERNAL_COLOR_OVERRIDE_BODY_ID)
+                    {
+                        FashionSense.SetSpriteDirty(skipColorMaskRefresh: false);
+                        FashionSense.messageManager.SendVanillaBootColorChangeMessage(_displayFarmer);
+                    }
                     break;
             }
         }

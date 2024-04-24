@@ -125,7 +125,7 @@ namespace FashionSense.Framework.Patches.Renderer
             if (hairModel.HasSkinToneMask())
             {
                 // Get skin tone
-                var skinTone = DrawPatch.GetSkinTone(___farmerTextureManager, ___baseTexture, null, ___skin, ____sickFrame);
+                var skinTone = DrawPatch.GetSkinTone(___farmerTextureManager, ___baseTexture, null, ___skin, ____sickFrame, who);
                 DrawManager.DrawSkinToneMask(b, hairPack, hairModel, skinTone, FarmerRendererPatch.AreColorMasksPendingRefresh, position + new Vector2(0f, feature_y_offset * 4) * scale / 4f, sourceRect, hairColor, 0f, new Vector2(hairModel.HeadPosition.X, hairModel.HeadPosition.Y), scale, layerDepth + hair_draw_layer + 0.01E-05f);
             }
 

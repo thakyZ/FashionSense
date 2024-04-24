@@ -1,6 +1,7 @@
 ﻿using FashionSense.Framework.Interfaces.API;
 using FashionSense.Framework.Models.Appearances;
 using FashionSense.Framework.Models.Appearances.Accessory;
+using FashionSense.Framework.Models.Appearances.Body;
 using FashionSense.Framework.Models.Appearances.Generic;
 using FashionSense.Framework.Models.Appearances.Hair;
 using FashionSense.Framework.Models.Appearances.Hat;
@@ -69,6 +70,9 @@ namespace FashionSense.Framework.Managers
                         break;
                     case HatModel hatModel:
                         AddHat(who, hatModel, data.Colors, ref rawLayerData);
+                        break;
+                    case BodyModel bodyModel:
+                        AddBody(who, bodyModel, data.Colors, ref rawLayerData);
                         break;
                 }
             }
@@ -273,6 +277,18 @@ namespace FashionSense.Framework.Managers
         {
             var layerData = new LayerData(IApi.Type.Hat, hatModel);
             if (AppearanceHelpers.ShouldHideWhileSwimmingOrWearingBathingSuit(who, hatModel))
+            {
+                layerData.IsHidden = true;
+            }
+            layerData.Colors = colors;
+
+            rawLayerData.Add(layerData);
+        }
+
+        private void AddBody(Farmer who, BodyModel bodyModel, List<Color> colors, ref List<LayerData> rawLayerData)
+        {
+            var layerData = new LayerData(IApi.Type.Player, bodyModel);
+            if (bodyModel.HidePlayerBase is true)
             {
                 layerData.IsHidden = true;
             }
