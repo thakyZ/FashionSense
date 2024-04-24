@@ -1,6 +1,7 @@
 ﻿using FashionSense.Framework.Interfaces.API;
 using FashionSense.Framework.Models.Appearances;
 using FashionSense.Framework.Models.Appearances.Accessory;
+using FashionSense.Framework.Models.Appearances.Body;
 using FashionSense.Framework.Models.Appearances.Generic;
 using FashionSense.Framework.Models.Appearances.Hair;
 using FashionSense.Framework.Models.Appearances.Hat;
@@ -144,6 +145,9 @@ namespace FashionSense.Framework.Managers
                     break;
                 case IApi.Type.Sleeves:
                     DrawSleevesCustom(who, layer);
+                    break;
+                case IApi.Type.Player:
+                    DrawPlayerCustom(who, layer);
                     break;
             }
         }
@@ -766,6 +770,165 @@ namespace FashionSense.Framework.Managers
             }
         }
 
+        private void DrawPlayerCustom(Farmer who, LayerData layer)
+        {
+            var bodyModel = layer.AppearanceModel as BodyModel;
+            var bodyPack = bodyModel.Pack as BodyContentPack;
+
+            // Check if player draw should be skipped
+            if (_hidePlayerBase)
+            {
+                return;
+            }
+
+            // Check if the player's legs need to be hidden
+            var adjustedBaseRectangle = DrawTool.FarmerSourceRectangle;
+            if (AppearanceHelpers.ShouldHideLegs(who, DrawTool.FacingDirection) && !(bool)who.swimming)
+            {
+                switch (who.FarmerSprite.CurrentFrame)
+                {
+                    case 2:
+                    case 16:
+                    case 54:
+                    case 57:
+                    case 62:
+                    case 66:
+                    case 84:
+                    case 90:
+                    case 124:
+                    case 125:
+                        adjustedBaseRectangle.Height -= 6;
+                        break;
+                    case 6:
+                    case 7:
+                    case 9:
+                    case 19:
+                    case 21:
+                    case 30:
+                    case 31:
+                    case 32:
+                    case 33:
+                    case 43:
+                    case 45:
+                    case 55:
+                    case 59:
+                    case 61:
+                    case 64:
+                    case 68:
+                    case 72:
+                    case 74:
+                    case 76:
+                    case 94:
+                    case 95:
+                    case 97:
+                    case 99:
+                    case 105:
+                        adjustedBaseRectangle.Height -= 8;
+                        break;
+                    case 11:
+                    case 17:
+                    case 20:
+                    case 22:
+                    case 23:
+                    case 49:
+                    case 50:
+                    case 53:
+                    case 56:
+                    case 60:
+                    case 69:
+                    case 70:
+                    case 71:
+                    case 73:
+                    case 75:
+                    case 112:
+                        adjustedBaseRectangle.Height -= 9;
+                        break;
+                    case 51:
+                    case 106:
+                        adjustedBaseRectangle.Height -= 12;
+                        break;
+                    case 52:
+                        adjustedBaseRectangle.Height -= 11;
+                        break;
+                    case 77:
+                        adjustedBaseRectangle.Height -= 10;
+                        break;
+                    case 107:
+                    case 113:
+                        adjustedBaseRectangle.Height -= 14;
+                        break;
+                    case 117:
+                        adjustedBaseRectangle.Height -= 13;
+                        break;
+                    default:
+                        adjustedBaseRectangle.Height -= 7;
+                        break;
+                }
+
+                if (who.IsMale)
+                {
+                    adjustedBaseRectangle.Height -= 1;
+                }
+            }
+
+            // Adjust color if needed
+            Color? colorOverride = null;
+            Color modelColor = layer.Colors.Count == 0 ? Color.White : layer.Colors[0];
+            if (bodyModel.DisableGrayscale)
+            {
+                colorOverride = Color.White;
+            }
+            else if (bodyModel.IsPrismatic)
+            {
+                colorOverride = Utility.GetPrismaticColor(speedMultiplier: bodyModel.PrismaticAnimationSpeedMultiplier);
+            }
+
+            // Get any positional offset
+            Position positionOffset = GetPositionOffset(bodyModel, _appearanceTypeToAnimationModels);
+
+            // Draw the player's base texture
+            DrawTool.SpriteBatch.Draw(bodyPack.Texture, DrawTool.Position + DrawTool.Origin + DrawTool.PositionOffset, adjustedBaseRectangle, bodyModel.HasColorMask() ? Color.White : colorOverride is not null ? colorOverride.Value : modelColor, DrawTool.Rotation, DrawTool.Origin + new Vector2(positionOffset.X, positionOffset.Y), 4f * DrawTool.Scale, DrawTool.AnimationFrame.flip ? SpriteEffects.FlipHorizontally : SpriteEffects.None, IncrementAndGetLayerDepth());
+
+            if (bodyModel.HasColorMask())
+            {
+                DrawColorMask(DrawTool.SpriteBatch, bodyPack, bodyModel, _areColorMasksPendingRefresh, GetScaledPosition(DrawTool.Position, bodyModel, DrawTool.IsDrawingForUI) + DrawTool.Origin + DrawTool.PositionOffset, GetSourceRectangle(bodyModel, _appearanceTypeToAnimationModels), colorOverride, layer.Colors, DrawTool.Rotation, DrawTool.Origin + new Vector2(positionOffset.X, positionOffset.Y), bodyModel.Scale * DrawTool.Scale, IncrementAndGetLayerDepth());
+            }
+
+            // Vanilla swim draw logic
+            if (!FarmerRenderer.isDrawingForUI && (bool)who.swimming)
+            {
+                if (who.currentEyes != 0 && who.FacingDirection != 0 && (Game1.timeOfDay < 2600 || (who.isInBed.Value && who.timeWentToBed.Value != 0)) && ((!who.FarmerSprite.PauseForSingleAnimation && !who.UsingTool) || (who.UsingTool && who.CurrentTool is FishingRod)))
+                {
+                    DrawTool.SpriteBatch.Draw(DrawTool.BaseTexture, DrawTool.Position + DrawTool.Origin + DrawTool.PositionOffset + new Vector2(AppearanceHelpers.GetFarmerRendererXFeatureOffset(DrawTool.CurrentFrame) * 4 + 20 + ((who.FacingDirection == 1) ? 12 : ((who.FacingDirection == 3) ? 4 : 0)), AppearanceHelpers.GetFarmerRendererYFeatureOffset(DrawTool.CurrentFrame) * 4 + 40), new Rectangle(5, 16, (who.FacingDirection == 2) ? 6 : 2, 2), DrawTool.OverrideColor, 0f, DrawTool.Origin, 4f * DrawTool.Scale, SpriteEffects.None, IncrementAndGetLayerDepth());
+                    DrawTool.SpriteBatch.Draw(DrawTool.BaseTexture, DrawTool.Position + DrawTool.Origin + DrawTool.PositionOffset + new Vector2(AppearanceHelpers.GetFarmerRendererXFeatureOffset(DrawTool.CurrentFrame) * 4 + 20 + ((who.FacingDirection == 1) ? 12 : ((who.FacingDirection == 3) ? 4 : 0)), AppearanceHelpers.GetFarmerRendererYFeatureOffset(DrawTool.CurrentFrame) * 4 + 40), new Rectangle(264 + ((who.FacingDirection == 3) ? 4 : 0), 2 + (who.currentEyes - 1) * 2, (who.FacingDirection == 2) ? 6 : 2, 2), DrawTool.OverrideColor, 0f, DrawTool.Origin, 4f * DrawTool.Scale, SpriteEffects.None, IncrementAndGetLayerDepth());
+                }
+
+                // Exiting early from this method, as copied from the vanilla logic
+                return;
+            }
+
+            // Draw blinking / eyes closed animation, if conditions are met
+            FishingRod fishing_rod;
+            if (who.currentEyes != 0 && DrawTool.FacingDirection != 0 && (Game1.timeOfDay < 2600 || (who.isInBed.Value && who.timeWentToBed.Value != 0)) && ((!who.FarmerSprite.PauseForSingleAnimation && !who.UsingTool) || (who.UsingTool && who.CurrentTool is FishingRod)) && (!who.UsingTool || (fishing_rod = who.CurrentTool as FishingRod) == null || fishing_rod.isFishing))
+            {
+                int x_adjustment = 5;
+                x_adjustment = (DrawTool.AnimationFrame.flip ? (x_adjustment - AppearanceHelpers.GetFarmerRendererXFeatureOffset(DrawTool.CurrentFrame)) : (x_adjustment + AppearanceHelpers.GetFarmerRendererXFeatureOffset(DrawTool.CurrentFrame)));
+                switch (DrawTool.FacingDirection)
+                {
+                    case 1:
+                        x_adjustment += 3;
+                        break;
+                    case 3:
+                        x_adjustment++;
+                        break;
+                }
+
+                x_adjustment *= 4;
+                DrawTool.SpriteBatch.Draw(DrawTool.BaseTexture, DrawTool.Position + DrawTool.Origin + DrawTool.PositionOffset + new Vector2(x_adjustment, AppearanceHelpers.GetFarmerRendererYFeatureOffset(DrawTool.CurrentFrame) * 4 + ((who.IsMale && who.FacingDirection != 2) ? 36 : 40)), new Rectangle(5, 16, (DrawTool.FacingDirection == 2) ? 6 : 2, 2), DrawTool.OverrideColor, 0f, DrawTool.Origin, 4f * DrawTool.Scale, SpriteEffects.None, IncrementAndGetLayerDepth());
+                DrawTool.SpriteBatch.Draw(DrawTool.BaseTexture, DrawTool.Position + DrawTool.Origin + DrawTool.PositionOffset + new Vector2(x_adjustment, AppearanceHelpers.GetFarmerRendererYFeatureOffset(DrawTool.CurrentFrame) * 4 + ((who.FacingDirection == 1 || who.FacingDirection == 3) ? 40 : 44)), new Rectangle(264 + ((DrawTool.FacingDirection == 3) ? 4 : 0), 2 + (who.currentEyes - 1) * 2, (DrawTool.FacingDirection == 2) ? 6 : 2, 2), DrawTool.OverrideColor, 0f, DrawTool.Origin, 4f * DrawTool.Scale, SpriteEffects.None, IncrementAndGetLayerDepth());
+            }
+        }
+
         internal static void DrawColorMask(SpriteBatch b, AppearanceContentPack appearancePack, AppearanceModel appearanceModel, bool areColorMasksPendingRefresh, Vector2 position, Rectangle sourceRect, Color? colorOverride, List<Color> colors, float rotation, Vector2 origin, float scale, float layerDepth)
         {
             if (appearancePack.ColorMaskTextures is null || areColorMasksPendingRefresh)
@@ -971,6 +1134,9 @@ namespace FashionSense.Framework.Managers
                     break;
                 case HatModel hatModel:
                     offset = hatModel.HeadPosition;
+                    break;
+                case BodyModel bodyModel:
+                    // Purposely leaving this empty, as BodyModel does not use a position property
                     break;
             }
 

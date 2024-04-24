@@ -1203,6 +1203,10 @@ namespace FashionSense.Framework.Utilities
             {
                 size = shoesModel.ShoesSize;
             }
+            else if (model is BodyModel bodyModel)
+            {
+                size = bodyModel.BodySize;
+            }
 
             return size;
         }

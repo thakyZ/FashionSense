@@ -157,7 +157,6 @@ namespace FashionSense.Framework.Managers
 
         private void AddVanillaLayerData(List<AppearanceModel> models, ref List<LayerData> rawLayerData)
         {
-            rawLayerData.Add(new LayerData(IApi.Type.Player, null, isVanilla: true));
             if (models.Any(m => m is PantsModel) is false)
             {
                 rawLayerData.Add(new LayerData(IApi.Type.Pants, null, isVanilla: true));
@@ -185,6 +184,10 @@ namespace FashionSense.Framework.Managers
             if (models.Any(m => m is HatModel) is false)
             {
                 rawLayerData.Add(new LayerData(IApi.Type.Hat, null, isVanilla: true));
+            }
+            if (models.Any(m => m is BodyModel) is false)
+            {
+            rawLayerData.Add(new LayerData(IApi.Type.Player, null, isVanilla: true));
             }
         }
         private void MoveLayerDataItem(int index, LayerData layerData, ref List<LayerData> sourceList)
