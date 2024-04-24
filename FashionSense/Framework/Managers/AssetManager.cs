@@ -22,6 +22,7 @@ namespace FashionSense.Framework.Managers
         internal readonly Texture2D sleevesAndShoesButtonTexture;
         internal readonly Texture2D sleevesButtonTexture;
         internal readonly Texture2D shoesButtonTexture;
+        internal readonly Texture2D bodyButtonTexture;
         internal readonly Texture2D exportButton;
 
         public AssetManager(IModHelper helper)
@@ -39,6 +40,7 @@ namespace FashionSense.Framework.Managers
             sleevesButtonTexture = helper.ModContent.Load<Texture2D>(Path.Combine(assetFolderPath, "UI", "SleevesButton.png"));
             sleevesAndShoesButtonTexture = helper.ModContent.Load<Texture2D>(Path.Combine(assetFolderPath, "UI", "SleevesShoesButton.png"));
             shoesButtonTexture = helper.ModContent.Load<Texture2D>(Path.Combine(assetFolderPath, "UI", "ShoesButton.png"));
+            bodyButtonTexture = helper.ModContent.Load<Texture2D>(Path.Combine(assetFolderPath, "UI", "BodyButton.png"));
             exportButton = helper.ModContent.Load<Texture2D>(Path.Combine(assetFolderPath, "UI", "ExportButton.png"));
 
             // Setup toolNames

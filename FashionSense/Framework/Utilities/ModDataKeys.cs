@@ -13,6 +13,7 @@
         internal const string CUSTOM_PANTS_ID = "FashionSense.CustomPants.Id";
         internal const string CUSTOM_SLEEVES_ID = "FashionSense.CustomSleeves.Id";
         internal const string CUSTOM_SHOES_ID = "FashionSense.CustomShoes.Id";
+        internal const string CUSTOM_BODY_ID = "FashionSense.CustomBody.Id";
 
         // UI related keys
         internal const string UI_HAND_MIRROR_FILTER_BUTTON = "FashionSense.UI.HandMirror.SelectedFilterButton";

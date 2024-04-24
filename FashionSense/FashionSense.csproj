@@ -51,6 +51,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<None Update="Framework\Assets\UI\BodyButton.png">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
 		<None Update="Framework\Assets\UI\CheckButton.png">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
