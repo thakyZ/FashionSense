@@ -34,6 +34,7 @@ namespace FashionSense.Framework.Managers
         private bool _areColorMasksPendingRefresh { get; }
         private bool _hideSleeves { get; }
         private bool _hidePlayerBase { get; }
+        private bool _isUsingCustomBody { get; set; }
         private Vector2 _rotationAdjustment { get; set; } // Purposely using get / set as certain vanilla draw methods modify this value
 
         internal float LayerDepth { get; set; }
@@ -74,6 +75,11 @@ namespace FashionSense.Framework.Managers
 
         public void DrawLayers(Farmer who, List<LayerData> layers)
         {
+            if (layers.Any(l => l.AppearanceModel is BodyModel))
+            {
+                _isUsingCustomBody = true;
+            }
+
             foreach (var layer in layers)
             {
                 // Set current model color
@@ -591,7 +597,10 @@ namespace FashionSense.Framework.Managers
             var featureOffset = GetFeatureOffset(DrawTool.FacingDirection, DrawTool.CurrentFrame, DrawTool.Scale, DrawTool.FarmerRenderer, model, who);
             if (model is SleevesModel || model is PantsModel || model is ShoesModel || model is HairModel)
             {
-                featureOffset.Y -= who.IsMale ? 4 : 0;
+                if (_isUsingCustomBody is false)
+                {
+                    featureOffset.Y -= who.IsMale ? 4 : 0;
+                }
             }
 
             DrawTool.SpriteBatch.Draw(modelPack.Texture, GetScaledPosition(DrawTool.Position, model, DrawTool.IsDrawingForUI) + DrawTool.Origin + DrawTool.PositionOffset + featureOffset, GetSourceRectangle(model, _appearanceTypeToAnimationModels), model.HasColorMask() ? Color.White : colorOverride is not null ? colorOverride.Value : modelColor, DrawTool.Rotation, DrawTool.Origin + new Vector2(positionOffset.X, positionOffset.Y), model.Scale * DrawTool.Scale, model.Flipped ? SpriteEffects.FlipHorizontally : SpriteEffects.None, IncrementAndGetLayerDepth());
@@ -616,7 +625,10 @@ namespace FashionSense.Framework.Managers
 
             // Get any feature offset
             var featureOffset = GetFeatureOffset(DrawTool.FacingDirection, DrawTool.CurrentFrame, DrawTool.Scale, DrawTool.FarmerRenderer, sleevesModel, who);
-            featureOffset.Y -= who.IsMale ? 4 : 0; // Manually adjusting for male sleeves
+            if (_isUsingCustomBody is false)
+            {
+                featureOffset.Y -= who.IsMale ? 4 : 0; // Manually adjusting for male sleeves
+            }
 
             DrawSleevesCustom(who, layer, sleevesModel, sleevesModelPack, DrawTool.AppearanceColor, positionOffset, featureOffset, GetSourceRectangle(sleevesModel, _appearanceTypeToAnimationModels));
             if (_appearanceTypeToAnimationModels.TryGetValue(sleevesModel, out var animationModel) is true && animationModel is not null)
