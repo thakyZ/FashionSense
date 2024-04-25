@@ -659,6 +659,11 @@ namespace FashionSense.Framework.Utilities
                 {
                     colors.Add(FashionSense.colorManager.GetColor(who, colorKey));
                 }
+                else if (model.ColorMaskLayers[x].DefaultColor is not null)
+                {
+                    var c = model.ColorMaskLayers[x].DefaultColor;
+                    colors.Add(new Color(c[0], c[1], c[2], c.Length > 3 ? c[3] : 255));
+                }
             }
 
             return colors;
