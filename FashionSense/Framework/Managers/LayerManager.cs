@@ -187,7 +187,7 @@ namespace FashionSense.Framework.Managers
             }
             if (models.Any(m => m is BodyModel) is false)
             {
-            rawLayerData.Add(new LayerData(IApi.Type.Player, null, isVanilla: true));
+                rawLayerData.Add(new LayerData(IApi.Type.Player, null, isVanilla: true));
             }
         }
         private void MoveLayerDataItem(int index, LayerData layerData, ref List<LayerData> sourceList)

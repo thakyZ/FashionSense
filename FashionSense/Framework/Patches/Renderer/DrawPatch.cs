@@ -324,7 +324,7 @@ namespace FashionSense.Framework.Patches.Renderer
             AppearanceHelpers.OffsetSourceRectangles(who, facingDirection, rotation, ref ___shirtSourceRect, ref dyedShirtSourceRect, ref ___accessorySourceRect, ref ___hatSourceRect, ref ___rotationAdjustment);
 
             // Prepare the DrawManager
-            DrawManager drawManager = new DrawManager(b, who, __instance, skinTone, baseTexture, sourceRect, ___shirtSourceRect, dyedShirtSourceRect, ___accessorySourceRect, ___hatSourceRect, appearanceTypeToAnimationModels, animationFrame, overrideColor, position, origin, ___positionOffset, ___rotationAdjustment, facingDirection, currentFrame, scale, rotation, FarmerRendererPatch.AreColorMasksPendingRefresh, FarmerRenderer.isDrawingForUI, AppearanceHelpers.AreSleevesForcedHidden(equippedModels), AppearanceHelpers.IsPlayerBaseForcedHidden(equippedModels))
+            DrawManager drawManager = new DrawManager(b, who, __instance, skinTone, baseTexture, sourceRect, ___shirtSourceRect, dyedShirtSourceRect, ___accessorySourceRect, ___hatSourceRect, appearanceTypeToAnimationModels, animationFrame, overrideColor, position, origin, ___positionOffset, ___rotationAdjustment, facingDirection, currentFrame, scale, rotation, FarmerRendererPatch.AreColorMasksPendingRefresh, FarmerRenderer.isDrawingForUI, AppearanceHelpers.AreSleevesForcedHidden(equippedModels), AppearanceHelpers.IsPlayerBaseForcedHidden(equippedModels), AppearanceHelpers.GetHeightOffset(__instance, equippedModels))
             {
                 LayerDepth = layerDepth
             };

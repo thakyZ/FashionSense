@@ -1034,7 +1034,7 @@ namespace FashionSense.Framework.Utilities
             }
         }
 
-        public static Vector2 GetFeatureOffset(int facingDirection, int currentFrame, float scale, FarmerRenderer renderer, AppearanceModel model, bool flip = false)
+        public static Vector2 GetFeatureOffset(int facingDirection, int currentFrame, float scale, int heightOffset, AppearanceModel model, bool flip = false)
         {
             Vector2 offset = Vector2.Zero;
             if (model.DisableNativeOffset)
@@ -1045,7 +1045,7 @@ namespace FashionSense.Framework.Utilities
             var type = model.GetPackType();
             if (type is IApi.Type.Hat)
             {
-                return new Vector2(-8 + ((!flip) ? 1 : (-1)) * AppearanceHelpers.GetFarmerRendererXFeatureOffset(currentFrame) * 4, -16 + AppearanceHelpers.GetFarmerRendererYFeatureOffset(currentFrame) * 4 + 4 + (int)renderer.heightOffset);
+                return new Vector2(-8 + ((!flip) ? 1 : (-1)) * AppearanceHelpers.GetFarmerRendererXFeatureOffset(currentFrame) * 4, -16 + AppearanceHelpers.GetFarmerRendererYFeatureOffset(currentFrame) * 4 + 4 + heightOffset);
             }
 
             if (type is IApi.Type.Shirt)
@@ -1053,13 +1053,13 @@ namespace FashionSense.Framework.Utilities
                 switch (facingDirection)
                 {
                     case 0:
-                        return new Vector2(16f * scale + (float)(AppearanceHelpers.GetFarmerRendererXFeatureOffset(currentFrame) * 4), (float)(56 + AppearanceHelpers.GetFarmerRendererYFeatureOffset(currentFrame) * 4) + (float)(int)renderer.heightOffset * scale);
+                        return new Vector2(16f * scale + (float)(AppearanceHelpers.GetFarmerRendererXFeatureOffset(currentFrame) * 4), (float)(56 + AppearanceHelpers.GetFarmerRendererYFeatureOffset(currentFrame) * 4) + heightOffset * scale);
                     case 1:
-                        return new Vector2(16f * scale + (float)(AppearanceHelpers.GetFarmerRendererXFeatureOffset(currentFrame) * 4), 56f * scale + (float)(AppearanceHelpers.GetFarmerRendererYFeatureOffset(currentFrame) * 4) + (float)(int)renderer.heightOffset * scale);
+                        return new Vector2(16f * scale + (float)(AppearanceHelpers.GetFarmerRendererXFeatureOffset(currentFrame) * 4), 56f * scale + (float)(AppearanceHelpers.GetFarmerRendererYFeatureOffset(currentFrame) * 4) + heightOffset * scale);
                     case 2:
-                        return new Vector2(16 + AppearanceHelpers.GetFarmerRendererXFeatureOffset(currentFrame) * 4, (float)(56 + AppearanceHelpers.GetFarmerRendererYFeatureOffset(currentFrame) * 4) + (float)(int)renderer.heightOffset * scale);
+                        return new Vector2(16 + AppearanceHelpers.GetFarmerRendererXFeatureOffset(currentFrame) * 4, (float)(56 + AppearanceHelpers.GetFarmerRendererYFeatureOffset(currentFrame) * 4) + heightOffset * scale);
                     case 3:
-                        return new Vector2(16 - AppearanceHelpers.GetFarmerRendererXFeatureOffset(currentFrame) * 4, 56 + AppearanceHelpers.GetFarmerRendererYFeatureOffset(currentFrame) * 4 + (int)renderer.heightOffset);
+                        return new Vector2(16 - AppearanceHelpers.GetFarmerRendererXFeatureOffset(currentFrame) * 4, 56 + AppearanceHelpers.GetFarmerRendererYFeatureOffset(currentFrame) * 4 + heightOffset);
                 }
             }
             else if (type is not IApi.Type.Sleeves)
@@ -1094,7 +1094,7 @@ namespace FashionSense.Framework.Utilities
                         break;
                 }
 
-                offset.Y += renderer.heightOffset;
+                offset.Y += heightOffset;
             }
 
             return offset;
@@ -1209,6 +1209,17 @@ namespace FashionSense.Framework.Utilities
             }
 
             return size;
+        }
+
+        public static int GetHeightOffset(FarmerRenderer farmerRenderer, List<AppearanceMetadata> equippedModels)
+        {
+            var bodyMetadata = equippedModels.FirstOrDefault(a => a.Model is BodyModel);
+            if (bodyMetadata is null)
+            {
+                return farmerRenderer.heightOffset.Value;
+            }
+
+            return (bodyMetadata.Model as BodyModel).HeightOffset;
         }
     }
 }

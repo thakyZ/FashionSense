@@ -34,13 +34,14 @@ namespace FashionSense.Framework.Managers
         private bool _areColorMasksPendingRefresh { get; }
         private bool _hideSleeves { get; }
         private bool _hidePlayerBase { get; }
-        private bool _isUsingCustomBody { get; set; }
+        private BodyModel _customBody { get; set; }
         private Vector2 _rotationAdjustment { get; set; } // Purposely using get / set as certain vanilla draw methods modify this value
+        private int _heightOffset;
 
         internal float LayerDepth { get; set; }
         internal DrawTool DrawTool { get; }
 
-        public DrawManager(SpriteBatch spriteBatch, Farmer who, FarmerRenderer farmerRenderer, SkinToneModel skinToneModel, Texture2D baseTexture, Rectangle farmerSourceRectangle, Rectangle shirtSourceRectangle, Rectangle dyedShirtSourceRectangle, Rectangle accessorySourceRectangle, Rectangle hatSourceRectangle, Dictionary<AppearanceModel, AnimationModel> appearanceTypeToAnimationModels, AnimationFrame animationFrame, Color overrideColor, Vector2 position, Vector2 origin, Vector2 positionOffset, Vector2 rotationAdjustment, int facingDirection, int currentFrame, float scale, float rotation, bool areColorMasksPendingRefresh, bool isDrawingForUI, bool hideSleeves, bool hidePlayerBase)
+        public DrawManager(SpriteBatch spriteBatch, Farmer who, FarmerRenderer farmerRenderer, SkinToneModel skinToneModel, Texture2D baseTexture, Rectangle farmerSourceRectangle, Rectangle shirtSourceRectangle, Rectangle dyedShirtSourceRectangle, Rectangle accessorySourceRectangle, Rectangle hatSourceRectangle, Dictionary<AppearanceModel, AnimationModel> appearanceTypeToAnimationModels, AnimationFrame animationFrame, Color overrideColor, Vector2 position, Vector2 origin, Vector2 positionOffset, Vector2 rotationAdjustment, int facingDirection, int currentFrame, float scale, float rotation, bool areColorMasksPendingRefresh, bool isDrawingForUI, bool hideSleeves, bool hidePlayerBase, int heightOffset)
         {
             DrawTool = new DrawTool()
             {
@@ -71,14 +72,14 @@ namespace FashionSense.Framework.Managers
 
             _hideSleeves = hideSleeves;
             _hidePlayerBase = hidePlayerBase;
+
+            _heightOffset = heightOffset;
         }
 
         public void DrawLayers(Farmer who, List<LayerData> layers)
         {
-            if (layers.Any(l => l.AppearanceModel is BodyModel))
-            {
-                _isUsingCustomBody = true;
-            }
+            // Determine if a custom BodyModel is being used
+            _customBody = layers.FirstOrDefault(l => l.AppearanceModel is BodyModel)?.AppearanceModel as BodyModel;
 
             foreach (var layer in layers)
             {
@@ -594,13 +595,17 @@ namespace FashionSense.Framework.Managers
             Position positionOffset = GetPositionOffset(model, _appearanceTypeToAnimationModels);
 
             // Get any feature offset
-            var featureOffset = GetFeatureOffset(DrawTool.FacingDirection, DrawTool.CurrentFrame, DrawTool.Scale, DrawTool.FarmerRenderer, model, who);
-            if (model is SleevesModel || model is PantsModel || model is ShoesModel || model is HairModel)
+            var featureOffset = GetFeatureOffset(DrawTool.FacingDirection, DrawTool.CurrentFrame, DrawTool.Scale, _heightOffset, model, who);
+            if (_customBody is null)
             {
-                if (_isUsingCustomBody is false)
+                if (model is SleevesModel || model is PantsModel || model is ShoesModel || model is HairModel)
                 {
                     featureOffset.Y -= who.IsMale ? 4 : 0;
                 }
+            }
+            else
+            {
+                featureOffset.Y -= _customBody.GetFeatureOffset(model.GetPackType());
             }
 
             DrawTool.SpriteBatch.Draw(modelPack.Texture, GetScaledPosition(DrawTool.Position, model, DrawTool.IsDrawingForUI) + DrawTool.Origin + DrawTool.PositionOffset + featureOffset, GetSourceRectangle(model, _appearanceTypeToAnimationModels), model.HasColorMask() ? Color.White : colorOverride is not null ? colorOverride.Value : modelColor, DrawTool.Rotation, DrawTool.Origin + new Vector2(positionOffset.X, positionOffset.Y), model.Scale * DrawTool.Scale, model.Flipped ? SpriteEffects.FlipHorizontally : SpriteEffects.None, IncrementAndGetLayerDepth());
@@ -624,10 +629,14 @@ namespace FashionSense.Framework.Managers
             Position positionOffset = GetPositionOffset(sleevesModel, _appearanceTypeToAnimationModels);
 
             // Get any feature offset
-            var featureOffset = GetFeatureOffset(DrawTool.FacingDirection, DrawTool.CurrentFrame, DrawTool.Scale, DrawTool.FarmerRenderer, sleevesModel, who);
-            if (_isUsingCustomBody is false)
+            var featureOffset = GetFeatureOffset(DrawTool.FacingDirection, DrawTool.CurrentFrame, DrawTool.Scale, _heightOffset, sleevesModel, who);
+            if (_customBody is null)
             {
                 featureOffset.Y -= who.IsMale ? 4 : 0; // Manually adjusting for male sleeves
+            }
+            else
+            {
+                featureOffset.Y -= _customBody.GetFeatureOffset(IApi.Type.Sleeves);
             }
 
             DrawSleevesCustom(who, layer, sleevesModel, sleevesModelPack, DrawTool.AppearanceColor, positionOffset, featureOffset, GetSourceRectangle(sleevesModel, _appearanceTypeToAnimationModels));
@@ -911,8 +920,8 @@ namespace FashionSense.Framework.Managers
             {
                 if (who.currentEyes != 0 && who.FacingDirection != 0 && (Game1.timeOfDay < 2600 || (who.isInBed.Value && who.timeWentToBed.Value != 0)) && ((!who.FarmerSprite.PauseForSingleAnimation && !who.UsingTool) || (who.UsingTool && who.CurrentTool is FishingRod)))
                 {
-                    DrawTool.SpriteBatch.Draw(DrawTool.BaseTexture, DrawTool.Position + DrawTool.Origin + DrawTool.PositionOffset + new Vector2(AppearanceHelpers.GetFarmerRendererXFeatureOffset(DrawTool.CurrentFrame) * 4 + 20 + ((who.FacingDirection == 1) ? 12 : ((who.FacingDirection == 3) ? 4 : 0)), AppearanceHelpers.GetFarmerRendererYFeatureOffset(DrawTool.CurrentFrame) * 4 + 40), new Rectangle(5, 16, (who.FacingDirection == 2) ? 6 : 2, 2), DrawTool.OverrideColor, 0f, DrawTool.Origin, 4f * DrawTool.Scale, SpriteEffects.None, IncrementAndGetLayerDepth());
-                    DrawTool.SpriteBatch.Draw(DrawTool.BaseTexture, DrawTool.Position + DrawTool.Origin + DrawTool.PositionOffset + new Vector2(AppearanceHelpers.GetFarmerRendererXFeatureOffset(DrawTool.CurrentFrame) * 4 + 20 + ((who.FacingDirection == 1) ? 12 : ((who.FacingDirection == 3) ? 4 : 0)), AppearanceHelpers.GetFarmerRendererYFeatureOffset(DrawTool.CurrentFrame) * 4 + 40), new Rectangle(264 + ((who.FacingDirection == 3) ? 4 : 0), 2 + (who.currentEyes - 1) * 2, (who.FacingDirection == 2) ? 6 : 2, 2), DrawTool.OverrideColor, 0f, DrawTool.Origin, 4f * DrawTool.Scale, SpriteEffects.None, IncrementAndGetLayerDepth());
+                    DrawTool.SpriteBatch.Draw(DrawTool.BaseTexture, DrawTool.Position + DrawTool.Origin + DrawTool.PositionOffset + new Vector2(AppearanceHelpers.GetFarmerRendererXFeatureOffset(DrawTool.CurrentFrame) * 4 + 20 + ((who.FacingDirection == 1) ? 12 : ((who.FacingDirection == 3) ? 4 : 0)), AppearanceHelpers.GetFarmerRendererYFeatureOffset(DrawTool.CurrentFrame) * 4 + 40), new Rectangle(5, 16, (who.FacingDirection == 2) ? 6 : 2, 2), DrawTool.OverrideColor, 0f, DrawTool.Origin + new Vector2(positionOffset.X, positionOffset.Y), 4f * DrawTool.Scale, SpriteEffects.None, IncrementAndGetLayerDepth());
+                    DrawTool.SpriteBatch.Draw(bodyPack.EyesTexture, DrawTool.Position + DrawTool.Origin + DrawTool.PositionOffset + new Vector2(AppearanceHelpers.GetFarmerRendererXFeatureOffset(DrawTool.CurrentFrame) * 4 + 20 + ((who.FacingDirection == 1) ? 12 : ((who.FacingDirection == 3) ? 4 : 0)), AppearanceHelpers.GetFarmerRendererYFeatureOffset(DrawTool.CurrentFrame) * 4 + 40), new Rectangle(264 + ((who.FacingDirection == 3) ? 4 : 0), (who.currentEyes - 1) * 2, (who.FacingDirection == 2) ? 6 : 2, 2), DrawTool.OverrideColor, 0f, DrawTool.Origin + new Vector2(positionOffset.X, positionOffset.Y), 4f * DrawTool.Scale, SpriteEffects.None, IncrementAndGetLayerDepth());
                 }
 
                 // Exiting early from this method, as copied from the vanilla logic
@@ -936,8 +945,55 @@ namespace FashionSense.Framework.Managers
                 }
 
                 x_adjustment *= 4;
-                DrawTool.SpriteBatch.Draw(DrawTool.BaseTexture, DrawTool.Position + DrawTool.Origin + DrawTool.PositionOffset + new Vector2(x_adjustment, AppearanceHelpers.GetFarmerRendererYFeatureOffset(DrawTool.CurrentFrame) * 4 + ((who.IsMale && who.FacingDirection != 2) ? 36 : 40)), new Rectangle(5, 16, (DrawTool.FacingDirection == 2) ? 6 : 2, 2), DrawTool.OverrideColor, 0f, DrawTool.Origin, 4f * DrawTool.Scale, SpriteEffects.None, IncrementAndGetLayerDepth());
-                DrawTool.SpriteBatch.Draw(DrawTool.BaseTexture, DrawTool.Position + DrawTool.Origin + DrawTool.PositionOffset + new Vector2(x_adjustment, AppearanceHelpers.GetFarmerRendererYFeatureOffset(DrawTool.CurrentFrame) * 4 + ((who.FacingDirection == 1 || who.FacingDirection == 3) ? 40 : 44)), new Rectangle(264 + ((DrawTool.FacingDirection == 3) ? 4 : 0), 2 + (who.currentEyes - 1) * 2, (DrawTool.FacingDirection == 2) ? 6 : 2, 2), DrawTool.OverrideColor, 0f, DrawTool.Origin, 4f * DrawTool.Scale, SpriteEffects.None, IncrementAndGetLayerDepth());
+
+                var eyeBasePosition = DrawTool.Position + DrawTool.Origin + DrawTool.PositionOffset + new Vector2(x_adjustment, AppearanceHelpers.GetFarmerRendererYFeatureOffset(DrawTool.CurrentFrame) * 4 + ((who.IsMale && who.FacingDirection != 2) ? 36 : 40));
+                DrawTool.SpriteBatch.Draw(bodyPack.Texture, eyeBasePosition, new Rectangle(5, 16, (DrawTool.FacingDirection == 2) ? 6 : 2, 2), bodyModel.HasColorMask() ? Color.White : colorOverride is not null ? colorOverride.Value : modelColor, 0f, DrawTool.Origin + new Vector2(positionOffset.X, positionOffset.Y), 4f * DrawTool.Scale, SpriteEffects.None, IncrementAndGetLayerDepth());
+                if (bodyModel.HasColorMask())
+                {
+                    DrawColorMask(DrawTool.SpriteBatch, bodyPack, bodyModel, _areColorMasksPendingRefresh, eyeBasePosition, new Rectangle(5, 16, (DrawTool.FacingDirection == 2) ? 6 : 2, 2), colorOverride, layer.Colors, DrawTool.Rotation, DrawTool.Origin + new Vector2(positionOffset.X, positionOffset.Y), bodyModel.Scale * DrawTool.Scale, IncrementAndGetLayerDepth());
+                }
+
+                var eyePosition = DrawTool.Position + DrawTool.Origin + DrawTool.PositionOffset + new Vector2(x_adjustment, AppearanceHelpers.GetFarmerRendererYFeatureOffset(DrawTool.CurrentFrame) * 4 + ((who.FacingDirection == 1 || who.FacingDirection == 3) ? 40 : 40));
+                DrawTool.SpriteBatch.Draw(bodyPack.EyesTexture, eyePosition, new Rectangle(0, (who.currentEyes - 1) * 2, (DrawTool.FacingDirection == 2) ? 6 : 2, 2), bodyModel.HasColorMask() ? Color.White : colorOverride is not null ? colorOverride.Value : modelColor, 0f, DrawTool.Origin + new Vector2(positionOffset.X, positionOffset.Y), 4f * DrawTool.Scale, SpriteEffects.None, IncrementAndGetLayerDepth());
+                if (bodyModel.HasColorMask())
+                {
+                    if (bodyPack.EyesColorMaskTextures is null || _areColorMasksPendingRefresh)
+                    {
+                        var colorMaskTextures = new List<Texture2D>();
+                        for (int x = 0; x < bodyModel.ColorMaskLayers.Count; x++)
+                        {
+                            Color[] data = new Color[bodyPack.EyesTexture.Width * bodyPack.EyesTexture.Height];
+                            bodyPack.EyesTexture.GetData(data);
+                            Texture2D maskedTexture = new Texture2D(Game1.graphics.GraphicsDevice, bodyPack.EyesTexture.Width, bodyPack.EyesTexture.Height);
+
+                            for (int i = 0; i < data.Length; i++)
+                            {
+                                if (!bodyModel.IsMaskedColor(data[i], layerIndexToCheck: x))
+                                {
+                                    data[i] = Color.Transparent;
+                                }
+                            }
+
+                            maskedTexture.SetData(data);
+                            colorMaskTextures.Add(maskedTexture);
+                        }
+                        bodyPack.EyesColorMaskTextures = colorMaskTextures;
+                    }
+
+                    for (int t = 0; t < bodyPack.EyesColorMaskTextures.Count; t++)
+                    {
+                        var colorToUse = Color.White;
+                        if (colorOverride is not null)
+                        {
+                            colorToUse = colorOverride.Value;
+                        }
+                        else if (layer.Colors.Count > t)
+                        {
+                            colorToUse = layer.Colors[t];
+                        }
+                        DrawTool.SpriteBatch.Draw(bodyPack.EyesColorMaskTextures[t], eyePosition, new Rectangle(0, (who.currentEyes - 1) * 2, (DrawTool.FacingDirection == 2) ? 6 : 2, 2), colorToUse, DrawTool.Rotation, DrawTool.Origin + new Vector2(positionOffset.X, positionOffset.Y), 4f * DrawTool.Scale, bodyModel.Flipped ? SpriteEffects.FlipHorizontally : SpriteEffects.None, IncrementAndGetLayerDepth());
+                    }
+                }
             }
         }
 
@@ -1173,7 +1229,7 @@ namespace FashionSense.Framework.Managers
             return AppearanceHelpers.GetAdjustedSourceRectangle(animation, model.Pack, sourceRectangle, subFrame);
         }
 
-        private Vector2 GetFeatureOffset(int facingDirection, int currentFrame, float scale, FarmerRenderer renderer, AppearanceModel model, Farmer who)
+        private Vector2 GetFeatureOffset(int facingDirection, int currentFrame, float scale, int heightOffset, AppearanceModel model, Farmer who)
         {
             // Determine if sprite his flipped
             bool flip = false;
@@ -1186,7 +1242,7 @@ namespace FashionSense.Framework.Managers
                 flip = true;
             }
 
-            return AppearanceHelpers.GetFeatureOffset(facingDirection, currentFrame, scale, renderer, model, flip);
+            return AppearanceHelpers.GetFeatureOffset(facingDirection, currentFrame, scale, heightOffset, model, flip);
         }
 
         private Vector2 GetScaledPosition(Vector2 position, AppearanceModel model, bool isDrawingForUI)

@@ -12,6 +12,7 @@
       "X": 0,
       "Y": 0
     },
+    "HeightOffset": 0,
     "BodySize": {
       "Width": 16,
       "Length": 32
