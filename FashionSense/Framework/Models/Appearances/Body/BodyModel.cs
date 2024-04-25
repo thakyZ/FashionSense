@@ -5,6 +5,8 @@ namespace FashionSense.Framework.Models.Appearances.Body
 {
     public class BodyModel : AppearanceModel
     {
+        public int EyePosition { get; set; }
+
         public int HeightOffset { get; set; }
         public int HairOffset { get; set; }
         public int ShirtOffset { get; set; }
