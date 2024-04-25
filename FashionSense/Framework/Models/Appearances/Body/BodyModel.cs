@@ -9,9 +9,10 @@ namespace FashionSense.Framework.Models.Appearances.Body
         public bool HideEyes { get; set; }
 
         public int HeightOffset { get; set; }
-        public int HairOffset { get; set; }
-        public int ShirtOffset { get; set; }
-        public int SleevesOffset { get; set; }
+        public int HeadOffset { get; set; }
+        public int LegOffset { get; set; }
+        public int BodyOffset { get; set; }
+        public int ArmsOffset { get; set; }
         public Size BodySize { get; set; }
 
         internal int GetFeatureOffset(IApi.Type type)
@@ -20,11 +21,14 @@ namespace FashionSense.Framework.Models.Appearances.Body
             {
                 case IApi.Type.Hat:
                 case IApi.Type.Hair:
-                    return HairOffset;
+                    return HeadOffset;
+                case IApi.Type.Pants:
+                case IApi.Type.Shoes:
+                    return LegOffset;
                 case IApi.Type.Shirt:
-                    return ShirtOffset;
+                    return BodyOffset;
                 case IApi.Type.Sleeves:
-                    return SleevesOffset;
+                    return ArmsOffset;
                 default:
                     return 0;
             }
