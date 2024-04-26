@@ -600,12 +600,6 @@ namespace FashionSense.Framework.Managers
             if (_customBody is not null)
             {
                 featureOffset.Y -= _customBody.GetFeatureOffset(model.GetPackType());
-
-                // Force shoes to always be offset.Y by 4, to handle native render feature offset
-                if (model is ShoesModel)
-                {
-                    featureOffset.Y -= who.IsMale ? 4 : 0;
-                }
             }
             else if (model is SleevesModel || model is PantsModel || model is ShoesModel || model is HairModel)
             {
