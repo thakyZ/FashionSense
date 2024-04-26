@@ -1,4 +1,5 @@
 ﻿using FashionSense.Framework.Managers;
+using FashionSense.Framework.Models.Appearances.Body;
 using FashionSense.Framework.Models.Appearances.Hair;
 using FashionSense.Framework.Utilities;
 using HarmonyLib;
@@ -41,6 +42,38 @@ namespace FashionSense.Framework.Patches.Renderer
 
         private static bool DrawMiniPortratPrefix(FarmerRenderer __instance, LocalizedContentManager ___farmerTextureManager, Texture2D ___baseTexture, NetInt ___skin, bool ____sickFrame, SpriteBatch b, Vector2 position, float layerDepth, float scale, int facingDirection, Farmer who)
         {
+            // Draw the player's custom face, if applicable
+            bool hasDrawnCustomBody = false;
+            if (who.modData.ContainsKey(ModDataKeys.CUSTOM_BODY_ID) && FashionSense.textureManager.GetSpecificAppearanceModel<BodyContentPack>(who.modData[ModDataKeys.CUSTOM_BODY_ID]) is BodyContentPack bodyPack && bodyPack is not null && bodyPack.FrontBody is not null)
+            {
+                var bodyModel = bodyPack.FrontBody;
+                var sourceRectangle = new Rectangle(bodyPack.FrontBody.StartingPosition.X, bodyPack.FrontBody.StartingPosition.Y, 16, who.IsMale ? 15 : 16);
+
+                // Adjust color if needed
+                var colors = AppearanceHelpers.GetAllAppearanceColors(who, bodyModel);
+                Color? colorOverride = null;
+                Color modelColor = colors.Count == 0 ? Color.White : colors[0];
+                if (bodyModel.DisableGrayscale)
+                {
+                    colorOverride = Color.White;
+                }
+                else if (bodyModel.IsPrismatic)
+                {
+                    colorOverride = Utility.GetPrismaticColor(speedMultiplier: bodyModel.PrismaticAnimationSpeedMultiplier);
+                }
+
+                // Draw the player's base texture
+                b.Draw(bodyPack.Texture, position, sourceRectangle, bodyModel.HasColorMask() ? Color.White : colorOverride is not null ? colorOverride.Value : modelColor, 0f, Vector2.Zero, scale, SpriteEffects.None, layerDepth);
+
+                if (bodyModel.HasColorMask())
+                {
+                    DrawManager.DrawColorMask(b, bodyPack, bodyModel, false, position, sourceRectangle, colorOverride, colors, 0f, Vector2.Zero, scale, layerDepth);
+                }
+
+                // Flag that we have drawn the custom body, to skip the base texture draw
+                hasDrawnCustomBody = true;
+            }
+
             if (!who.modData.ContainsKey(ModDataKeys.CUSTOM_HAIR_ID) || ___baseTexture is null || ___baseTexture.IsDisposed)
             {
                 return true;
@@ -112,7 +145,10 @@ namespace FashionSense.Framework.Patches.Renderer
             feature_y_offset -= who.IsMale ? 1 : 0;
 
             // Draw the player's face, then the custom hairstyle
-            b.Draw(___baseTexture, position, new Rectangle(0, yOffset, 16, who.IsMale ? 15 : 16), Color.White, 0f, Vector2.Zero, scale, flip ? SpriteEffects.FlipHorizontally : SpriteEffects.None, layerDepth);
+            if (hasDrawnCustomBody is false)
+            {
+                b.Draw(___baseTexture, position, new Rectangle(0, yOffset, 16, who.IsMale ? 15 : 16), Color.White, 0f, Vector2.Zero, scale, flip ? SpriteEffects.FlipHorizontally : SpriteEffects.None, layerDepth);
+            }
 
             // Draw the hair
             float hair_draw_layer = 2.2E-05f;
