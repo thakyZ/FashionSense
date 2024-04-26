@@ -800,8 +800,12 @@ namespace FashionSense.Framework.Managers
                 return;
             }
 
-            // Check if the player's legs need to be hidden
-            var adjustedBaseRectangle = DrawTool.FarmerSourceRectangle;
+            // Display forward facing farmer when in inventory / vanilla UIs
+            var sourceRectangle = GetSourceRectangle(bodyModel, _appearanceTypeToAnimationModels);
+            if (FarmerRenderer.isDrawingForUI && DrawTool.AnimationFrame.frame == 0)
+            {
+                sourceRectangle = new Rectangle(bodyModel.StartingPosition.X, bodyModel.StartingPosition.Y, bodyModel.BodySize.Width, bodyModel.BodySize.Length);
+            }
 
             // Adjust color if needed
             Color? colorOverride = null;
@@ -819,11 +823,11 @@ namespace FashionSense.Framework.Managers
             Position positionOffset = GetPositionOffset(bodyModel, _appearanceTypeToAnimationModels);
 
             // Draw the player's base texture
-            DrawTool.SpriteBatch.Draw(bodyPack.Texture, DrawTool.Position + DrawTool.Origin + DrawTool.PositionOffset, adjustedBaseRectangle, bodyModel.HasColorMask() ? Color.White : colorOverride is not null ? colorOverride.Value : modelColor, DrawTool.Rotation, DrawTool.Origin + new Vector2(positionOffset.X, positionOffset.Y), 4f * DrawTool.Scale, DrawTool.AnimationFrame.flip ? SpriteEffects.FlipHorizontally : SpriteEffects.None, IncrementAndGetLayerDepth());
+            DrawTool.SpriteBatch.Draw(bodyPack.Texture, DrawTool.Position + DrawTool.Origin + DrawTool.PositionOffset, sourceRectangle, bodyModel.HasColorMask() ? Color.White : colorOverride is not null ? colorOverride.Value : modelColor, DrawTool.Rotation, DrawTool.Origin + new Vector2(positionOffset.X, positionOffset.Y), 4f * DrawTool.Scale, DrawTool.AnimationFrame.flip ? SpriteEffects.FlipHorizontally : SpriteEffects.None, IncrementAndGetLayerDepth());
 
             if (bodyModel.HasColorMask())
             {
-                DrawColorMask(DrawTool.SpriteBatch, bodyPack, bodyModel, _areColorMasksPendingRefresh, GetScaledPosition(DrawTool.Position, bodyModel, DrawTool.IsDrawingForUI) + DrawTool.Origin + DrawTool.PositionOffset, GetSourceRectangle(bodyModel, _appearanceTypeToAnimationModels), colorOverride, layer.Colors, DrawTool.Rotation, DrawTool.Origin + new Vector2(positionOffset.X, positionOffset.Y), bodyModel.Scale * DrawTool.Scale, IncrementAndGetLayerDepth());
+                DrawColorMask(DrawTool.SpriteBatch, bodyPack, bodyModel, _areColorMasksPendingRefresh, GetScaledPosition(DrawTool.Position, bodyModel, DrawTool.IsDrawingForUI) + DrawTool.Origin + DrawTool.PositionOffset, sourceRectangle, colorOverride, layer.Colors, DrawTool.Rotation, DrawTool.Origin + new Vector2(positionOffset.X, positionOffset.Y), bodyModel.Scale * DrawTool.Scale, IncrementAndGetLayerDepth());
             }
 
             // Vanilla swim draw logic
