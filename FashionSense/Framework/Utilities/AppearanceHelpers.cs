@@ -1224,7 +1224,17 @@ namespace FashionSense.Framework.Utilities
                 return farmerRenderer.heightOffset.Value;
             }
 
-            return (bodyMetadata.Model as BodyModel).HeightOffset;
+            return GetHeightOffset(farmerRenderer, bodyMetadata.Model as BodyModel);
+        }
+
+        public static int GetHeightOffset(FarmerRenderer farmerRenderer, BodyModel bodyModel)
+        {
+            if (bodyModel is null)
+            {
+                return farmerRenderer.heightOffset.Value;
+            }
+
+            return bodyModel.HeightOffset;
         }
     }
 }
