@@ -3,16 +3,39 @@
   "Name": "Body Template",
   "Format": "6.3.0",
   "FrontBody": {
-    "ColorMasks": [
-      [ 107, 0, 58 ],
-      [ 224, 107, 101 ],
-      [ 249, 174, 137 ]
+    "ColorMaskLayers": [
+      {
+        "Name": "Skin Color",
+        "Values": [
+          [ 107, 0, 58 ],
+          [ 224, 107, 101 ],
+          [ 249, 174, 137 ]
+        ]
+      },
+      {
+        "Name": "Eye Color",
+        "DefaultColor": [ 104, 43, 15 ],
+        "Values": [
+          [ 196, 196, 196 ],
+          [ 102, 102, 102 ]
+        ]
+      },
+      {
+        "Name": "Eyebrow Color",
+        "DefaultColor": [ 0, 0, 0 ],
+        "Values": [
+          [ 230, 230, 230 ]
+        ]
+      }
     ],
     "StartingPosition": {
       "X": 0,
       "Y": 0
     },
-    "HeightOffset": 0,
+    "EyePosition": 40,
+    "LegOffset": 0,
+    "HeadOffset": 4,
+    "ArmsOffset": 4,
     "BodySize": {
       "Width": 16,
       "Length": 32
@@ -1281,19 +1304,39 @@
     ]
   },
   "RightBody": {
-    "ColorMasks": [
-      [ 107, 0, 58 ],
-      [ 224, 107, 101 ],
-      [ 249, 174, 137 ]
+    "ColorMaskLayers": [
+      {
+        "Name": "Skin Color",
+        "Values": [
+          [ 107, 0, 58 ],
+          [ 224, 107, 101 ],
+          [ 249, 174, 137 ]
+        ]
+      },
+      {
+        "Name": "Eye Color",
+        "DefaultColor": [ 104, 43, 15 ],
+        "Values": [
+          [ 196, 196, 196 ],
+          [ 102, 102, 102 ]
+        ]
+      },
+      {
+        "Name": "Eyebrow Color",
+        "DefaultColor": [ 0, 0, 0 ],
+        "Values": [
+          [ 230, 230, 230 ]
+        ]
+      }
     ],
     "StartingPosition": {
       "X": 0,
       "Y": 0
     },
-    "FeatureOffset": {
-      "X": 0,
-      "Y": 0
-    },
+    "EyePosition": 36,
+    "LegOffset": 0,
+    "HeadOffset": 4,
+    "ArmsOffset": 4,
     "BodySize": {
       "Width": 16,
       "Length": 32
@@ -2563,19 +2606,39 @@
   },
   "LeftBody": {
     "Flipped": true,
-    "ColorMasks": [
-      [ 107, 0, 58 ],
-      [ 224, 107, 101 ],
-      [ 249, 174, 137 ]
+    "ColorMaskLayers": [
+      {
+        "Name": "Skin Color",
+        "Values": [
+          [ 107, 0, 58 ],
+          [ 224, 107, 101 ],
+          [ 249, 174, 137 ]
+        ]
+      },
+      {
+        "Name": "Eye Color",
+        "DefaultColor": [ 104, 43, 15 ],
+        "Values": [
+          [ 196, 196, 196 ],
+          [ 102, 102, 102 ]
+        ]
+      },
+      {
+        "Name": "Eyebrow Color",
+        "DefaultColor": [ 0, 0, 0 ],
+        "Values": [
+          [ 230, 230, 230 ]
+        ]
+      }
     ],
     "StartingPosition": {
       "X": 0,
       "Y": 0
     },
-    "FeatureOffset": {
-      "X": 0,
-      "Y": 0
-    },
+    "EyePosition": 36,
+    "LegOffset": 0,
+    "HeadOffset": 4,
+    "ArmsOffset": 4,
     "BodySize": {
       "Width": 16,
       "Length": 32
@@ -3844,19 +3907,38 @@
     ]
   },
   "BackBody": {
-    "ColorMasks": [
-      [ 107, 0, 58 ],
-      [ 224, 107, 101 ],
-      [ 249, 174, 137 ]
+    "ColorMaskLayers": [
+      {
+        "Name": "Skin Color",
+        "Values": [
+          [ 107, 0, 58 ],
+          [ 224, 107, 101 ],
+          [ 249, 174, 137 ]
+        ]
+      },
+      {
+        "Name": "Eye Color",
+        "DefaultColor": [ 104, 43, 15 ],
+        "Values": [
+          [ 196, 196, 196 ],
+          [ 102, 102, 102 ]
+        ]
+      },
+      {
+        "Name": "Eyebrow Color",
+        "DefaultColor": [ 0, 0, 0 ],
+        "Values": [
+          [ 230, 230, 230 ]
+        ]
+      }
     ],
     "StartingPosition": {
       "X": 0,
       "Y": 0
     },
-    "FeatureOffset": {
-      "X": 0,
-      "Y": 0
-    },
+    "LegOffset": 0,
+    "HeadOffset": 4,
+    "ArmsOffset": 4,
     "BodySize": {
       "Width": 16,
       "Length": 32
