@@ -9,6 +9,7 @@ namespace FashionSense.Framework.Models.Appearances.Body
         public bool HideEyes { get; set; }
 
         public int HeightOffset { get; set; }
+        public int? AccessoryOffset { get; set; }
         public int? HeadOffset { get; set; }
         public int? LegOffset { get; set; }
         public int? BodyOffset { get; set; }
@@ -19,6 +20,8 @@ namespace FashionSense.Framework.Models.Appearances.Body
         {
             switch (type)
             {
+                case IApi.Type.Accessory:
+                    return AccessoryOffset is not null ? AccessoryOffset.Value : defaultValue;
                 case IApi.Type.Hat:
                 case IApi.Type.Hair:
                     return HeadOffset is not null ? HeadOffset.Value : defaultValue;
