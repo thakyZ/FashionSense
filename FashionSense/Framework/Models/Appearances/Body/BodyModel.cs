@@ -5,6 +5,7 @@ namespace FashionSense.Framework.Models.Appearances.Body
 {
     public class BodyModel : AppearanceModel
     {
+        public int EyeBackgroundPosition { get; set; }
         public int EyePosition { get; set; }
         public bool HideEyes { get; set; }
 
