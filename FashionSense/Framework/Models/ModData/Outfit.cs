@@ -35,6 +35,7 @@ namespace FashionSense.Framework.Models
         public string SleevesId { get; set; }
         public string PantsId { get; set; }
         public string ShoesId { get; set; }
+        public string BodyId { get; set; }
 
         // Colors
         [Obsolete("No longer used as of Fashion Sense v5, use AccessoryColors instead.")]
@@ -80,6 +81,7 @@ namespace FashionSense.Framework.Models
             SleevesId = who.modData[ModDataKeys.CUSTOM_SLEEVES_ID];
             PantsId = who.modData[ModDataKeys.CUSTOM_PANTS_ID];
             ShoesId = who.modData[ModDataKeys.CUSTOM_SHOES_ID];
+            BodyId = who.modData[ModDataKeys.CUSTOM_BODY_ID];
 
             HairColor = who.hairstyleColor.Value.PackedValue.ToString();
             AccessoryColors = FashionSense.accessoryManager.GetActiveAccessoryColorValues(who);
@@ -105,7 +107,7 @@ namespace FashionSense.Framework.Models
                 AppearanceToMaskColors[IApi.Type.Shoes] = new List<Color>() { FashionSense.colorManager.GetColor(who, AppearanceModel.GetColorKey(IApi.Type.Shoes)) };
             }
 
-            // Add manual handling for the "Override Shoe Color" artificial ShoePack
+            // Add manual handling for the "Override Body Color" artificial ShoePack
             if (who.modData.ContainsKey(ModDataKeys.CUSTOM_BODY_ID) && who.modData[ModDataKeys.CUSTOM_BODY_ID] == ModDataKeys.INTERNAL_COLOR_OVERRIDE_BODY_ID)
             {
                 AppearanceToMaskColors[IApi.Type.Player] = new List<Color>() { FashionSense.colorManager.GetColor(who, AppearanceModel.GetColorKey(IApi.Type.Player)) };
@@ -235,6 +237,10 @@ namespace FashionSense.Framework.Models
             if (IsIdValid(ShoesId) && appearanceIds.ContainsKey(ShoesId) is false)
             {
                 missingAppearanceIds.Add(ShoesId);
+            }
+            if (IsIdValid(BodyId) && appearanceIds.ContainsKey(BodyId) is false)
+            {
+                missingAppearanceIds.Add(BodyId);
             }
 
             return missingAppearanceIds;

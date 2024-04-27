@@ -192,6 +192,7 @@ namespace FashionSense.Framework.Managers
             who.modData[ModDataKeys.CUSTOM_SLEEVES_ID] = "None";
             who.modData[ModDataKeys.CUSTOM_PANTS_ID] = "None";
             who.modData[ModDataKeys.CUSTOM_SHOES_ID] = "None";
+            who.modData[ModDataKeys.CUSTOM_BODY_ID] = "None";
 
             FashionSense.accessoryManager.ClearAccessories(who);
         }
@@ -204,6 +205,7 @@ namespace FashionSense.Framework.Managers
             who.modData[ModDataKeys.CUSTOM_SLEEVES_ID] = String.IsNullOrEmpty(outfit.SleevesId) ? "None" : outfit.SleevesId;
             who.modData[ModDataKeys.CUSTOM_PANTS_ID] = String.IsNullOrEmpty(outfit.PantsId) ? "None" : outfit.PantsId;
             who.modData[ModDataKeys.CUSTOM_SHOES_ID] = String.IsNullOrEmpty(outfit.ShoesId) ? "None" : outfit.ShoesId;
+            who.modData[ModDataKeys.CUSTOM_BODY_ID] = String.IsNullOrEmpty(outfit.BodyId) ? "None" : outfit.BodyId;
 
             // Handle old outfits without ColorMaskLayers
             who.changeHairColor(new Color() { PackedValue = uint.Parse(outfit.HairColor) });
@@ -308,6 +310,7 @@ namespace FashionSense.Framework.Managers
             FashionSense.ResetTextureIfNecessary(who.modData[ModDataKeys.CUSTOM_SLEEVES_ID]);
             FashionSense.ResetTextureIfNecessary(who.modData[ModDataKeys.CUSTOM_PANTS_ID]);
             FashionSense.ResetTextureIfNecessary(who.modData[ModDataKeys.CUSTOM_SHOES_ID]);
+            FashionSense.ResetTextureIfNecessary(who.modData[ModDataKeys.CUSTOM_BODY_ID]);
 
             // Set the current outfit ID
             who.modData[ModDataKeys.CURRENT_OUTFIT_ID] = outfit.Name;
