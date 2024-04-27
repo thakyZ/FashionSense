@@ -38,7 +38,7 @@
     "LegOffset": 0,
     "HeadOffset": 0,
     "ArmsOffset": 0,
-    "BodyOffset": -4,
+    "BodyOffset": 4,
     "BodySize": {
       "Width": 16,
       "Length": 32
@@ -1342,7 +1342,7 @@
     "LegOffset": 0,
     "HeadOffset": 0,
     "ArmsOffset": 0,
-    "BodyOffset": -4,
+    "BodyOffset": 4,
     "BodySize": {
       "Width": 16,
       "Length": 32
@@ -2647,7 +2647,7 @@
     "LegOffset": 0,
     "HeadOffset": 0,
     "ArmsOffset": 0,
-    "BodyOffset": -4,
+    "BodyOffset": 4,
     "BodySize": {
       "Width": 16,
       "Length": 32
@@ -3949,7 +3949,7 @@
     "LegOffset": 0,
     "HeadOffset": 0,
     "ArmsOffset": 0,
-    "BodyOffset": -4,
+    "BodyOffset": 4,
     "BodySize": {
       "Width": 16,
       "Length": 32

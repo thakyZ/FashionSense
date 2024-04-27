@@ -34,7 +34,7 @@
     },
     "EyeBackgroundPosition": 40,
     "EyePosition": 40,
-    "LegOffset": 4,
+    "LegOffset": 0,
     "HeadOffset": 4,
     "ArmsOffset": 0,
     "BodySize": {
@@ -1336,9 +1336,9 @@
     },
     "EyeBackgroundPosition": 40,
     "EyePosition": 36,
-    "LegOffset": 4,
+    "LegOffset": 0,
     "HeadOffset": 4,
-    "ArmsOffset": 4,
+    "ArmsOffset": 0,
     "BodySize": {
       "Width": 16,
       "Length": 32
@@ -2639,9 +2639,9 @@
     },
     "EyeBackgroundPosition": 40,
     "EyePosition": 36,
-    "LegOffset": 4,
+    "LegOffset": 0,
     "HeadOffset": 4,
-    "ArmsOffset": 4,
+    "ArmsOffset": 0,
     "BodySize": {
       "Width": 16,
       "Length": 32
@@ -3939,9 +3939,9 @@
       "X": 0,
       "Y": 0
     },
-    "LegOffset": 4,
+    "LegOffset": 0,
     "HeadOffset": 4,
-    "ArmsOffset": 4,
+    "ArmsOffset": 0,
     "BodySize": {
       "Width": 16,
       "Length": 32
