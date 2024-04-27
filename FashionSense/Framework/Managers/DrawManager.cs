@@ -599,7 +599,7 @@ namespace FashionSense.Framework.Managers
             var featureOffset = GetFeatureOffset(DrawTool.FacingDirection, DrawTool.CurrentFrame, DrawTool.Scale, _heightOffset, model, who);
             if (_customBody is not null)
             {
-                featureOffset.Y -= _customBody.GetFeatureOffset(model.GetPackType());
+                featureOffset.Y += _customBody.GetFeatureOffset(model.GetPackType());
             }
             else if (model is SleevesModel || model is PantsModel || model is ShoesModel || model is HairModel)
             {
