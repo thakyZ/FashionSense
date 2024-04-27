@@ -361,8 +361,17 @@ namespace FashionSense
             // Clear the preset outfits
             outfitManager.ClearPresetOutfits();
 
+            // Gather the content packs for Fashion Sense
+            var contentPacks = Helper.ContentPacks.GetOwned().Where(c => String.IsNullOrEmpty(packId) is true || c.Manifest.UniqueID.Equals(packId, StringComparison.OrdinalIgnoreCase)).ToList();
+
+            // Add our local pack, if available
+            if (assetManager.localPack is not null)
+            {
+                contentPacks.Add(assetManager.localPack);
+            }
+
             // Load owned content packs
-            foreach (IContentPack contentPack in Helper.ContentPacks.GetOwned().Where(c => String.IsNullOrEmpty(packId) is true || c.Manifest.UniqueID.Equals(packId, StringComparison.OrdinalIgnoreCase)))
+            foreach (IContentPack contentPack in contentPacks)
             {
                 Monitor.Log($"Loading data from pack: {contentPack.Manifest.Name} {contentPack.Manifest.Version} by {contentPack.Manifest.Author}", silent ? LogLevel.Trace : LogLevel.Debug);
 
