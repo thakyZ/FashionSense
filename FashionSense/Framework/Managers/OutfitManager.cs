@@ -254,49 +254,54 @@ namespace FashionSense.Framework.Managers
 
                 FashionSense.accessoryManager.HandleOldAccessoryFormat(Game1.player);
             }
-            else if (outfit.AccessoryIds.Count > 0)
+            else
             {
-                FashionSense.accessoryManager.SetAccessories(who, outfit.AccessoryIds, outfit.AccessoryColors);
+                FashionSense.accessoryManager.ClearAccessories(who);
 
-                List<Color> accessoryColorMasks = new List<Color>();
-                if (outfit.AppearanceToMaskColors.Any(d => d.Key is IApi.Type.Accessory))
+                if (outfit.AccessoryIds.Count > 0)
                 {
-                    accessoryColorMasks = outfit.AppearanceToMaskColors.First(d => d.Key is IApi.Type.Accessory).Value;
-                }
+                    FashionSense.accessoryManager.SetAccessories(who, outfit.AccessoryIds, outfit.AccessoryColors);
 
-                int accessoryCountOffset = 0;
-                foreach (int index in FashionSense.accessoryManager.GetActiveAccessoryIndices(who))
-                {
-                    var accessoryKey = FashionSense.accessoryManager.GetAccessoryIdByIndex(who, index);
-                    if (FashionSense.textureManager.GetSpecificAppearanceModel<AccessoryContentPack>(accessoryKey) is AccessoryContentPack aPack && aPack != null)
+                    List<Color> accessoryColorMasks = new List<Color>();
+                    if (outfit.AppearanceToMaskColors.Any(d => d.Key is IApi.Type.Accessory))
                     {
-                        AccessoryModel accessoryModel = aPack.GetAccessoryFromFacingDirection(who.FacingDirection);
-                        if (accessoryModel is null)
-                        {
-                            continue;
-                        }
+                        accessoryColorMasks = outfit.AppearanceToMaskColors.First(d => d.Key is IApi.Type.Accessory).Value;
+                    }
 
-                        try
+                    int accessoryCountOffset = 0;
+                    foreach (int index in FashionSense.accessoryManager.GetActiveAccessoryIndices(who))
+                    {
+                        var accessoryKey = FashionSense.accessoryManager.GetAccessoryIdByIndex(who, index);
+                        if (FashionSense.textureManager.GetSpecificAppearanceModel<AccessoryContentPack>(accessoryKey) is AccessoryContentPack aPack && aPack != null)
                         {
-                            if (accessoryModel.ColorMaskLayers.Count > 0)
+                            AccessoryModel accessoryModel = aPack.GetAccessoryFromFacingDirection(who.FacingDirection);
+                            if (accessoryModel is null)
                             {
-                                for (int x = 0; x < accessoryModel.ColorMaskLayers.Count; x++)
-                                {
-                                    FashionSense.colorManager.SetColor(who, AppearanceModel.GetColorKey(IApi.Type.Accessory, appearanceIndex: index, maskLayerIndex: x), accessoryColorMasks[accessoryCountOffset]);
+                                continue;
+                            }
 
+                            try
+                            {
+                                if (accessoryModel.ColorMaskLayers.Count > 0)
+                                {
+                                    for (int x = 0; x < accessoryModel.ColorMaskLayers.Count; x++)
+                                    {
+                                        FashionSense.colorManager.SetColor(who, AppearanceModel.GetColorKey(IApi.Type.Accessory, appearanceIndex: index, maskLayerIndex: x), accessoryColorMasks[accessoryCountOffset]);
+
+                                        accessoryCountOffset += 1;
+                                    }
+                                }
+                                else
+                                {
+                                    FashionSense.colorManager.SetColor(who, AppearanceModel.GetColorKey(IApi.Type.Accessory, appearanceIndex: index, maskLayerIndex: 0), accessoryColorMasks[accessoryCountOffset]);
                                     accessoryCountOffset += 1;
                                 }
                             }
-                            else
+                            catch (Exception ex)
                             {
-                                FashionSense.colorManager.SetColor(who, AppearanceModel.GetColorKey(IApi.Type.Accessory, appearanceIndex: index, maskLayerIndex: 0), accessoryColorMasks[accessoryCountOffset]);
-                                accessoryCountOffset += 1;
+                                // TODO: Log errors
+                                continue;
                             }
-                        }
-                        catch (Exception ex)
-                        {
-                            // TODO: Log errors
-                            continue;
                         }
                     }
                 }
