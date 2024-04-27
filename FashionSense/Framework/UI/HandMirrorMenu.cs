@@ -30,6 +30,7 @@ namespace FashionSense.Framework.UI
         private int colorPickerTimer;
         private int currentAccessorySlot;
         private int currentColorMaskLayerIndex;
+        private bool _hideMaskLayerButtons;
 
         internal const string ACCESSORY_FILTER_BUTTON = "AccessoryFilter";
         internal const string HAIR_FILTER_BUTTON = "HairFilter";
@@ -54,6 +55,7 @@ namespace FashionSense.Framework.UI
         private ClickableComponent colorLabel;
         private ClickableComponent contentPackLabel;
         private ClickableComponent accessorySlotLabel;
+        private ClickableComponent layerLabel;
 
         public List<ClickableComponent> labels = new List<ClickableComponent>();
         public List<ClickableComponent> leftSelectionButtons = new List<ClickableComponent>();
@@ -379,7 +381,7 @@ namespace FashionSense.Framework.UI
                 leftNeighborImmutable = true
             });
 
-            labels.Add(new ClickableComponent(new Rectangle(colorPickerCCs[0].bounds.Right + 80, colorPickerCCs[0].bounds.Y - 15, 1, 1), FashionSense.modHelper.Translation.Get("ui.fashion_sense.title.mask_layer")));
+            labels.Add(layerLabel = new ClickableComponent(new Rectangle(colorPickerCCs[0].bounds.Right + 80, colorPickerCCs[0].bounds.Y - 15, 1, 1), FashionSense.modHelper.Translation.Get("ui.fashion_sense.title.mask_layer")));
 
             leftSelectionButtons.Add(new ClickableTextureComponent(MASK_LAYERS, new Rectangle(colorPickerCCs[0].bounds.Right + 60, colorPickerCCs[0].bounds.Y + 10, 48, 48), null, "", Game1.mouseCursors, Game1.getSourceRectForStandardTileSheet(Game1.mouseCursors, 44), 1f));
             rightSelectionButtons.Add(new ClickableTextureComponent(MASK_LAYERS, new Rectangle(colorPickerCCs[0].bounds.Right + 105, colorPickerCCs[0].bounds.Y + 10, 48, 48), null, "", Game1.mouseCursors, Game1.getSourceRectForStandardTileSheet(Game1.mouseCursors, 33), 1f));
@@ -394,16 +396,25 @@ namespace FashionSense.Framework.UI
 
         internal void Reset()
         {
-            currentColorMaskLayerIndex = GetNextValidColorMaskLayer(GetActiveModel(), -1, 1);
+            var activeModel = GetActiveModel();
+
+            currentColorMaskLayerIndex = GetNextValidColorMaskLayer(activeModel, -1, 1);
             if (currentColorMaskLayerIndex < 0)
             {
                 currentColorMaskLayerIndex = 0;
             }
+
+            _hideMaskLayerButtons = false;
+            if (activeModel is null || activeModel.ColorMaskLayers.Count <= 1)
+            {
+                _hideMaskLayerButtons = true;
+            }
+
             switch (GetNameOfEnabledFilter())
             {
                 case HAIR_FILTER_BUTTON:
                     colorPicker.SetColor(Game1.player.hairstyleColor.Value);
-                    var hairModel = GetActiveModel();
+                    var hairModel = activeModel;
                     if (hairModel is not null && hairModel is HairModel)
                     {
                         colorPicker.SetColor(AppearanceHelpers.GetAppearanceColorByLayer(hairModel, Game1.player, maskLayerIndex: currentColorMaskLayerIndex));
@@ -413,7 +424,7 @@ namespace FashionSense.Framework.UI
                     colorPicker.SetColor(FashionSense.accessoryManager.GetColorFromIndex(Game1.player, GetAccessoryIndex(), maskLayerIndex: currentColorMaskLayerIndex));
                     break;
                 default:
-                    colorPicker.SetColor(AppearanceHelpers.GetAppearanceColorByLayer(GetActiveModel(), Game1.player, maskLayerIndex: currentColorMaskLayerIndex));
+                    colorPicker.SetColor(AppearanceHelpers.GetAppearanceColorByLayer(activeModel, Game1.player, maskLayerIndex: currentColorMaskLayerIndex));
                     break;
             }
         }
@@ -838,7 +849,7 @@ namespace FashionSense.Framework.UI
 
                     break;
                 case MASK_LAYERS:
-                    if (appearanceModel is null)
+                    if (appearanceModel is null || _hideMaskLayerButtons is true)
                     {
                         break;
                     }
@@ -1567,6 +1578,10 @@ namespace FashionSense.Framework.UI
                 {
                     continue;
                 }
+                else if (leftSelectionButton.name == MASK_LAYERS && _hideMaskLayerButtons is true)
+                {
+                    continue;
+                }
                 else if (leftSelectionButton.name == MASK_LAYERS && (GetNextValidColorMaskLayer(appearanceModel, currentColorMaskLayerIndex, -1) < 0 || currentColorMaskLayerIndex == GetNextValidColorMaskLayer(appearanceModel, currentColorMaskLayerIndex, -1)))
                 {
                     leftSelectionButton.draw(b, Color.Gray, 1f);
@@ -1578,6 +1593,10 @@ namespace FashionSense.Framework.UI
             foreach (ClickableTextureComponent rightSelectionButton in rightSelectionButtons)
             {
                 if (rightSelectionButton.name == LIMIT_TO_ACCCESSORIES && GetNameOfEnabledFilter() != ACCESSORY_FILTER_BUTTON)
+                {
+                    continue;
+                }
+                else if (rightSelectionButton.name == MASK_LAYERS && _hideMaskLayerButtons is true)
                 {
                     continue;
                 }
@@ -1780,6 +1799,10 @@ namespace FashionSense.Framework.UI
                 else if (c == accessorySlotLabel)
                 {
                     offset = currentAccessorySlot > 9 ? -6 : 0;
+                }
+                else if (c == layerLabel && _hideMaskLayerButtons is true)
+                {
+                    continue;
                 }
                 else
                 {
