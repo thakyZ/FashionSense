@@ -628,11 +628,7 @@ namespace FashionSense.Framework.Managers
 
             // Get any feature offset
             var featureOffset = GetFeatureOffset(DrawTool.FacingDirection, DrawTool.CurrentFrame, DrawTool.Scale, _heightOffset, sleevesModel, who);
-            if (_customBody is null)
-            {
-                featureOffset.Y -= who.IsMale ? 4 : 0; // Manually adjusting for male sleeves
-            }
-            else
+            if (_customBody is not null)
             {
                 featureOffset.Y -= _customBody.GetFeatureOffset(IApi.Type.Sleeves);
             }
