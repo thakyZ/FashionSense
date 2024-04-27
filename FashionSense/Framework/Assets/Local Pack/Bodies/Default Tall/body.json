@@ -36,7 +36,7 @@
     "EyePosition": 40,
     "LegOffset": 4,
     "HeadOffset": 4,
-    "ArmsOffset": 4,
+    "ArmsOffset": 0,
     "BodySize": {
       "Width": 16,
       "Length": 32

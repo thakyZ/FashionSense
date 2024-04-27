@@ -51,31 +51,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<None Update="Examples\[FS] Example Pack\Bodies\BodyTemplate\body.json">
-		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
-		<None Update="Examples\[FS] Example Pack\Bodies\BodyTemplate\body.png">
-		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
-		<None Update="Examples\[FS] Example Pack\Bodies\BodyTemplate\eyes.png">
-		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
-		<None Update="Framework\Assets\Local Pack\Bodies\Default Short\body.json">
-		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
-		<None Update="Framework\Assets\Local Pack\Bodies\Default Short\body.png">
-		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
-		<None Update="Framework\Assets\Local Pack\Bodies\Default Short\eyes.png">
-		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
-		<None Update="Framework\Assets\Local Pack\Bodies\Default Tall\body.json">
-		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
-		<None Update="Framework\Assets\Local Pack\Bodies\Default Tall\body.png">
-		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
-		<None Update="Framework\Assets\Local Pack\Bodies\Default Tall\eyes.png">
+		<None Update="Framework\Assets\Local Pack\**">
 		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
 		<None Update="Framework\Assets\UI\BodyButton.png">
