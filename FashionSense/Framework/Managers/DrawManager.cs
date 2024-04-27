@@ -485,14 +485,14 @@ namespace FashionSense.Framework.Managers
             {
                 case 0:
                     hairstyleSourceRect.Offset(0, 64);
-                    DrawTool.SpriteBatch.Draw(hairTexture, DrawTool.Position + DrawTool.Origin + DrawTool.PositionOffset + new Vector2(AppearanceHelpers.GetFarmerRendererXFeatureOffset(DrawTool.CurrentFrame) * 4, AppearanceHelpers.GetFarmerRendererYFeatureOffset(DrawTool.CurrentFrame) * 4 + 4 - (_customBody is null ? vanillaHairOffset : _customBody.GetFeatureOffset(IApi.Type.Hair, vanillaHairOffset))), hairstyleSourceRect, DrawTool.OverrideColor.Equals(Color.White) ? (who.hairstyleColor.Value) : DrawTool.OverrideColor, DrawTool.Rotation, DrawTool.Origin, 4f * DrawTool.Scale, SpriteEffects.None, IncrementAndGetLayerDepth());
+                    DrawTool.SpriteBatch.Draw(hairTexture, DrawTool.Position + DrawTool.Origin + DrawTool.PositionOffset + new Vector2(AppearanceHelpers.GetFarmerRendererXFeatureOffset(DrawTool.CurrentFrame) * 4, AppearanceHelpers.GetFarmerRendererYFeatureOffset(DrawTool.CurrentFrame) * 4 + 4 + (_customBody is null ? vanillaHairOffset : _customBody.GetFeatureOffset(IApi.Type.Hair, vanillaHairOffset))), hairstyleSourceRect, DrawTool.OverrideColor.Equals(Color.White) ? (who.hairstyleColor.Value) : DrawTool.OverrideColor, DrawTool.Rotation, DrawTool.Origin, 4f * DrawTool.Scale, SpriteEffects.None, IncrementAndGetLayerDepth());
                     break;
                 case 1:
                     hairstyleSourceRect.Offset(0, 32);
-                    DrawTool.SpriteBatch.Draw(hairTexture, DrawTool.Position + DrawTool.Origin + DrawTool.PositionOffset + new Vector2(AppearanceHelpers.GetFarmerRendererXFeatureOffset(DrawTool.CurrentFrame) * 4, AppearanceHelpers.GetFarmerRendererYFeatureOffset(DrawTool.CurrentFrame) * 4 - (_customBody is null ? vanillaHairOffset : _customBody.GetFeatureOffset(IApi.Type.Hair, vanillaHairOffset))), hairstyleSourceRect, DrawTool.OverrideColor.Equals(Color.White) ? (who.hairstyleColor.Value) : DrawTool.OverrideColor, DrawTool.Rotation, DrawTool.Origin, 4f * DrawTool.Scale, SpriteEffects.None, IncrementAndGetLayerDepth());
+                    DrawTool.SpriteBatch.Draw(hairTexture, DrawTool.Position + DrawTool.Origin + DrawTool.PositionOffset + new Vector2(AppearanceHelpers.GetFarmerRendererXFeatureOffset(DrawTool.CurrentFrame) * 4, AppearanceHelpers.GetFarmerRendererYFeatureOffset(DrawTool.CurrentFrame) * 4 + (_customBody is null ? vanillaHairOffset : _customBody.GetFeatureOffset(IApi.Type.Hair, vanillaHairOffset))), hairstyleSourceRect, DrawTool.OverrideColor.Equals(Color.White) ? (who.hairstyleColor.Value) : DrawTool.OverrideColor, DrawTool.Rotation, DrawTool.Origin, 4f * DrawTool.Scale, SpriteEffects.None, IncrementAndGetLayerDepth());
                     break;
                 case 2:
-                    DrawTool.SpriteBatch.Draw(hairTexture, DrawTool.Position + DrawTool.Origin + DrawTool.PositionOffset + new Vector2(AppearanceHelpers.GetFarmerRendererXFeatureOffset(DrawTool.CurrentFrame) * 4, AppearanceHelpers.GetFarmerRendererYFeatureOffset(DrawTool.CurrentFrame) * 4 - (_customBody is null ? vanillaHairOffset : _customBody.GetFeatureOffset(IApi.Type.Hair, vanillaHairOffset))), hairstyleSourceRect, DrawTool.OverrideColor.Equals(Color.White) ? (who.hairstyleColor.Value) : DrawTool.OverrideColor, DrawTool.Rotation, DrawTool.Origin, 4f * DrawTool.Scale, SpriteEffects.None, IncrementAndGetLayerDepth());
+                    DrawTool.SpriteBatch.Draw(hairTexture, DrawTool.Position + DrawTool.Origin + DrawTool.PositionOffset + new Vector2(AppearanceHelpers.GetFarmerRendererXFeatureOffset(DrawTool.CurrentFrame) * 4, AppearanceHelpers.GetFarmerRendererYFeatureOffset(DrawTool.CurrentFrame) * 4 + (_customBody is null ? vanillaHairOffset : _customBody.GetFeatureOffset(IApi.Type.Hair, vanillaHairOffset))), hairstyleSourceRect, DrawTool.OverrideColor.Equals(Color.White) ? (who.hairstyleColor.Value) : DrawTool.OverrideColor, DrawTool.Rotation, DrawTool.Origin, 4f * DrawTool.Scale, SpriteEffects.None, IncrementAndGetLayerDepth());
                     break;
                 case 3:
                     bool flip2 = true;
@@ -505,7 +505,7 @@ namespace FashionSense.Framework.Managers
                     {
                         hairstyleSourceRect.Offset(0, 32);
                     }
-                    DrawTool.SpriteBatch.Draw(hairTexture, DrawTool.Position + DrawTool.Origin + DrawTool.PositionOffset + new Vector2(-AppearanceHelpers.GetFarmerRendererXFeatureOffset(DrawTool.CurrentFrame) * 4, AppearanceHelpers.GetFarmerRendererYFeatureOffset(DrawTool.CurrentFrame) * 4 - (_customBody is null ? vanillaHairOffset : _customBody.GetFeatureOffset(IApi.Type.Hair, vanillaHairOffset))), hairstyleSourceRect, DrawTool.OverrideColor.Equals(Color.White) ? (who.hairstyleColor.Value) : DrawTool.OverrideColor, DrawTool.Rotation, DrawTool.Origin, 4f * DrawTool.Scale, flip2 ? SpriteEffects.FlipHorizontally : SpriteEffects.None, IncrementAndGetLayerDepth());
+                    DrawTool.SpriteBatch.Draw(hairTexture, DrawTool.Position + DrawTool.Origin + DrawTool.PositionOffset + new Vector2(-AppearanceHelpers.GetFarmerRendererXFeatureOffset(DrawTool.CurrentFrame) * 4, AppearanceHelpers.GetFarmerRendererYFeatureOffset(DrawTool.CurrentFrame) * 4 + (_customBody is null ? vanillaHairOffset : _customBody.GetFeatureOffset(IApi.Type.Hair, vanillaHairOffset))), hairstyleSourceRect, DrawTool.OverrideColor.Equals(Color.White) ? (who.hairstyleColor.Value) : DrawTool.OverrideColor, DrawTool.Rotation, DrawTool.Origin, 4f * DrawTool.Scale, flip2 ? SpriteEffects.FlipHorizontally : SpriteEffects.None, IncrementAndGetLayerDepth());
                     break;
             }
         }
@@ -630,7 +630,7 @@ namespace FashionSense.Framework.Managers
             var featureOffset = GetFeatureOffset(DrawTool.FacingDirection, DrawTool.CurrentFrame, DrawTool.Scale, _heightOffset, sleevesModel, who);
             if (_customBody is not null)
             {
-                featureOffset.Y -= _customBody.GetFeatureOffset(IApi.Type.Sleeves);
+                featureOffset.Y += _customBody.GetFeatureOffset(IApi.Type.Sleeves);
             }
 
             DrawSleevesCustom(who, layer, sleevesModel, sleevesModelPack, DrawTool.AppearanceColor, positionOffset, featureOffset, GetSourceRectangle(sleevesModel, _appearanceTypeToAnimationModels));
