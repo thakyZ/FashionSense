@@ -515,7 +515,7 @@ namespace FashionSense
                     // Set the PackName and Id
                     appearanceModel.PackName = contentPack.Manifest.Name;
                     appearanceModel.PackId = contentPack.Manifest.UniqueID;
-                    appearanceModel.Id = String.Concat(appearanceModel.Owner, "/", appearanceModel.PackType, "/", appearanceModel.Name); ;
+                    appearanceModel.Id = String.Concat(appearanceModel.Owner, "/", appearanceModel.PackType, "/", appearanceModel.Name);
 
                     // Verify that a hairstyle with the name doesn't exist in this pack
                     if (textureManager.GetSpecificAppearanceModel<HairContentPack>(appearanceModel.Id) != null)
