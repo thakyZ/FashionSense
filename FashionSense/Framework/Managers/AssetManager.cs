@@ -48,7 +48,7 @@ namespace FashionSense.Framework.Managers
             exportButton = helper.ModContent.Load<Texture2D>(Path.Combine(assetFolderPath, "UI", "ExportButton.png"));
 
             // Load in the local content pack
-            localPack = helper.ContentPacks.CreateTemporary(Path.Combine(helper.DirectoryPath, "Framework", "Assets", "Local Pack"), "PeacefulEnd.FashionSense.LocalPack", "Fashion Sense - Local Pack", "The local appearance pack for the Fashion Sense framework.", FashionSense.modManifest.Author, FashionSense.modManifest.Version);
+            localPack = helper.ContentPacks.CreateTemporary(Path.Combine(helper.DirectoryPath, "Framework", "Assets", "Local Pack"), "PeacefulEnd.FashionSense.LocalPack", "FS - Local Pack", "The local appearance pack for the Fashion Sense framework.", FashionSense.modManifest.Author, FashionSense.modManifest.Version);
 
             // Setup toolNames
             toolNames.Add("HandMirror", _handMirrorTexture);
