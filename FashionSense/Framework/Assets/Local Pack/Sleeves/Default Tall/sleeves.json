@@ -15,7 +15,7 @@
       [ 119, 119, 119 ],
       [ 158, 158, 158 ]
     ],
-    "UseShirtColors": false,
+    "UseShirtColors": true,
     "DisableSkinGrayscale": true,
     "SkinToneMasks": {
       "LightTone": [ 193, 193, 193 ],
@@ -823,7 +823,7 @@
       [ 119, 119, 119 ],
       [ 158, 158, 158 ]
     ],
-    "UseShirtColors": false,
+    "UseShirtColors": true,
     "DisableSkinGrayscale": true,
     "SkinToneMasks": {
       "LightTone": [ 193, 193, 193 ],
@@ -1211,7 +1211,7 @@
       [ 119, 119, 119 ],
       [ 158, 158, 158 ]
     ],
-    "UseShirtColors": false,
+    "UseShirtColors": true,
     "DisableSkinGrayscale": true,
     "SkinToneMasks": {
       "LightTone": [ 193, 193, 193 ],
@@ -1769,7 +1769,7 @@
       [ 119, 119, 119 ],
       [ 158, 158, 158 ]
     ],
-    "UseShirtColors": false,
+    "UseShirtColors": true,
     "DisableSkinGrayscale": true,
     "SkinToneMasks": {
       "LightTone": [ 193, 193, 193 ],

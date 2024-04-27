@@ -35,7 +35,7 @@
     "EyeBackgroundPosition": 40,
     "EyePosition": 40,
     "LegOffset": 0,
-    "HeadOffset": 4,
+    "HeadOffset": -4,
     "ArmsOffset": 0,
     "BodySize": {
       "Width": 16,
@@ -1337,7 +1337,7 @@
     "EyeBackgroundPosition": 40,
     "EyePosition": 36,
     "LegOffset": 0,
-    "HeadOffset": 4,
+    "HeadOffset": -4,
     "ArmsOffset": 0,
     "BodySize": {
       "Width": 16,
@@ -2640,7 +2640,7 @@
     "EyeBackgroundPosition": 40,
     "EyePosition": 36,
     "LegOffset": 0,
-    "HeadOffset": 4,
+    "HeadOffset": -4,
     "ArmsOffset": 0,
     "BodySize": {
       "Width": 16,
@@ -3940,7 +3940,7 @@
       "Y": 0
     },
     "LegOffset": 0,
-    "HeadOffset": 4,
+    "HeadOffset": -4,
     "ArmsOffset": 0,
     "BodySize": {
       "Width": 16,
