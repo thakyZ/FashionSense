@@ -364,11 +364,8 @@ namespace FashionSense
             // Gather the content packs for Fashion Sense
             var contentPacks = Helper.ContentPacks.GetOwned().Where(c => String.IsNullOrEmpty(packId) is true || c.Manifest.UniqueID.Equals(packId, StringComparison.OrdinalIgnoreCase)).ToList();
 
-            // Add our local pack, if available
-            if (assetManager.localPack is not null)
-            {
-                contentPacks.Add(assetManager.localPack);
-            }
+            // Add our local pack
+            contentPacks.Add(assetManager.GetLocalPack(update: true));
 
             // Load owned content packs
             foreach (IContentPack contentPack in contentPacks)
