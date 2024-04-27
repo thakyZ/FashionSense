@@ -208,7 +208,11 @@ namespace FashionSense.Framework.Managers
             who.modData[ModDataKeys.CUSTOM_BODY_ID] = String.IsNullOrEmpty(outfit.BodyId) ? "None" : outfit.BodyId;
 
             // Handle old outfits without ColorMaskLayers
-            who.changeHairColor(new Color() { PackedValue = uint.Parse(outfit.HairColor) });
+            if (outfit.HairColor is not null)
+            {
+                who.changeHairColor(new Color() { PackedValue = uint.Parse(outfit.HairColor) });
+            }
+
             if (outfit.Version < 3)
             {
                 who.modData[ModDataKeys.UI_HAND_MIRROR_HAT_COLOR] = outfit.HatColor;

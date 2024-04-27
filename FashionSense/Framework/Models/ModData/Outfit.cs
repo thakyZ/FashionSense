@@ -28,7 +28,7 @@ namespace FashionSense.Framework.Models
         public string AccessoryTwoId { get; set; }
         [Obsolete("No longer used as of Fashion Sense v5, use AccessoryIds instead.")]
         public string AccessoryThreeId { get; set; }
-        public List<string> AccessoryIds { get; set; }
+        public List<string> AccessoryIds { get; set; } = new List<string>();
         public string HairId { get; set; }
         public string HatId { get; set; }
         public string ShirtId { get; set; }
@@ -57,7 +57,7 @@ namespace FashionSense.Framework.Models
         public string PantsColor { get; set; }
         [Obsolete("No longer used as of Fashion Sense v5.5, use AppearanceToMaskColors instead.")]
         public string ShoesColor { get; set; }
-        public Dictionary<IApi.Type, List<Color>> AppearanceToMaskColors { get; set; }
+        public Dictionary<IApi.Type, List<Color>> AppearanceToMaskColors { get; set; } = new Dictionary<IApi.Type, List<Color>>();
 
         private const int _latestVersion = 3;
 
