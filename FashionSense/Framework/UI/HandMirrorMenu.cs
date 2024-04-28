@@ -146,7 +146,7 @@ namespace FashionSense.Framework.UI
             }
 
             // Add all the relevant filter buttons
-            filterButtons.Add(new ClickableTextureComponent(HAIR_FILTER_BUTTON, new Rectangle(base.xPositionOnScreen + 35, base.yPositionOnScreen + 70, 64, 64), null, lastSelectedFilter == HAIR_FILTER_BUTTON ? "enabled" : "disabled", FashionSense.assetManager.scissorsButtonTexture, new Rectangle(0, 0, 15, 15), 3f)
+            filterButtons.Add(new ClickableTextureComponent(HAIR_FILTER_BUTTON, new Rectangle(base.xPositionOnScreen + 35, base.yPositionOnScreen + 70, 48, 48), null, lastSelectedFilter == HAIR_FILTER_BUTTON ? "enabled" : "disabled", FashionSense.assetManager.scissorsButtonTexture, new Rectangle(0, 0, 15, 15), 3f)
             {
                 myID = 601,
                 upNeighborID = -99998,
@@ -155,7 +155,7 @@ namespace FashionSense.Framework.UI
                 downNeighborID = -99998
             });
 
-            filterButtons.Add(new ClickableTextureComponent(ACCESSORY_FILTER_BUTTON, new Rectangle(base.xPositionOnScreen + 35, base.yPositionOnScreen + 120, 64, 64), null, lastSelectedFilter == ACCESSORY_FILTER_BUTTON ? "enabled" : "disabled", FashionSense.assetManager.accessoryButtonTexture, new Rectangle(0, 0, 15, 15), 3f)
+            filterButtons.Add(new ClickableTextureComponent(ACCESSORY_FILTER_BUTTON, new Rectangle(base.xPositionOnScreen + 35, base.yPositionOnScreen + 120, 48, 48), null, lastSelectedFilter == ACCESSORY_FILTER_BUTTON ? "enabled" : "disabled", FashionSense.assetManager.accessoryButtonTexture, new Rectangle(0, 0, 15, 15), 3f)
             {
                 myID = 602,
                 upNeighborID = -99998,
@@ -164,7 +164,7 @@ namespace FashionSense.Framework.UI
                 downNeighborID = -99998
             });
 
-            filterButtons.Add(new ClickableTextureComponent(HAT_FILTER_BUTTON, new Rectangle(base.xPositionOnScreen + 35, base.yPositionOnScreen + 170, 64, 64), null, lastSelectedFilter == HAT_FILTER_BUTTON ? "enabled" : "disabled", FashionSense.assetManager.hatButtonTexture, new Rectangle(0, 0, 15, 15), 3f)
+            filterButtons.Add(new ClickableTextureComponent(HAT_FILTER_BUTTON, new Rectangle(base.xPositionOnScreen + 35, base.yPositionOnScreen + 170, 48, 48), null, lastSelectedFilter == HAT_FILTER_BUTTON ? "enabled" : "disabled", FashionSense.assetManager.hatButtonTexture, new Rectangle(0, 0, 15, 15), 3f)
             {
                 myID = 603,
                 upNeighborID = -99998,
@@ -173,7 +173,7 @@ namespace FashionSense.Framework.UI
                 downNeighborID = 604
             });
 
-            filterButtons.Add(new ClickableTextureComponent(BODY_FILTER_BUTTON, new Rectangle(base.xPositionOnScreen + 35, base.yPositionOnScreen + 220, 64, 64), null, lastSelectedFilter == BODY_FILTER_BUTTON ? "enabled" : "disabled", FashionSense.assetManager.bodyButtonTexture, new Rectangle(0, 0, 15, 15), 3f)
+            filterButtons.Add(new ClickableTextureComponent(BODY_FILTER_BUTTON, new Rectangle(base.xPositionOnScreen + 35, base.yPositionOnScreen + 220, 48, 48), null, lastSelectedFilter == BODY_FILTER_BUTTON ? "enabled" : "disabled", FashionSense.assetManager.bodyButtonTexture, new Rectangle(0, 0, 15, 15), 3f)
             {
                 myID = 604,
                 upNeighborID = -99998,
@@ -182,7 +182,7 @@ namespace FashionSense.Framework.UI
                 downNeighborID = 605
             });
 
-            filterButtons.Add(new ClickableTextureComponent(SHIRT_FILTER_BUTTON, new Rectangle(_portraitBox.Right + 40, base.yPositionOnScreen + 70, 64, 64), null, lastSelectedFilter == SHIRT_FILTER_BUTTON ? "enabled" : "disabled", FashionSense.assetManager.shirtButtonTexture, new Rectangle(0, 0, 15, 15), 3f)
+            filterButtons.Add(new ClickableTextureComponent(SHIRT_FILTER_BUTTON, new Rectangle(_portraitBox.Right + 40, base.yPositionOnScreen + 70, 48, 48), null, lastSelectedFilter == SHIRT_FILTER_BUTTON ? "enabled" : "disabled", FashionSense.assetManager.shirtButtonTexture, new Rectangle(0, 0, 15, 15), 3f)
             {
                 myID = 607,
                 upNeighborID = -99998,
@@ -191,7 +191,7 @@ namespace FashionSense.Framework.UI
                 downNeighborID = -99998
             });
 
-            filterButtons.Add(new ClickableTextureComponent(PANTS_FILTER_BUTTON, new Rectangle(_portraitBox.Right + 40, base.yPositionOnScreen + 120, 64, 64), null, lastSelectedFilter == PANTS_FILTER_BUTTON ? "enabled" : "disabled", FashionSense.assetManager.pantsButtonTexture, new Rectangle(0, 0, 15, 15), 3f)
+            filterButtons.Add(new ClickableTextureComponent(PANTS_FILTER_BUTTON, new Rectangle(_portraitBox.Right + 40, base.yPositionOnScreen + 120, 48, 48), null, lastSelectedFilter == PANTS_FILTER_BUTTON ? "enabled" : "disabled", FashionSense.assetManager.pantsButtonTexture, new Rectangle(0, 0, 15, 15), 3f)
             {
                 myID = 608,
                 upNeighborID = -99998,
@@ -200,7 +200,7 @@ namespace FashionSense.Framework.UI
                 downNeighborID = -99998
             });
 
-            filterButtons.Add(new ClickableTextureComponent(SLEEVES_FILTER_BUTTON, new Rectangle(_portraitBox.Right + 40, base.yPositionOnScreen + 170, 64, 64), null, lastSelectedFilter == SLEEVES_FILTER_BUTTON ? "enabled" : "disabled", FashionSense.assetManager.sleevesButtonTexture, new Rectangle(0, 0, 15, 15), 3f)
+            filterButtons.Add(new ClickableTextureComponent(SLEEVES_FILTER_BUTTON, new Rectangle(_portraitBox.Right + 40, base.yPositionOnScreen + 170, 48, 48), null, lastSelectedFilter == SLEEVES_FILTER_BUTTON ? "enabled" : "disabled", FashionSense.assetManager.sleevesButtonTexture, new Rectangle(0, 0, 15, 15), 3f)
             {
                 myID = 609,
                 upNeighborID = -99998,
@@ -209,7 +209,7 @@ namespace FashionSense.Framework.UI
                 downNeighborID = -99998
             });
 
-            filterButtons.Add(new ClickableTextureComponent(SHOES_FILTER_BUTTON, new Rectangle(_portraitBox.Right + 40, base.yPositionOnScreen + 220, 64, 64), null, lastSelectedFilter == SHOES_FILTER_BUTTON ? "enabled" : "disabled", FashionSense.assetManager.shoesButtonTexture, new Rectangle(0, 0, 15, 15), 3f)
+            filterButtons.Add(new ClickableTextureComponent(SHOES_FILTER_BUTTON, new Rectangle(_portraitBox.Right + 40, base.yPositionOnScreen + 220, 48, 48), null, lastSelectedFilter == SHOES_FILTER_BUTTON ? "enabled" : "disabled", FashionSense.assetManager.shoesButtonTexture, new Rectangle(0, 0, 15, 15), 3f)
             {
                 myID = 610,
                 upNeighborID = -99998,
