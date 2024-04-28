@@ -46,6 +46,7 @@ namespace FashionSense.Framework.Patches.Renderer
             bool hasDrawnCustomBody = false;
             if (who.modData.ContainsKey(ModDataKeys.CUSTOM_BODY_ID) && FashionSense.textureManager.GetSpecificAppearanceModel<BodyContentPack>(who.modData[ModDataKeys.CUSTOM_BODY_ID]) is BodyContentPack bodyPack && bodyPack is not null && bodyPack.FrontBody is BodyModel bodyModel && bodyModel is not null && bodyModel.StartingPosition is not null)
             {
+                FashionSense.monitor.LogOnce($"Using custom body {bodyPack.Name} from {bodyPack.PackName} for profile draw!", LogLevel.Trace);
                 var sourceRectangle = new Rectangle(bodyModel.StartingPosition.X, bodyModel.StartingPosition.Y, 16, 16);
 
                 // Adjust color if needed
