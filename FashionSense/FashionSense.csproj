@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<Version>6.2.2</Version>
+		<Version>6.3.0</Version>
 		<TargetFramework>net6.0</TargetFramework>
 		<LangVersion>latest</LangVersion>
 		<EnableHarmony>true</EnableHarmony>
@@ -51,6 +51,12 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<None Update="Framework\Assets\Local Pack\**">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="Framework\Assets\UI\BodyButton.png">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
 		<None Update="Framework\Assets\UI\CheckButton.png">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>

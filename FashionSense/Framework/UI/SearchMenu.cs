@@ -1,5 +1,6 @@
 ﻿using FashionSense.Framework.Models.Appearances;
 using FashionSense.Framework.Models.Appearances.Accessory;
+using FashionSense.Framework.Models.Appearances.Body;
 using FashionSense.Framework.Models.Appearances.Hair;
 using FashionSense.Framework.Models.Appearances.Hat;
 using FashionSense.Framework.Models.Appearances.Pants;
@@ -89,14 +90,13 @@ namespace FashionSense.Framework.UI
                     appearancePacks = FashionSense.textureManager.GetAllAppearanceModels().Where(m => m is PantsContentPack).ToList();
                     break;
                 case HandMirrorMenu.SLEEVES_FILTER_BUTTON:
-                    if (callbackMenu.GetCurrentFeatureSlotKey() == ModDataKeys.CUSTOM_SHOES_ID)
-                    {
-                        appearancePacks = FashionSense.textureManager.GetAllAppearanceModels().Where(m => m is ShoesContentPack).ToList();
-                    }
-                    else
-                    {
-                        appearancePacks = FashionSense.textureManager.GetAllAppearanceModels().Where(m => m is SleevesContentPack).ToList();
-                    }
+                    appearancePacks = FashionSense.textureManager.GetAllAppearanceModels().Where(m => m is SleevesContentPack).ToList();
+                    break;
+                case HandMirrorMenu.SHOES_FILTER_BUTTON:
+                    appearancePacks = FashionSense.textureManager.GetAllAppearanceModels().Where(m => m is ShoesContentPack).ToList();
+                    break;
+                case HandMirrorMenu.BODY_FILTER_BUTTON:
+                    appearancePacks = FashionSense.textureManager.GetAllAppearanceModels().Where(m => m is BodyContentPack).ToList();
                     break;
             }
 
@@ -229,11 +229,18 @@ namespace FashionSense.Framework.UI
                             break;
                         case HandMirrorMenu.SLEEVES_FILTER_BUTTON:
                             modDataKey = ModDataKeys.CUSTOM_SLEEVES_ID;
-                            if (_callbackMenu.GetCurrentFeatureSlotKey() == ModDataKeys.CUSTOM_SHOES_ID)
-                            {
-                                modDataKey = ModDataKeys.CUSTOM_SHOES_ID;
-                            }
                             break;
+                        case HandMirrorMenu.SHOES_FILTER_BUTTON:
+                            modDataKey = ModDataKeys.CUSTOM_SHOES_ID;
+                            break;
+                        case HandMirrorMenu.BODY_FILTER_BUTTON:
+                            modDataKey = ModDataKeys.CUSTOM_BODY_ID;
+                            break;
+                    }
+
+                    if (fakeFarmers.ElementAtOrDefault(i) is null)
+                    {
+                        continue;
                     }
 
                     fakeFarmers[i].modData[modDataKey] = targetPack.Id;

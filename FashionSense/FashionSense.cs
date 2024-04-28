@@ -4,6 +4,7 @@ using FashionSense.Framework.Managers;
 using FashionSense.Framework.Models;
 using FashionSense.Framework.Models.Appearances;
 using FashionSense.Framework.Models.Appearances.Accessory;
+using FashionSense.Framework.Models.Appearances.Body;
 using FashionSense.Framework.Models.Appearances.Generic;
 using FashionSense.Framework.Models.Appearances.Hair;
 using FashionSense.Framework.Models.Appearances.Hat;
@@ -268,6 +269,7 @@ namespace FashionSense
             SetCachedColor(ModDataKeys.UI_HAND_MIRROR_PANTS_COLOR, IApi.Type.Pants, 0);
             SetCachedColor(ModDataKeys.UI_HAND_MIRROR_SLEEVES_COLOR, IApi.Type.Sleeves, 0);
             SetCachedColor(ModDataKeys.UI_HAND_MIRROR_SHOES_COLOR, IApi.Type.Shoes, 0);
+            SetCachedColor(ModDataKeys.UI_HAND_MIRROR_BODY_COLOR, IApi.Type.Player, 0);
 
             // Cache hair color, as previous versions (5.4 and below) did not utilize a ModData key for it
             colorManager.SetColor(Game1.player, AppearanceModel.GetColorKey(IApi.Type.Hair, 0), Game1.player.hairstyleColor.Value);
@@ -277,6 +279,13 @@ namespace FashionSense
             {
                 shoePack.Name = modHelper.Translation.Get("ui.fashion_sense.color_override.shoes");
                 shoePack.PackName = modHelper.Translation.Get("ui.fashion_sense.color_override.shoes");
+            }
+
+            // Reset the name of the internal shoe override pack
+            if (textureManager.GetSpecificAppearanceModel<BodyContentPack>(ModDataKeys.INTERNAL_COLOR_OVERRIDE_BODY_ID) is BodyContentPack bodyPack && bodyPack is not null)
+            {
+                bodyPack.Name = modHelper.Translation.Get("ui.fashion_sense.color_override.body");
+                bodyPack.PackName = modHelper.Translation.Get("ui.fashion_sense.color_override.body");
             }
         }
 
@@ -292,6 +301,7 @@ namespace FashionSense
             EnsureKeyExists(ModDataKeys.CUSTOM_PANTS_ID);
             EnsureKeyExists(ModDataKeys.CUSTOM_SLEEVES_ID);
             EnsureKeyExists(ModDataKeys.CUSTOM_SHOES_ID);
+            EnsureKeyExists(ModDataKeys.CUSTOM_BODY_ID);
             EnsureKeyExists(ModDataKeys.ANIMATION_FACING_DIRECTION);
 
             // Handle the loading cached accessories
@@ -351,8 +361,14 @@ namespace FashionSense
             // Clear the preset outfits
             outfitManager.ClearPresetOutfits();
 
+            // Gather the content packs for Fashion Sense
+            var contentPacks = Helper.ContentPacks.GetOwned().Where(c => String.IsNullOrEmpty(packId) is true || c.Manifest.UniqueID.Equals(packId, StringComparison.OrdinalIgnoreCase)).ToList();
+
+            // Add our local pack
+            contentPacks.Add(assetManager.GetLocalPack(update: true));
+
             // Load owned content packs
-            foreach (IContentPack contentPack in Helper.ContentPacks.GetOwned().Where(c => String.IsNullOrEmpty(packId) is true || c.Manifest.UniqueID.Equals(packId, StringComparison.OrdinalIgnoreCase)))
+            foreach (IContentPack contentPack in contentPacks)
             {
                 Monitor.Log($"Loading data from pack: {contentPack.Manifest.Name} {contentPack.Manifest.Version} by {contentPack.Manifest.Author}", silent ? LogLevel.Trace : LogLevel.Debug);
 
@@ -398,6 +414,25 @@ namespace FashionSense
                 // Load Shoes
                 Monitor.Log($"Loading shoes from pack: {contentPack.Manifest.Name} {contentPack.Manifest.Version} by {contentPack.Manifest.Author}", LogLevel.Trace);
                 AddShoesContentPacks(contentPack);
+
+                // Add internal body pack for recoloring of vanilla body
+                textureManager.AddAppearanceModel(new BodyContentPack()
+                {
+                    Author = "PeacefulEnd",
+                    Owner = "PeacefulEnd",
+                    Name = modHelper.Translation.Get("ui.fashion_sense.color_override.body"),
+                    PackType = IApi.Type.Player,
+                    PackName = modHelper.Translation.Get("ui.fashion_sense.color_override.body"),
+                    Id = ModDataKeys.INTERNAL_COLOR_OVERRIDE_BODY_ID,
+                    FrontBody = new BodyModel(),
+                    BackBody = new BodyModel(),
+                    LeftBody = new BodyModel(),
+                    RightBody = new BodyModel()
+                });
+
+                // Load Bodies
+                Monitor.Log($"Loading bodies from pack: {contentPack.Manifest.Name} {contentPack.Manifest.Version} by {contentPack.Manifest.Author}", LogLevel.Trace);
+                AddBodiesContentPacks(contentPack);
 
                 // Load Outfit Presets
                 Monitor.Log($"Loading outfit presets from pack: {contentPack.Manifest.Name} {contentPack.Manifest.Version} by {contentPack.Manifest.Author}", LogLevel.Trace);
@@ -486,7 +521,7 @@ namespace FashionSense
                     // Set the PackName and Id
                     appearanceModel.PackName = contentPack.Manifest.Name;
                     appearanceModel.PackId = contentPack.Manifest.UniqueID;
-                    appearanceModel.Id = String.Concat(appearanceModel.Owner, "/", appearanceModel.PackType, "/", appearanceModel.Name); ;
+                    appearanceModel.Id = String.Concat(appearanceModel.Owner, "/", appearanceModel.PackType, "/", appearanceModel.Name);
 
                     // Verify that a hairstyle with the name doesn't exist in this pack
                     if (textureManager.GetSpecificAppearanceModel<HairContentPack>(appearanceModel.Id) != null)
@@ -898,7 +933,6 @@ namespace FashionSense
             }
         }
 
-
         private void AddPantsContentPacks(IContentPack contentPack)
         {
             try
@@ -1014,7 +1048,6 @@ namespace FashionSense
                 Monitor.Log($"Error loading pants from content pack {contentPack.Manifest.Name}: {ex}", LogLevel.Error);
             }
         }
-
 
         private void AddSleevesContentPacks(IContentPack contentPack)
         {
@@ -1132,7 +1165,6 @@ namespace FashionSense
             }
         }
 
-
         private void AddShoesContentPacks(IContentPack contentPack)
         {
             try
@@ -1249,6 +1281,132 @@ namespace FashionSense
             }
         }
 
+        private void AddBodiesContentPacks(IContentPack contentPack)
+        {
+            try
+            {
+                var directoryPath = new DirectoryInfo(Path.Combine(contentPack.DirectoryPath, "Bodies"));
+                if (!directoryPath.Exists)
+                {
+                    Monitor.Log($"No Bodies folder found for the content pack {contentPack.Manifest.Name}", LogLevel.Trace);
+                    return;
+                }
+
+                var bodiesFolders = directoryPath.GetDirectories("*", SearchOption.AllDirectories);
+                if (bodiesFolders.Count() == 0)
+                {
+                    Monitor.Log($"No sub-folders found under Bodies for the content pack {contentPack.Manifest.Name}", LogLevel.Warn);
+                    return;
+                }
+
+                // Load in the folders
+                foreach (var textureFolder in bodiesFolders)
+                {
+                    if (!File.Exists(Path.Combine(textureFolder.FullName, "body.json")))
+                    {
+                        if (textureFolder.GetDirectories().Count() == 0)
+                        {
+                            Monitor.Log($"Content pack {contentPack.Manifest.Name} is missing a body.json under {textureFolder.Name}", LogLevel.Warn);
+                        }
+
+                        continue;
+                    }
+
+                    var parentFolderName = textureFolder.Parent.FullName.Replace(contentPack.DirectoryPath + Path.DirectorySeparatorChar, String.Empty);
+                    var modelPath = Path.Combine(parentFolderName, textureFolder.Name, "body.json");
+
+                    // Parse the model and assign it the content pack's owner
+                    BodyContentPack appearanceModel = contentPack.ReadJsonFile<BodyContentPack>(modelPath);
+                    appearanceModel.Author = contentPack.Manifest.Author;
+                    appearanceModel.Owner = contentPack.Manifest.UniqueID;
+
+                    // Verify the required Name property is set
+                    if (String.IsNullOrEmpty(appearanceModel.Name))
+                    {
+                        Monitor.Log($"Unable to add body from {appearanceModel.Owner}: Missing the Name property", LogLevel.Warn);
+                        continue;
+                    }
+
+                    // Set the model type
+                    appearanceModel.PackType = IApi.Type.Player;
+
+                    // Set the PackName and Id
+                    appearanceModel.PackName = contentPack.Manifest.Name;
+                    appearanceModel.PackId = contentPack.Manifest.UniqueID;
+                    appearanceModel.Id = String.Concat(appearanceModel.Owner, "/", appearanceModel.PackType, "/", appearanceModel.Name);
+
+                    // Verify that a bodies with the name doesn't exist in this pack
+                    if (textureManager.GetSpecificAppearanceModel<BodyContentPack>(appearanceModel.Id) != null)
+                    {
+                        Monitor.Log($"Unable to add body from {contentPack.Manifest.Name}: This pack already contains a body with the name of {appearanceModel.Name}", LogLevel.Warn);
+                        continue;
+                    }
+
+                    // Verify that at least one BodyModel is given
+                    if (appearanceModel.BackBody is null && appearanceModel.RightBody is null && appearanceModel.FrontBody is null && appearanceModel.LeftBody is null)
+                    {
+                        Monitor.Log($"Unable to add body for {appearanceModel.Name} from {contentPack.Manifest.Name}: No body models given (FrontBody, BackBody, etc.)", LogLevel.Warn);
+                        continue;
+                    }
+
+                    // Verify the Size model is not null foreach given direction
+                    if (appearanceModel.FrontBody is not null && appearanceModel.FrontBody.BodySize is null)
+                    {
+                        Monitor.Log($"Unable to add body for {appearanceModel.Name} from {contentPack.Manifest.Name}: FrontBody is missing the required property BodySize", LogLevel.Warn);
+                        continue;
+                    }
+                    if (appearanceModel.BackBody is not null && appearanceModel.BackBody.BodySize is null)
+                    {
+                        Monitor.Log($"Unable to add body for {appearanceModel.Name} from {contentPack.Manifest.Name}: BackBody is missing the required property BodySize", LogLevel.Warn);
+                        continue;
+                    }
+                    if (appearanceModel.LeftBody is not null && appearanceModel.LeftBody.BodySize is null)
+                    {
+                        Monitor.Log($"Unable to add body for {appearanceModel.Name} from {contentPack.Manifest.Name}: LeftBody is missing the required property BodySize", LogLevel.Warn);
+                        continue;
+                    }
+                    if (appearanceModel.RightBody is not null && appearanceModel.RightBody.BodySize is null)
+                    {
+                        Monitor.Log($"Unable to add body for {appearanceModel.Name} from {contentPack.Manifest.Name}: RightBody is missing the required property BodySize", LogLevel.Warn);
+                        continue;
+                    }
+
+                    // Verify we are given a texture and if so, track it
+                    if (!File.Exists(Path.Combine(textureFolder.FullName, "body.png")))
+                    {
+                        Monitor.Log($"Unable to add body for {appearanceModel.Name} from {contentPack.Manifest.Name}: No associated body.png given", LogLevel.Warn);
+                        continue;
+                    }
+
+                    // Load in the texture
+                    appearanceModel.Texture = contentPack.ModContent.Load<Texture2D>(contentPack.ModContent.GetInternalAssetName(Path.Combine(parentFolderName, textureFolder.Name, "body.png")).Name);
+
+                    // Verify we are given the eyes texture and if so, track it
+                    if (!File.Exists(Path.Combine(textureFolder.FullName, "eyes.png")))
+                    {
+                        Monitor.Log($"Unable to add body for {appearanceModel.Name} from {contentPack.Manifest.Name}: No associated eyes.png given", LogLevel.Warn);
+                        continue;
+                    }
+
+                    // Load in the eyes texture
+                    appearanceModel.EyesTexture = contentPack.ModContent.Load<Texture2D>(contentPack.ModContent.GetInternalAssetName(Path.Combine(parentFolderName, textureFolder.Name, "eyes.png")).Name);
+
+                    // Link the content pack's ID to the model
+                    appearanceModel.LinkId();
+
+                    // Track the model
+                    textureManager.AddAppearanceModel(appearanceModel);
+
+                    // Log it
+                    Monitor.Log(appearanceModel.ToString(), LogLevel.Trace);
+                }
+            }
+            catch (Exception ex)
+            {
+                Monitor.Log($"Error loading body from content pack {contentPack.Manifest.Name}: {ex}", LogLevel.Error);
+            }
+        }
+
         internal static void SetCachedColor(string oldColorKey, IApi.Type type, int appearanceIndex)
         {
             var actualColorKey = AppearanceModel.GetColorKey(type, appearanceIndex);
@@ -1273,6 +1431,8 @@ namespace FashionSense
             shirtDirty.SetValue(true);
             var shoeDirty = modHelper.Reflection.GetField<bool>(Game1.player.FarmerRenderer, "_shoesDirty");
             shoeDirty.SetValue(true);
+            var skinDirty = modHelper.Reflection.GetField<bool>(Game1.player.FarmerRenderer, "_skinDirty");
+            skinDirty.SetValue(true);
 
             if (skipColorMaskRefresh is false)
             {

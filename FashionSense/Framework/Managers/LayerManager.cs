@@ -1,6 +1,7 @@
 ﻿using FashionSense.Framework.Interfaces.API;
 using FashionSense.Framework.Models.Appearances;
 using FashionSense.Framework.Models.Appearances.Accessory;
+using FashionSense.Framework.Models.Appearances.Body;
 using FashionSense.Framework.Models.Appearances.Generic;
 using FashionSense.Framework.Models.Appearances.Hair;
 using FashionSense.Framework.Models.Appearances.Hat;
@@ -69,6 +70,9 @@ namespace FashionSense.Framework.Managers
                         break;
                     case HatModel hatModel:
                         AddHat(who, hatModel, data.Colors, ref rawLayerData);
+                        break;
+                    case BodyModel bodyModel:
+                        AddBody(who, bodyModel, data.Colors, ref rawLayerData);
                         break;
                 }
             }
@@ -153,7 +157,6 @@ namespace FashionSense.Framework.Managers
 
         private void AddVanillaLayerData(List<AppearanceModel> models, ref List<LayerData> rawLayerData)
         {
-            rawLayerData.Add(new LayerData(IApi.Type.Player, null, isVanilla: true));
             if (models.Any(m => m is PantsModel) is false)
             {
                 rawLayerData.Add(new LayerData(IApi.Type.Pants, null, isVanilla: true));
@@ -181,6 +184,10 @@ namespace FashionSense.Framework.Managers
             if (models.Any(m => m is HatModel) is false)
             {
                 rawLayerData.Add(new LayerData(IApi.Type.Hat, null, isVanilla: true));
+            }
+            if (models.Any(m => m is BodyModel) is false)
+            {
+                rawLayerData.Add(new LayerData(IApi.Type.Player, null, isVanilla: true));
             }
         }
         private void MoveLayerDataItem(int index, LayerData layerData, ref List<LayerData> sourceList)
@@ -273,6 +280,18 @@ namespace FashionSense.Framework.Managers
         {
             var layerData = new LayerData(IApi.Type.Hat, hatModel);
             if (AppearanceHelpers.ShouldHideWhileSwimmingOrWearingBathingSuit(who, hatModel))
+            {
+                layerData.IsHidden = true;
+            }
+            layerData.Colors = colors;
+
+            rawLayerData.Add(layerData);
+        }
+
+        private void AddBody(Farmer who, BodyModel bodyModel, List<Color> colors, ref List<LayerData> rawLayerData)
+        {
+            var layerData = new LayerData(IApi.Type.Player, bodyModel);
+            if (bodyModel.HidePlayerBase is true)
             {
                 layerData.IsHidden = true;
             }
