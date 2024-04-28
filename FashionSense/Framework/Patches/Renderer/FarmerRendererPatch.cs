@@ -44,10 +44,9 @@ namespace FashionSense.Framework.Patches.Renderer
         {
             // Draw the player's custom face, if applicable
             bool hasDrawnCustomBody = false;
-            if (who.modData.ContainsKey(ModDataKeys.CUSTOM_BODY_ID) && FashionSense.textureManager.GetSpecificAppearanceModel<BodyContentPack>(who.modData[ModDataKeys.CUSTOM_BODY_ID]) is BodyContentPack bodyPack && bodyPack is not null && bodyPack.FrontBody is not null)
+            if (who.modData.ContainsKey(ModDataKeys.CUSTOM_BODY_ID) && FashionSense.textureManager.GetSpecificAppearanceModel<BodyContentPack>(who.modData[ModDataKeys.CUSTOM_BODY_ID]) is BodyContentPack bodyPack && bodyPack is not null && bodyPack.FrontBody is BodyModel bodyModel && bodyModel is not null && bodyModel.StartingPosition is not null)
             {
-                var bodyModel = bodyPack.FrontBody;
-                var sourceRectangle = new Rectangle(bodyPack.FrontBody.StartingPosition.X, bodyPack.FrontBody.StartingPosition.Y, 16, who.IsMale ? 15 : 16);
+                var sourceRectangle = new Rectangle(bodyModel.StartingPosition.X, bodyModel.StartingPosition.Y, 16, 16);
 
                 // Adjust color if needed
                 var colors = AppearanceHelpers.GetAllAppearanceColors(who, bodyModel);
