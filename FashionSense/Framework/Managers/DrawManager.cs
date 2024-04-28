@@ -480,7 +480,7 @@ namespace FashionSense.Framework.Managers
                 hairstyleSourceRect = new Rectangle(hair_metadata.tileX * 16, hair_metadata.tileY * 16, 16, 32);
             }
 
-            int vanillaHairOffset = -((who.IsMale && hair_style >= 16) ? (-4) : ((!who.IsMale && hair_style < 16) ? 4 : 0));
+            int vanillaHairOffset = ((who.IsMale && hair_style >= 16) ? (-4) : ((!who.IsMale && hair_style < 16) ? 4 : 0));
             switch (DrawTool.FacingDirection)
             {
                 case 0:
