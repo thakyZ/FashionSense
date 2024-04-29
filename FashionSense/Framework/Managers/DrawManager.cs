@@ -739,7 +739,7 @@ namespace FashionSense.Framework.Managers
                         {
                             data[i] = subData[i];
 
-                            if (texture == sleevesContentPack.ColorMaskTextures[0])
+                            if (sleevesContentPack.ColorMaskTextures is not null && sleevesContentPack.ColorMaskTextures.Count > 0 && texture == sleevesContentPack.ColorMaskTextures[0])
                             {
                                 data[i] = Color.Lerp(data[i], modelColor, 0.5f);
                             }
