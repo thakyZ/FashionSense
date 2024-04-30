@@ -112,7 +112,7 @@ namespace FashionSense.Framework.Managers
                 }
             }
 
-            return outfits.Where(o => o is not null).ToList();
+            return outfits.Where(o => o is not null && string.IsNullOrEmpty(o.Name) is false).ToList();
         }
 
         public List<Outfit> GetSharedOutfits(Farmer who)
