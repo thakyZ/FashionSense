@@ -70,6 +70,9 @@ namespace FashionSense
         private bool _continuousReloading = false;
         private Vector2? _cachedPlayerPosition;
         private int _lastPlayerFrame = 0;
+        private bool _isRecordingPlayerFrames = false;
+        private int _currentRecordedPlayerFrameIndex = 0;
+        private List<int> _recordedPlayerFrames = new List<int>();
 
         public override void Entry(IModHelper helper)
         {
@@ -137,6 +140,9 @@ namespace FashionSense
             helper.ConsoleCommands.Add("fs_reload_continuous", "Debug usage only: reloads all Fashion Sense content packs every 2 seconds. Use the command again to stop the continuous reloading.\n\nUsage: fs_reload_continuous", delegate { _continuousReloading = !_continuousReloading; });
             helper.ConsoleCommands.Add("fs_add_mirror", "Gives you a Hand Mirror tool.\n\nUsage: fs_add_mirror", delegate { Game1.player.addItemToInventory(ShopBuilderPatch.GetHandMirrorTool()); });
             helper.ConsoleCommands.Add("fs_freeze_self", "Locks yourself in place, which is useful for showcasing custom appearances. Use the command again to unfreeze yourself.\n\nUsage: fs_freeze_self", delegate { _ = _cachedPlayerPosition is null ? _cachedPlayerPosition = Game1.player.Position : _cachedPlayerPosition = null; });
+            helper.ConsoleCommands.Add("fs_record_frames", "Records farmer frames that are played. Use the command again to stop recording.\n\nUsage: fs_record_frames", SetPlayerFrameRecording);
+            helper.ConsoleCommands.Add("fs_play_next_frame", "Plays the next recorded frame.\n\nUsage: fs_play_next_frame", PlayNextFrame);
+            helper.ConsoleCommands.Add("fs_clear_recorded_frames", "Clears the recorded frames.\n\nUsage: fs_clear_recorded_frames", delegate { Monitor.Log("Cleared recorded player frames!", LogLevel.Debug); _recordedPlayerFrames.Clear(); });
 
             helper.Events.Content.AssetRequested += OnAssetRequested;
             helper.Events.Content.AssetsInvalidated += OnAssetInvalidated;
@@ -168,6 +174,10 @@ namespace FashionSense
             {
                 _lastPlayerFrame = Game1.player.FarmerSprite.CurrentFrame;
                 Monitor.Log($"Farmer Frame: {_lastPlayerFrame}", LogLevel.Debug);
+            }
+            else if (_isRecordingPlayerFrames && Game1.player is not null && Game1.player.FarmerSprite.CurrentFrame != _recordedPlayerFrames.LastOrDefault())
+            {
+                _recordedPlayerFrames.Add(Game1.player.FarmerSprite.CurrentFrame);
             }
         }
 
@@ -330,6 +340,37 @@ namespace FashionSense
         {
             var packFilter = args.Length > 0 ? args[0] : null;
             this.LoadContentPacks(packId: packFilter);
+        }
+
+        private void SetPlayerFrameRecording(string command, string[] args)
+        {
+            if (_isRecordingPlayerFrames)
+            {
+                Monitor.Log($"Disabling player frame recording", LogLevel.Debug);
+                _isRecordingPlayerFrames = false;
+            }
+            else
+            {
+                Monitor.Log($"Enabling player frame recording", LogLevel.Debug);
+                _isRecordingPlayerFrames = true;
+            }
+        }
+
+        private void PlayNextFrame(string command, string[] args)
+        {
+            if (_isRecordingPlayerFrames)
+            {
+                Monitor.Log($"Disabling player frame recording", LogLevel.Debug);
+                _isRecordingPlayerFrames = false;
+            }
+
+            _currentRecordedPlayerFrameIndex = _recordedPlayerFrames.Count() > _currentRecordedPlayerFrameIndex + 1 ? _currentRecordedPlayerFrameIndex + 1 : 0;            
+            if (_recordedPlayerFrames.Count() > 0)
+            {
+                Game1.player.FarmerSprite.setCurrentFrame(_recordedPlayerFrames[_currentRecordedPlayerFrameIndex]);
+
+                Monitor.Log($"Playing frame {_recordedPlayerFrames[_currentRecordedPlayerFrameIndex]}", LogLevel.Debug);
+            }
         }
 
         private void UpdateElapsedDuration(Farmer who)
