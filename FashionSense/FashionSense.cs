@@ -351,6 +351,8 @@ namespace FashionSense
             }
             else
             {
+                _recordedPlayerFrames.Clear();
+
                 Monitor.Log($"Enabling player frame recording", LogLevel.Debug);
                 _isRecordingPlayerFrames = true;
             }
