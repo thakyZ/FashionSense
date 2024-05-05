@@ -840,7 +840,7 @@ namespace FashionSense.Framework.Managers
             }
 
             // Skip drawing the eyes if HideEyes is true
-            if (bodyModel.HideEyes)
+            if (bodyPack.HideEyes)
             {
                 return;
             }
