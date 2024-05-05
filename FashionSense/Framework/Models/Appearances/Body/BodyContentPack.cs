@@ -5,7 +5,7 @@ namespace FashionSense.Framework.Models.Appearances.Body
 {
     public class BodyContentPack : AppearanceContentPack
     {
-        // TODO: Implement eyes here (or as separate pack?)
+        public bool HideEyes { get; set; }
         internal Texture2D EyesTexture { get; set; }
         internal List<Texture2D> EyesColorMaskTextures { get; set; }
         public BodyModel BackBody { get; set; }

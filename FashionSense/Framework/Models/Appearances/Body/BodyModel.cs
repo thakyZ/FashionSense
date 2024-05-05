@@ -7,7 +7,6 @@ namespace FashionSense.Framework.Models.Appearances.Body
     {
         public int EyeBackgroundPosition { get; set; }
         public int EyePosition { get; set; }
-        public bool HideEyes { get; set; }
 
         public int HeightOffset { get; set; }
         public int? AccessoryOffset { get; set; }
