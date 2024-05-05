@@ -845,6 +845,13 @@ namespace FashionSense.Framework.Managers
                 return;
             }
 
+            // Get eye-specific offset
+            Vector2 eyesOffset = new Vector2();
+            if (_appearanceTypeToAnimationModels.TryGetValue(bodyModel, out var animation) is true && animation is not null)
+            {
+                eyesOffset = new Vector2(animation.EyesOffset.X, animation.EyesOffset.Y);
+            }
+
             // Draw blinking / eyes closed animation, if conditions are met
             FishingRod fishing_rod;
             if (who.currentEyes != 0 && DrawTool.FacingDirection != 0 && (Game1.timeOfDay < 2600 || (who.isInBed.Value && who.timeWentToBed.Value != 0)) && ((!who.FarmerSprite.PauseForSingleAnimation && !who.UsingTool) || (who.UsingTool && who.CurrentTool is FishingRod)) && (!who.UsingTool || (fishing_rod = who.CurrentTool as FishingRod) == null || fishing_rod.isFishing))
@@ -863,14 +870,14 @@ namespace FashionSense.Framework.Managers
 
                 x_adjustment *= 4;
 
-                var eyeBasePosition = DrawTool.Position + DrawTool.Origin + DrawTool.PositionOffset + new Vector2(x_adjustment, AppearanceHelpers.GetFarmerRendererYFeatureOffset(DrawTool.CurrentFrame) * 4 + bodyModel.EyeBackgroundPosition);
+                var eyeBasePosition = DrawTool.Position + DrawTool.Origin + DrawTool.PositionOffset + new Vector2(x_adjustment, AppearanceHelpers.GetFarmerRendererYFeatureOffset(DrawTool.CurrentFrame) * 4 + bodyModel.EyeBackgroundPosition) + eyesOffset;
                 DrawTool.SpriteBatch.Draw(bodyPack.Texture, eyeBasePosition, new Rectangle(5, 16, (DrawTool.FacingDirection == 2) ? 6 : 2, 2), bodyModel.HasColorMask() ? Color.White : colorOverride is not null ? colorOverride.Value : modelColor, 0f, DrawTool.Origin + new Vector2(positionOffset.X, positionOffset.Y), 4f * DrawTool.Scale, SpriteEffects.None, IncrementAndGetLayerDepth());
                 if (bodyModel.HasColorMask())
                 {
                     DrawColorMask(DrawTool.SpriteBatch, bodyPack, bodyModel, _areColorMasksPendingRefresh, eyeBasePosition, new Rectangle(5, 16, (DrawTool.FacingDirection == 2) ? 6 : 2, 2), colorOverride, layer.Colors, DrawTool.Rotation, DrawTool.Origin + new Vector2(positionOffset.X, positionOffset.Y), bodyModel.Scale * DrawTool.Scale, IncrementAndGetLayerDepth());
                 }
 
-                var eyePosition = DrawTool.Position + DrawTool.Origin + DrawTool.PositionOffset + new Vector2(x_adjustment, AppearanceHelpers.GetFarmerRendererYFeatureOffset(DrawTool.CurrentFrame) * 4 + bodyModel.EyePosition);
+                var eyePosition = DrawTool.Position + DrawTool.Origin + DrawTool.PositionOffset + new Vector2(x_adjustment, AppearanceHelpers.GetFarmerRendererYFeatureOffset(DrawTool.CurrentFrame) * 4 + bodyModel.EyePosition) + eyesOffset;
                 DrawTool.SpriteBatch.Draw(bodyPack.EyesTexture, eyePosition, new Rectangle(0, (who.currentEyes - 1) * 2, (DrawTool.FacingDirection == 2) ? 6 : 2, 2), bodyModel.HasColorMask() ? Color.White : colorOverride is not null ? colorOverride.Value : modelColor, 0f, DrawTool.Origin + new Vector2(positionOffset.X, positionOffset.Y), 4f * DrawTool.Scale, SpriteEffects.None, IncrementAndGetLayerDepth());
                 if (bodyModel.HasColorMask())
                 {
