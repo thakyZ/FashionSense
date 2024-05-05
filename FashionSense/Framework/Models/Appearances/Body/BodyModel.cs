@@ -12,6 +12,7 @@ namespace FashionSense.Framework.Models.Appearances.Body
         public int? AccessoryOffset { get; set; }
         public int? HeadOffset { get; set; }
         public int? LegOffset { get; set; }
+        public int? ShoeOffset { get; set; }
         public int? BodyOffset { get; set; }
         public int? ArmsOffset { get; set; }
         public Size BodySize { get; set; }
@@ -26,8 +27,9 @@ namespace FashionSense.Framework.Models.Appearances.Body
                 case IApi.Type.Hair:
                     return HeadOffset is not null ? HeadOffset.Value : defaultValue;
                 case IApi.Type.Pants:
-                case IApi.Type.Shoes:
                     return LegOffset is not null ? LegOffset.Value : defaultValue;
+                case IApi.Type.Shoes:
+                    return ShoeOffset is not null ? ShoeOffset.Value : GetFeatureOffset(IApi.Type.Pants, defaultValue);
                 case IApi.Type.Shirt:
                     return BodyOffset is not null ? BodyOffset.Value : defaultValue;
                 case IApi.Type.Sleeves:
