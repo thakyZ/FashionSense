@@ -1425,7 +1425,7 @@ namespace FashionSense
                     appearanceModel.Texture = contentPack.ModContent.Load<Texture2D>(contentPack.ModContent.GetInternalAssetName(Path.Combine(parentFolderName, textureFolder.Name, "body.png")).Name);
 
                     // Verify we are given the eyes texture and if so, track it
-                    if (!File.Exists(Path.Combine(textureFolder.FullName, "eyes.png")))
+                    if (appearanceModel.HideEyes is false && !File.Exists(Path.Combine(textureFolder.FullName, "eyes.png")))
                     {
                         Monitor.Log($"Unable to add body for {appearanceModel.Name} from {contentPack.Manifest.Name}: No associated eyes.png given", LogLevel.Warn);
                         continue;
