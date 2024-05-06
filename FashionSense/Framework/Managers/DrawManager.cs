@@ -1102,6 +1102,16 @@ namespace FashionSense.Framework.Managers
         #endregion
 
         #region Helper methods
+        private AnimationModel GetAnimationByModel(AppearanceModel model, Dictionary<AppearanceModel, AnimationModel> appearanceTypeToAnimationModels)
+        {
+            if (model is not null && appearanceTypeToAnimationModels.TryGetValue(model, out var animation) is true && animation is not null)
+            {
+                return animation;
+            }
+
+            return null;
+        }
+
         private Position GetPositionOffset(AppearanceModel model, Dictionary<AppearanceModel, AnimationModel> appearanceTypeToAnimationModels)
         {
             var offset = new Position();
@@ -1133,7 +1143,6 @@ namespace FashionSense.Framework.Managers
                     break;
             }
 
-            if (appearanceTypeToAnimationModels.TryGetValue(model, out var animation) is true && animation is not null)
             {
                 offset = new Position() { X = offset.X + animation.Offset.X, Y = offset.Y + animation.Offset.Y };
             }
@@ -1146,7 +1155,8 @@ namespace FashionSense.Framework.Managers
             var size = AppearanceHelpers.GetModelSize(model);
             Rectangle sourceRectangle = new Rectangle(model.StartingPosition.X, model.StartingPosition.Y, size.Width, size.Length);
 
-            if (appearanceTypeToAnimationModels.TryGetValue(model, out var animation) is false || animation is null)
+            var animation = GetAnimationByModel(model, appearanceTypeToAnimationModels);
+            if (animation is null)
             {
                 return sourceRectangle;
             }
