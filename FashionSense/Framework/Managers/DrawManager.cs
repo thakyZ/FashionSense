@@ -871,10 +871,11 @@ namespace FashionSense.Framework.Managers
                 x_adjustment *= 4;
 
                 var eyeBasePosition = DrawTool.Position + DrawTool.Origin + DrawTool.PositionOffset + new Vector2(x_adjustment, AppearanceHelpers.GetFarmerRendererYFeatureOffset(DrawTool.CurrentFrame) * 4 + bodyModel.EyeBackgroundPosition) + eyesOffset;
-                DrawTool.SpriteBatch.Draw(bodyPack.Texture, eyeBasePosition, new Rectangle(5, 16, (DrawTool.FacingDirection == 2) ? 6 : 2, 2), bodyModel.HasColorMask() ? Color.White : colorOverride is not null ? colorOverride.Value : modelColor, 0f, DrawTool.Origin + new Vector2(positionOffset.X, positionOffset.Y), 4f * DrawTool.Scale, SpriteEffects.None, IncrementAndGetLayerDepth());
+                var eyeBaseRectangle = bodyModel.EyeBaseSourceRectangle is null ? new Rectangle(5, 16, (DrawTool.FacingDirection == 2) ? 6 : 2, 2) : bodyModel.EyeBaseSourceRectangle.Value;
+                DrawTool.SpriteBatch.Draw(bodyPack.Texture, eyeBasePosition, eyeBaseRectangle, bodyModel.HasColorMask() ? Color.White : colorOverride is not null ? colorOverride.Value : modelColor, 0f, DrawTool.Origin + new Vector2(positionOffset.X, positionOffset.Y), 4f * DrawTool.Scale, SpriteEffects.None, IncrementAndGetLayerDepth());
                 if (bodyModel.HasColorMask())
                 {
-                    DrawColorMask(DrawTool.SpriteBatch, bodyPack, bodyModel, _areColorMasksPendingRefresh, eyeBasePosition, new Rectangle(5, 16, (DrawTool.FacingDirection == 2) ? 6 : 2, 2), colorOverride, layer.Colors, DrawTool.Rotation, DrawTool.Origin + new Vector2(positionOffset.X, positionOffset.Y), bodyModel.Scale * DrawTool.Scale, IncrementAndGetLayerDepth());
+                    DrawColorMask(DrawTool.SpriteBatch, bodyPack, bodyModel, _areColorMasksPendingRefresh, eyeBasePosition, eyeBaseRectangle, colorOverride, layer.Colors, DrawTool.Rotation, DrawTool.Origin + new Vector2(positionOffset.X, positionOffset.Y), bodyModel.Scale * DrawTool.Scale, IncrementAndGetLayerDepth());
                 }
 
                 var eyePosition = DrawTool.Position + DrawTool.Origin + DrawTool.PositionOffset + new Vector2(x_adjustment, AppearanceHelpers.GetFarmerRendererYFeatureOffset(DrawTool.CurrentFrame) * 4 + bodyModel.EyePosition) + eyesOffset;

@@ -1,5 +1,6 @@
 ﻿using FashionSense.Framework.Interfaces.API;
 using FashionSense.Framework.Models.Appearances.Generic;
+using Microsoft.Xna.Framework;
 
 namespace FashionSense.Framework.Models.Appearances.Body
 {
@@ -7,6 +8,7 @@ namespace FashionSense.Framework.Models.Appearances.Body
     {
         public int EyeBackgroundPosition { get; set; }
         public int EyePosition { get; set; }
+        public Rectangle? EyeBaseSourceRectangle { get; set; }
 
         public int HeightOffset { get; set; }
         public int? AccessoryOffset { get; set; }
