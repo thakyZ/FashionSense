@@ -313,7 +313,7 @@ namespace FashionSense.Framework.Managers
                 pants_rect.X += 96;
             }
 
-            DrawTool.SpriteBatch.Draw(texture, DrawTool.Position + DrawTool.Origin + DrawTool.PositionOffset, pants_rect, DrawTool.OverrideColor.Equals(Color.White) ? Utility.MakeCompletelyOpaque(who.GetPantsColor()) : DrawTool.OverrideColor, DrawTool.Rotation, DrawTool.Origin, 4f * DrawTool.Scale, DrawTool.AnimationFrame.flip ? SpriteEffects.FlipHorizontally : SpriteEffects.None, IncrementAndGetLayerDepth());
+            DrawTool.SpriteBatch.Draw(texture, DrawTool.Position + DrawTool.Origin + DrawTool.PositionOffset + new Vector2(0f, AppearanceHelpers.GetHeightOffset(DrawTool.FarmerRenderer, _customBody, IApi.Type.Pants)), pants_rect, DrawTool.OverrideColor.Equals(Color.White) ? Utility.MakeCompletelyOpaque(who.GetPantsColor()) : DrawTool.OverrideColor, DrawTool.Rotation, DrawTool.Origin, 4f * DrawTool.Scale, DrawTool.AnimationFrame.flip ? SpriteEffects.FlipHorizontally : SpriteEffects.None, IncrementAndGetLayerDepth());
         }
 
         private void DrawSleevesVanilla(Farmer who)
