@@ -41,8 +41,15 @@ namespace FashionSense.Framework.Managers
         internal float LayerDepth { get; set; }
         internal DrawTool DrawTool { get; }
 
-        public DrawManager(SpriteBatch spriteBatch, Farmer who, FarmerRenderer farmerRenderer, SkinToneModel skinToneModel, Texture2D baseTexture, Rectangle farmerSourceRectangle, Rectangle shirtSourceRectangle, Rectangle dyedShirtSourceRectangle, Rectangle accessorySourceRectangle, Rectangle hatSourceRectangle, Dictionary<AppearanceModel, AnimationModel> appearanceTypeToAnimationModels, AnimationFrame animationFrame, Color overrideColor, Vector2 position, Vector2 origin, Vector2 positionOffset, Vector2 rotationAdjustment, int facingDirection, int currentFrame, float scale, float rotation, bool areColorMasksPendingRefresh, bool isDrawingForUI, bool hideSleeves, bool hidePlayerBase, int heightOffset)
+        public DrawManager(SpriteBatch spriteBatch, Farmer who, FarmerRenderer farmerRenderer, SkinToneModel skinToneModel, BodyModel customBody, Texture2D baseTexture, Rectangle farmerSourceRectangle, Rectangle shirtSourceRectangle, Rectangle dyedShirtSourceRectangle, Rectangle accessorySourceRectangle, Rectangle hatSourceRectangle, Dictionary<AppearanceModel, AnimationModel> appearanceTypeToAnimationModels, AnimationFrame animationFrame, Color overrideColor, Vector2 position, Vector2 origin, Vector2 positionOffset, Vector2 rotationAdjustment, int facingDirection, int currentFrame, float scale, float rotation, bool areColorMasksPendingRefresh, bool isDrawingForUI, bool hideSleeves, bool hidePlayerBase, int heightOffset)
         {
+            // Handle player offset via custom body, if any
+            var adjustedPositionOffset = positionOffset;
+            if (GetAnimationByModel(customBody, appearanceTypeToAnimationModels) is AnimationModel animation && animation is not null)
+            {
+                adjustedPositionOffset = new Vector2(positionOffset.X + animation.PlayerOffset.X, positionOffset.Y + animation.PlayerOffset.Y);
+            }
+
             DrawTool = new DrawTool()
             {
                 Farmer = who,
@@ -55,7 +62,7 @@ namespace FashionSense.Framework.Managers
                 OverrideColor = overrideColor,
                 Position = position,
                 Origin = origin,
-                PositionOffset = positionOffset,
+                PositionOffset = adjustedPositionOffset,
                 FacingDirection = facingDirection,
                 CurrentFrame = currentFrame,
                 Scale = scale,
@@ -63,6 +70,7 @@ namespace FashionSense.Framework.Managers
             };
 
             _skinToneModel = skinToneModel;
+            _customBody = customBody;
             _shirtSourceRectangle = shirtSourceRectangle;
             _dyedShirtSourceRectangle = dyedShirtSourceRectangle;
             _accessorySourceRectangle = accessorySourceRectangle;
@@ -78,9 +86,6 @@ namespace FashionSense.Framework.Managers
 
         public void DrawLayers(Farmer who, List<LayerData> layers)
         {
-            // Determine if a custom BodyModel is being used
-            _customBody = layers.FirstOrDefault(l => l.AppearanceModel is BodyModel)?.AppearanceModel as BodyModel;
-
             foreach (var layer in layers)
             {
                 // Set current model color
@@ -796,6 +801,9 @@ namespace FashionSense.Framework.Managers
                 return;
             }
 
+            // Get any body animation data
+            var animation = GetAnimationByModel(bodyModel, _appearanceTypeToAnimationModels);
+
             // Display forward facing farmer when in inventory / vanilla UIs
             var sourceRectangle = GetSourceRectangle(bodyModel, _appearanceTypeToAnimationModels);
             if (FarmerRenderer.isDrawingForUI && DrawTool.AnimationFrame.frame == 0)
@@ -847,7 +855,7 @@ namespace FashionSense.Framework.Managers
 
             // Get eye-specific offset
             Vector2 eyesOffset = new Vector2();
-            if (_appearanceTypeToAnimationModels.TryGetValue(bodyModel, out var animation) is true && animation is not null)
+            if (animation is not null)
             {
                 eyesOffset = new Vector2(animation.EyesOffset.X, animation.EyesOffset.Y);
             }
@@ -1143,6 +1151,8 @@ namespace FashionSense.Framework.Managers
                     break;
             }
 
+            var animation = GetAnimationByModel(model, appearanceTypeToAnimationModels);
+            if (animation is not null)
             {
                 offset = new Position() { X = offset.X + animation.Offset.X, Y = offset.Y + animation.Offset.Y };
             }
