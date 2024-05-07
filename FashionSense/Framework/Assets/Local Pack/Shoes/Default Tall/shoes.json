@@ -1145,6 +1145,16 @@
 
       // Start of sitting and riding horse frame
       {
+        "Frame": 106,
+        "EndWhenFarmerFrameUpdates": true,
+        "Conditions": [
+          {
+            "Name": "CurrentFarmerFrame",
+            "Value": 106
+          }
+        ]
+      },
+      {
         "Frame": 117,
         "EndWhenFarmerFrameUpdates": true,
         "Conditions": [
@@ -1484,6 +1494,16 @@
       // End of Shearing frames
 
       // Start of sitting and riding horse frame
+      {
+        "Frame": 106,
+        "EndWhenFarmerFrameUpdates": true,
+        "Conditions": [
+          {
+            "Name": "CurrentFarmerFrame",
+            "Value": 106
+          }
+        ]
+      },
       {
         "Frame": 117,
         "EndWhenFarmerFrameUpdates": true,

@@ -478,7 +478,7 @@ namespace FashionSense.Framework.UI
                     availableTextures[i].texture = null;
 
                     var textureIndex = i + _startingRow * _texturesPerRow;
-                    if (textureIndex < filteredTextureOptions.Count)
+                    if (textureIndex < filteredTextureOptions.Count && fakeFarmers.Count > i)
                     {
                         var targetPack = filteredTextureOptions[textureIndex];
 

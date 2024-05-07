@@ -1,5 +1,6 @@
 ﻿using FashionSense.Framework.Interfaces.API;
 using FashionSense.Framework.Models.Appearances.Generic;
+using Microsoft.Xna.Framework;
 
 namespace FashionSense.Framework.Models.Appearances.Body
 {
@@ -7,12 +8,13 @@ namespace FashionSense.Framework.Models.Appearances.Body
     {
         public int EyeBackgroundPosition { get; set; }
         public int EyePosition { get; set; }
-        public bool HideEyes { get; set; }
+        public Rectangle? EyeBaseSourceRectangle { get; set; }
 
         public int HeightOffset { get; set; }
         public int? AccessoryOffset { get; set; }
         public int? HeadOffset { get; set; }
         public int? LegOffset { get; set; }
+        public int? ShoeOffset { get; set; }
         public int? BodyOffset { get; set; }
         public int? ArmsOffset { get; set; }
         public Size BodySize { get; set; }
@@ -27,8 +29,9 @@ namespace FashionSense.Framework.Models.Appearances.Body
                 case IApi.Type.Hair:
                     return HeadOffset is not null ? HeadOffset.Value : defaultValue;
                 case IApi.Type.Pants:
-                case IApi.Type.Shoes:
                     return LegOffset is not null ? LegOffset.Value : defaultValue;
+                case IApi.Type.Shoes:
+                    return ShoeOffset is not null ? ShoeOffset.Value : GetFeatureOffset(IApi.Type.Pants, defaultValue);
                 case IApi.Type.Shirt:
                     return BodyOffset is not null ? BodyOffset.Value : defaultValue;
                 case IApi.Type.Sleeves:

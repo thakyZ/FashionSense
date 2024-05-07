@@ -41,8 +41,15 @@ namespace FashionSense.Framework.Managers
         internal float LayerDepth { get; set; }
         internal DrawTool DrawTool { get; }
 
-        public DrawManager(SpriteBatch spriteBatch, Farmer who, FarmerRenderer farmerRenderer, SkinToneModel skinToneModel, Texture2D baseTexture, Rectangle farmerSourceRectangle, Rectangle shirtSourceRectangle, Rectangle dyedShirtSourceRectangle, Rectangle accessorySourceRectangle, Rectangle hatSourceRectangle, Dictionary<AppearanceModel, AnimationModel> appearanceTypeToAnimationModels, AnimationFrame animationFrame, Color overrideColor, Vector2 position, Vector2 origin, Vector2 positionOffset, Vector2 rotationAdjustment, int facingDirection, int currentFrame, float scale, float rotation, bool areColorMasksPendingRefresh, bool isDrawingForUI, bool hideSleeves, bool hidePlayerBase, int heightOffset)
+        public DrawManager(SpriteBatch spriteBatch, Farmer who, FarmerRenderer farmerRenderer, SkinToneModel skinToneModel, BodyModel customBody, Texture2D baseTexture, Rectangle farmerSourceRectangle, Rectangle shirtSourceRectangle, Rectangle dyedShirtSourceRectangle, Rectangle accessorySourceRectangle, Rectangle hatSourceRectangle, Dictionary<AppearanceModel, AnimationModel> appearanceTypeToAnimationModels, AnimationFrame animationFrame, Color overrideColor, Vector2 position, Vector2 origin, Vector2 positionOffset, Vector2 rotationAdjustment, int facingDirection, int currentFrame, float scale, float rotation, bool areColorMasksPendingRefresh, bool isDrawingForUI, bool hideSleeves, bool hidePlayerBase, int heightOffset)
         {
+            // Handle player offset via custom body, if any
+            var adjustedPositionOffset = positionOffset;
+            if (GetAnimationByModel(customBody, appearanceTypeToAnimationModels) is AnimationModel animation && animation is not null)
+            {
+                adjustedPositionOffset = new Vector2(positionOffset.X + animation.PlayerOffset.X, positionOffset.Y + animation.PlayerOffset.Y);
+            }
+
             DrawTool = new DrawTool()
             {
                 Farmer = who,
@@ -55,7 +62,7 @@ namespace FashionSense.Framework.Managers
                 OverrideColor = overrideColor,
                 Position = position,
                 Origin = origin,
-                PositionOffset = positionOffset,
+                PositionOffset = adjustedPositionOffset,
                 FacingDirection = facingDirection,
                 CurrentFrame = currentFrame,
                 Scale = scale,
@@ -63,6 +70,7 @@ namespace FashionSense.Framework.Managers
             };
 
             _skinToneModel = skinToneModel;
+            _customBody = customBody;
             _shirtSourceRectangle = shirtSourceRectangle;
             _dyedShirtSourceRectangle = dyedShirtSourceRectangle;
             _accessorySourceRectangle = accessorySourceRectangle;
@@ -78,9 +86,6 @@ namespace FashionSense.Framework.Managers
 
         public void DrawLayers(Farmer who, List<LayerData> layers)
         {
-            // Determine if a custom BodyModel is being used
-            _customBody = layers.FirstOrDefault(l => l.AppearanceModel is BodyModel)?.AppearanceModel as BodyModel;
-
             foreach (var layer in layers)
             {
                 // Set current model color
@@ -308,7 +313,7 @@ namespace FashionSense.Framework.Managers
                 pants_rect.X += 96;
             }
 
-            DrawTool.SpriteBatch.Draw(texture, DrawTool.Position + DrawTool.Origin + DrawTool.PositionOffset, pants_rect, DrawTool.OverrideColor.Equals(Color.White) ? Utility.MakeCompletelyOpaque(who.GetPantsColor()) : DrawTool.OverrideColor, DrawTool.Rotation, DrawTool.Origin, 4f * DrawTool.Scale, DrawTool.AnimationFrame.flip ? SpriteEffects.FlipHorizontally : SpriteEffects.None, IncrementAndGetLayerDepth());
+            DrawTool.SpriteBatch.Draw(texture, DrawTool.Position + DrawTool.Origin + DrawTool.PositionOffset + new Vector2(0f, AppearanceHelpers.GetHeightOffset(DrawTool.FarmerRenderer, _customBody, IApi.Type.Pants)), pants_rect, DrawTool.OverrideColor.Equals(Color.White) ? Utility.MakeCompletelyOpaque(who.GetPantsColor()) : DrawTool.OverrideColor, DrawTool.Rotation, DrawTool.Origin, 4f * DrawTool.Scale, DrawTool.AnimationFrame.flip ? SpriteEffects.FlipHorizontally : SpriteEffects.None, IncrementAndGetLayerDepth());
         }
 
         private void DrawSleevesVanilla(Farmer who)
@@ -796,6 +801,9 @@ namespace FashionSense.Framework.Managers
                 return;
             }
 
+            // Get any body animation data
+            var animation = GetAnimationByModel(bodyModel, _appearanceTypeToAnimationModels);
+
             // Display forward facing farmer when in inventory / vanilla UIs
             var sourceRectangle = GetSourceRectangle(bodyModel, _appearanceTypeToAnimationModels);
             if (FarmerRenderer.isDrawingForUI && DrawTool.AnimationFrame.frame == 0)
@@ -840,9 +848,16 @@ namespace FashionSense.Framework.Managers
             }
 
             // Skip drawing the eyes if HideEyes is true
-            if (bodyModel.HideEyes)
+            if (bodyPack.HideEyes)
             {
                 return;
+            }
+
+            // Get eye-specific offset
+            Vector2 eyesOffset = new Vector2();
+            if (animation is not null)
+            {
+                eyesOffset = new Vector2(animation.EyesOffset.X, animation.EyesOffset.Y);
             }
 
             // Draw blinking / eyes closed animation, if conditions are met
@@ -863,14 +878,15 @@ namespace FashionSense.Framework.Managers
 
                 x_adjustment *= 4;
 
-                var eyeBasePosition = DrawTool.Position + DrawTool.Origin + DrawTool.PositionOffset + new Vector2(x_adjustment, AppearanceHelpers.GetFarmerRendererYFeatureOffset(DrawTool.CurrentFrame) * 4 + bodyModel.EyeBackgroundPosition);
-                DrawTool.SpriteBatch.Draw(bodyPack.Texture, eyeBasePosition, new Rectangle(5, 16, (DrawTool.FacingDirection == 2) ? 6 : 2, 2), bodyModel.HasColorMask() ? Color.White : colorOverride is not null ? colorOverride.Value : modelColor, 0f, DrawTool.Origin + new Vector2(positionOffset.X, positionOffset.Y), 4f * DrawTool.Scale, SpriteEffects.None, IncrementAndGetLayerDepth());
+                var eyeBasePosition = DrawTool.Position + DrawTool.Origin + DrawTool.PositionOffset + new Vector2(x_adjustment, AppearanceHelpers.GetFarmerRendererYFeatureOffset(DrawTool.CurrentFrame) * 4 + bodyModel.EyeBackgroundPosition) + eyesOffset;
+                var eyeBaseRectangle = bodyModel.EyeBaseSourceRectangle is null ? new Rectangle(5, 16, (DrawTool.FacingDirection == 2) ? 6 : 2, 2) : bodyModel.EyeBaseSourceRectangle.Value;
+                DrawTool.SpriteBatch.Draw(bodyPack.Texture, eyeBasePosition, eyeBaseRectangle, bodyModel.HasColorMask() ? Color.White : colorOverride is not null ? colorOverride.Value : modelColor, 0f, DrawTool.Origin + new Vector2(positionOffset.X, positionOffset.Y), 4f * DrawTool.Scale, SpriteEffects.None, IncrementAndGetLayerDepth());
                 if (bodyModel.HasColorMask())
                 {
-                    DrawColorMask(DrawTool.SpriteBatch, bodyPack, bodyModel, _areColorMasksPendingRefresh, eyeBasePosition, new Rectangle(5, 16, (DrawTool.FacingDirection == 2) ? 6 : 2, 2), colorOverride, layer.Colors, DrawTool.Rotation, DrawTool.Origin + new Vector2(positionOffset.X, positionOffset.Y), bodyModel.Scale * DrawTool.Scale, IncrementAndGetLayerDepth());
+                    DrawColorMask(DrawTool.SpriteBatch, bodyPack, bodyModel, _areColorMasksPendingRefresh, eyeBasePosition, eyeBaseRectangle, colorOverride, layer.Colors, DrawTool.Rotation, DrawTool.Origin + new Vector2(positionOffset.X, positionOffset.Y), bodyModel.Scale * DrawTool.Scale, IncrementAndGetLayerDepth());
                 }
 
-                var eyePosition = DrawTool.Position + DrawTool.Origin + DrawTool.PositionOffset + new Vector2(x_adjustment, AppearanceHelpers.GetFarmerRendererYFeatureOffset(DrawTool.CurrentFrame) * 4 + bodyModel.EyePosition);
+                var eyePosition = DrawTool.Position + DrawTool.Origin + DrawTool.PositionOffset + new Vector2(x_adjustment, AppearanceHelpers.GetFarmerRendererYFeatureOffset(DrawTool.CurrentFrame) * 4 + bodyModel.EyePosition) + eyesOffset;
                 DrawTool.SpriteBatch.Draw(bodyPack.EyesTexture, eyePosition, new Rectangle(0, (who.currentEyes - 1) * 2, (DrawTool.FacingDirection == 2) ? 6 : 2, 2), bodyModel.HasColorMask() ? Color.White : colorOverride is not null ? colorOverride.Value : modelColor, 0f, DrawTool.Origin + new Vector2(positionOffset.X, positionOffset.Y), 4f * DrawTool.Scale, SpriteEffects.None, IncrementAndGetLayerDepth());
                 if (bodyModel.HasColorMask())
                 {
@@ -1094,6 +1110,16 @@ namespace FashionSense.Framework.Managers
         #endregion
 
         #region Helper methods
+        private AnimationModel GetAnimationByModel(AppearanceModel model, Dictionary<AppearanceModel, AnimationModel> appearanceTypeToAnimationModels)
+        {
+            if (model is not null && appearanceTypeToAnimationModels.TryGetValue(model, out var animation) is true && animation is not null)
+            {
+                return animation;
+            }
+
+            return null;
+        }
+
         private Position GetPositionOffset(AppearanceModel model, Dictionary<AppearanceModel, AnimationModel> appearanceTypeToAnimationModels)
         {
             var offset = new Position();
@@ -1125,7 +1151,8 @@ namespace FashionSense.Framework.Managers
                     break;
             }
 
-            if (appearanceTypeToAnimationModels.TryGetValue(model, out var animation) is true && animation is not null)
+            var animation = GetAnimationByModel(model, appearanceTypeToAnimationModels);
+            if (animation is not null)
             {
                 offset = new Position() { X = offset.X + animation.Offset.X, Y = offset.Y + animation.Offset.Y };
             }
@@ -1138,7 +1165,8 @@ namespace FashionSense.Framework.Managers
             var size = AppearanceHelpers.GetModelSize(model);
             Rectangle sourceRectangle = new Rectangle(model.StartingPosition.X, model.StartingPosition.Y, size.Width, size.Length);
 
-            if (appearanceTypeToAnimationModels.TryGetValue(model, out var animation) is false || animation is null)
+            var animation = GetAnimationByModel(model, appearanceTypeToAnimationModels);
+            if (animation is null)
             {
                 return sourceRectangle;
             }
