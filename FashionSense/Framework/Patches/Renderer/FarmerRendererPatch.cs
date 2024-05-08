@@ -1,4 +1,5 @@
-﻿using FashionSense.Framework.Managers;
+﻿using FashionSense.Framework.Interfaces.API;
+using FashionSense.Framework.Managers;
 using FashionSense.Framework.Models.Appearances.Body;
 using FashionSense.Framework.Models.Appearances.Hair;
 using FashionSense.Framework.Utilities;
@@ -91,16 +92,16 @@ namespace FashionSense.Framework.Patches.Renderer
             var hairPack = FashionSense.textureManager.GetSpecificAppearanceModel<HairContentPack>(who.modData[ModDataKeys.CUSTOM_HAIR_ID]);
             if (hairPack is null)
             {
-                return true;
+                return customBody is null ? true : DrawVanillaHairForPortrait(b, who, position + portraitOffset, layerDepth, scale, facingDirection, customBody);
             }
 
-            // This is in the vanilla code, which for some reason is always 2 instead of relying on facingDirection's initial value
+            // Always force to face downwards
             facingDirection = 2;
 
             HairModel hairModel = hairPack.GetHairFromFacingDirection(facingDirection);
             if (hairModel is null)
             {
-                return true;
+                return customBody is null ? true : DrawVanillaHairForPortrait(b, who, position + portraitOffset, layerDepth, scale, facingDirection, customBody);
             }
             Rectangle sourceRect = new Rectangle(hairModel.StartingPosition.X, hairModel.StartingPosition.Y, hairModel.HairSize.Width, hairModel.HairSize.Length);
 
@@ -173,6 +174,56 @@ namespace FashionSense.Framework.Patches.Renderer
                 // Get skin tone
                 var skinTone = DrawPatch.GetSkinTone(___farmerTextureManager, ___baseTexture, null, ___skin, ____sickFrame, who);
                 DrawManager.DrawSkinToneMask(b, hairPack, hairModel, skinTone, FarmerRendererPatch.AreColorMasksPendingRefresh, position + new Vector2(0f, feature_y_offset * 4) * scale / 4f, sourceRect, hairColor, 0f, new Vector2(hairModel.HeadPosition.X, hairModel.HeadPosition.Y), scale, layerDepth + hair_draw_layer + 0.01E-05f);
+            }
+
+            return false;
+        }
+
+        private static bool DrawVanillaHairForPortrait(SpriteBatch b, Farmer who, Vector2 position, float layerDepth, float scale, int facingDirection, BodyModel customBody = null)
+        {
+            int hair_style = who.getHair();
+            HairStyleMetadata hair_metadata = Farmer.GetHairStyleMetadata(who.hair.Value);
+            if (who != null && who.hat.Value != null && who.hat.Value.hairDrawType.Value == 1 && hair_metadata != null && hair_metadata.coveredIndex != -1)
+            {
+                hair_style = hair_metadata.coveredIndex;
+                hair_metadata = Farmer.GetHairStyleMetadata(hair_style);
+            }
+
+            Texture2D hairTexture = FarmerRenderer.hairStylesTexture;
+            Rectangle hairstyleSourceRect = new Rectangle(hair_style * 16 % FarmerRenderer.hairStylesTexture.Width, hair_style * 16 / FarmerRenderer.hairStylesTexture.Width * 96, 16, 32);
+            if (hair_metadata != null)
+            {
+                hairTexture = hair_metadata.texture;
+                hairstyleSourceRect = new Rectangle(hair_metadata.tileX * 16, hair_metadata.tileY * 16, 16, 32);
+            }
+
+            int vanillaHairOffset = ((who.IsMale && hair_style >= 16) ? (-4) : ((!who.IsMale && hair_style < 16) ? 4 : 0));
+            switch (facingDirection)
+            {
+                case 0:
+                    hairstyleSourceRect.Offset(0, 64);
+                    b.Draw(hairTexture, position + new Vector2(AppearanceHelpers.GetFarmerRendererXFeatureOffset(12) * 4, AppearanceHelpers.GetFarmerRendererYFeatureOffset(12) * 4 + 4 + (customBody is null ? vanillaHairOffset : customBody.GetFeatureOffset(IApi.Type.Hair, vanillaHairOffset))), hairstyleSourceRect, who.hairstyleColor.Value, 0f, Vector2.Zero, scale, SpriteEffects.None, layerDepth);
+                    break;
+                case 1:
+                    hairstyleSourceRect.Offset(0, 32);
+                    b.Draw(hairTexture, position + new Vector2(AppearanceHelpers.GetFarmerRendererXFeatureOffset(6) * 4, AppearanceHelpers.GetFarmerRendererYFeatureOffset(6) * 4 + (customBody is null ? vanillaHairOffset : customBody.GetFeatureOffset(IApi.Type.Hair, vanillaHairOffset))), hairstyleSourceRect, who.hairstyleColor.Value, 0f, Vector2.Zero, scale, SpriteEffects.None, layerDepth);
+                    break;
+                case 2:
+                    b.Draw(hairTexture, position + new Vector2(AppearanceHelpers.GetFarmerRendererXFeatureOffset(0) * 4, AppearanceHelpers.GetFarmerRendererYFeatureOffset(0) * 4 + (customBody is null ? vanillaHairOffset : customBody.GetFeatureOffset(IApi.Type.Hair, vanillaHairOffset))), hairstyleSourceRect, who.hairstyleColor.Value, 0f, Vector2.Zero, scale, SpriteEffects.None, layerDepth);
+                    break;
+                case 3:
+                    bool flip2 = true;
+                    if (hair_metadata != null && hair_metadata.usesUniqueLeftSprite)
+                    {
+                        flip2 = false;
+                        hairstyleSourceRect.Offset(0, 96);
+                    }
+                    else
+                    {
+                        hairstyleSourceRect.Offset(0, 32);
+                    }
+                    b.Draw(hairTexture, position + new Vector2(-AppearanceHelpers.GetFarmerRendererXFeatureOffset(6) * 4, AppearanceHelpers.GetFarmerRendererYFeatureOffset(6) * 4 + (customBody is null ? vanillaHairOffset : customBody.GetFeatureOffset(IApi.Type.Hair, vanillaHairOffset))), hairstyleSourceRect, who.hairstyleColor.Value, 0f, Vector2.Zero, scale, SpriteEffects.None, layerDepth);
+                    break;
             }
 
             return false;
