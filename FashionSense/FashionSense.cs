@@ -116,6 +116,7 @@ namespace FashionSense
                 new CharacterCustomizationPatch(monitor, modHelper).Apply(harmony);
                 new LetterViewerMenuPatch(monitor, modHelper).Apply(harmony);
                 new SaveFileSlotPatch(monitor, modHelper).Apply(harmony);
+                new InventoryPagePatch(monitor, modHelper).Apply(harmony);
 
                 // Apply entity related patches
                 new FarmerPatch(monitor, modHelper).Apply(harmony);
