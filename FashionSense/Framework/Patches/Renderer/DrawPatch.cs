@@ -247,7 +247,18 @@ namespace FashionSense.Framework.Patches.Renderer
                     b.End();
                     b.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, SamplerState.PointClamp, null, null);
 
+                    var oldFacingDirection = who.FacingDirection;
+
+                    // Force facing direction to be downwards when drawing in UI (only when animationFrame.frame is 0)
+                    if (FarmerRenderer.isDrawingForUI && animationFrame.frame == 0)
+                    {
+                        who.faceDirection(2);
+                    }
+
                     HandleConditionalDraw(equippedModels, __instance, ___farmerTextureManager, ___baseTexture, ___skin, ref ___hairstyleSourceRect, ref ___shirtSourceRect, ref ___accessorySourceRect, ref ___hatSourceRect, ref ___positionOffset, ref ___rotationAdjustment, ref ____sickFrame, ref ____shirtDirty, ref ____spriteDirty, b, animationFrame, currentFrame, sourceRect, position, origin, layerDepth, facingDirection, overrideColor, rotation, scale, who);
+
+                    // Restore facing direction
+                    who.faceDirection(oldFacingDirection);
 
                     b.End();
                     b.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null);

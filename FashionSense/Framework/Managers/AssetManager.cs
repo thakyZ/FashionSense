@@ -1,5 +1,4 @@
-﻿using FashionSense.Framework.Models.Appearances.Body;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 using StardewModdingAPI;
 using System.Collections.Generic;
 using System.IO;
