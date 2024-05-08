@@ -44,10 +44,19 @@ namespace FashionSense.Framework.Patches.Renderer
         {
             // Draw the player's custom face, if applicable
             bool hasDrawnCustomBody = false;
+            BodyModel customBody = null;
+            Vector2 portraitOffset = Vector2.Zero;
             if (who.modData.ContainsKey(ModDataKeys.CUSTOM_BODY_ID) && FashionSense.textureManager.GetSpecificAppearanceModel<BodyContentPack>(who.modData[ModDataKeys.CUSTOM_BODY_ID]) is BodyContentPack bodyPack && bodyPack is not null && bodyPack.FrontBody is BodyModel bodyModel && bodyModel is not null && bodyModel.StartingPosition is not null)
             {
                 FashionSense.monitor.LogOnce($"Using custom body {bodyPack.Name} from {bodyPack.PackName} for profile draw!", LogLevel.Trace);
-                var sourceRectangle = new Rectangle(bodyModel.StartingPosition.X, bodyModel.StartingPosition.Y, 16, 16);
+                customBody = bodyModel;
+
+                Rectangle sourceRectangle = new Rectangle(bodyModel.StartingPosition.X, bodyModel.StartingPosition.Y, 16, 16);
+                if (customBody.Portrait is not null)
+                {
+                    sourceRectangle = customBody.Portrait.SourceRectangle;
+                    portraitOffset = customBody.Portrait.Offset;
+                }
 
                 // Adjust color if needed
                 var colors = AppearanceHelpers.GetAllAppearanceColors(who, bodyModel);
@@ -63,11 +72,11 @@ namespace FashionSense.Framework.Patches.Renderer
                 }
 
                 // Draw the player's base texture
-                b.Draw(bodyPack.Texture, position, sourceRectangle, bodyModel.HasColorMask() ? Color.White : colorOverride is not null ? colorOverride.Value : modelColor, 0f, Vector2.Zero, scale, SpriteEffects.None, layerDepth);
+                b.Draw(bodyPack.Texture, position + portraitOffset, sourceRectangle, bodyModel.HasColorMask() ? Color.White : colorOverride is not null ? colorOverride.Value : modelColor, 0f, Vector2.Zero, scale, SpriteEffects.None, layerDepth);
 
                 if (bodyModel.HasColorMask())
                 {
-                    DrawManager.DrawColorMask(b, bodyPack, bodyModel, false, position, sourceRectangle, colorOverride, colors, 0f, Vector2.Zero, scale, layerDepth);
+                    DrawManager.DrawColorMask(b, bodyPack, bodyModel, false, position + portraitOffset, sourceRectangle, colorOverride, colors, 0f, Vector2.Zero, scale, layerDepth);
                 }
 
                 // Flag that we have drawn the custom body, to skip the base texture draw
@@ -143,16 +152,17 @@ namespace FashionSense.Framework.Patches.Renderer
                     break;
             }
             feature_y_offset -= who.IsMale ? 1 : 0;
+            feature_y_offset += customBody is null ? 0 : customBody.GetFeatureOffset(IApi.Type.Hair, 0) / 4;
 
             // Draw the player's face, then the custom hairstyle
             if (hasDrawnCustomBody is false)
             {
-                b.Draw(___baseTexture, position, new Rectangle(0, yOffset, 16, who.IsMale ? 15 : 16), Color.White, 0f, Vector2.Zero, scale, flip ? SpriteEffects.FlipHorizontally : SpriteEffects.None, layerDepth);
+                b.Draw(___baseTexture, position + portraitOffset, new Rectangle(0, yOffset, 16, who.IsMale ? 15 : 16), Color.White, 0f, Vector2.Zero, scale, flip ? SpriteEffects.FlipHorizontally : SpriteEffects.None, layerDepth);
             }
 
             // Draw the hair
             float hair_draw_layer = 2.2E-05f;
-            b.Draw(hairPack.Texture, position + new Vector2(0f, feature_y_offset * 4), sourceRect, hairColor, 0f, new Vector2(hairModel.HeadPosition.X, hairModel.HeadPosition.Y), scale, hairModel.Flipped ? SpriteEffects.FlipHorizontally : SpriteEffects.None, layerDepth + hair_draw_layer);
+            b.Draw(hairPack.Texture, position + portraitOffset + new Vector2(0f, feature_y_offset * 4), sourceRect, hairColor, 0f, new Vector2(hairModel.HeadPosition.X, hairModel.HeadPosition.Y), scale, hairModel.Flipped ? SpriteEffects.FlipHorizontally : SpriteEffects.None, layerDepth + hair_draw_layer);
 
             if (hairModel.HasColorMask())
             {
