@@ -32,6 +32,19 @@
       "X": 0,
       "Y": 0
     },
+    "Portrait": {
+      "SourceRectangle": {
+        "X": 0,
+        "Y": 0,
+        "Width": 16,
+        "Height": 15
+      },
+      "Offset": {
+        "X": 0,
+        "Y": 4
+      }
+    },
+
     "EyeBackgroundPosition": 40,
     "EyePosition": 40,
     "LegOffset": 0,
