@@ -807,10 +807,6 @@ namespace FashionSense.Framework.Managers
 
             // Display forward facing farmer when in inventory / vanilla UIs
             var sourceRectangle = GetSourceRectangle(bodyModel, _appearanceTypeToAnimationModels);
-            if (FarmerRenderer.isDrawingForUI && DrawTool.AnimationFrame.frame == 0)
-            {
-                sourceRectangle = new Rectangle(bodyModel.StartingPosition.X, bodyModel.StartingPosition.Y, bodyModel.BodySize.Width, bodyModel.BodySize.Length);
-            }
 
             // Adjust color if needed
             Color? colorOverride = null;
