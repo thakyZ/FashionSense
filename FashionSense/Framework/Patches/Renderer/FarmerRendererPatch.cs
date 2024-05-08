@@ -103,7 +103,7 @@ namespace FashionSense.Framework.Patches.Renderer
             {
                 return customBody is null ? true : DrawVanillaHairForPortrait(b, who, position + portraitOffset, layerDepth, scale, facingDirection, customBody);
             }
-            Rectangle sourceRect = new Rectangle(hairModel.StartingPosition.X, hairModel.StartingPosition.Y, hairModel.HairSize.Width, hairModel.HairSize.Length);
+            Rectangle sourceRect = new Rectangle(hairModel.StartingPosition.X, hairModel.StartingPosition.Y, hairModel.HairSize.Width, Math.Min(hairModel.HairSize.Length, 16));
 
             // Execute recolor
             DrawPatch.ExecuteRecolorActionsReversePatch(__instance, who);
