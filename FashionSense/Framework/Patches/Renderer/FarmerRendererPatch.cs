@@ -163,11 +163,11 @@ namespace FashionSense.Framework.Patches.Renderer
 
             // Draw the hair
             float hair_draw_layer = 2.2E-05f;
-            b.Draw(hairPack.Texture, position + portraitOffset + new Vector2(0f, feature_y_offset * 4), sourceRect, hairColor, 0f, new Vector2(hairModel.HeadPosition.X, hairModel.HeadPosition.Y), scale, hairModel.Flipped ? SpriteEffects.FlipHorizontally : SpriteEffects.None, layerDepth + hair_draw_layer);
+            b.Draw(hairPack.Texture, position + portraitOffset + new Vector2(0f, feature_y_offset * 4) * scale / 4f, sourceRect, hairColor, 0f, new Vector2(hairModel.HeadPosition.X, hairModel.HeadPosition.Y), scale, hairModel.Flipped ? SpriteEffects.FlipHorizontally : SpriteEffects.None, layerDepth + hair_draw_layer);
 
             if (hairModel.HasColorMask())
             {
-                DrawManager.DrawColorMask(b, hairPack, hairModel, FarmerRendererPatch.AreColorMasksPendingRefresh, position + new Vector2(0f, feature_y_offset * 4) * scale / 4f, sourceRect, hairColor, new List<Color>(), 0f, new Vector2(hairModel.HeadPosition.X, hairModel.HeadPosition.Y), scale, layerDepth + hair_draw_layer + 0.01E-05f);
+                DrawManager.DrawColorMask(b, hairPack, hairModel, FarmerRendererPatch.AreColorMasksPendingRefresh, position + portraitOffset + new Vector2(0f, feature_y_offset * 4) * scale / 4f, sourceRect, hairColor, new List<Color>(), 0f, new Vector2(hairModel.HeadPosition.X, hairModel.HeadPosition.Y), scale, layerDepth + hair_draw_layer + 0.01E-05f);
             }
             if (hairModel.HasSkinToneMask())
             {
