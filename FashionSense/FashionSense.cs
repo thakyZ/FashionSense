@@ -366,7 +366,7 @@ namespace FashionSense
                 _isRecordingPlayerFrames = false;
             }
 
-            _currentRecordedPlayerFrameIndex = _recordedPlayerFrames.Count() > _currentRecordedPlayerFrameIndex + 1 ? _currentRecordedPlayerFrameIndex + 1 : 0;            
+            _currentRecordedPlayerFrameIndex = _recordedPlayerFrames.Count() > _currentRecordedPlayerFrameIndex + 1 ? _currentRecordedPlayerFrameIndex + 1 : 0;
             if (_recordedPlayerFrames.Count() > 0)
             {
                 Game1.player.FarmerSprite.setCurrentFrame(_recordedPlayerFrames[_currentRecordedPlayerFrameIndex]);
