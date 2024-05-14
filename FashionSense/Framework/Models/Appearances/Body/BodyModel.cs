@@ -8,6 +8,7 @@ namespace FashionSense.Framework.Models.Appearances.Body
     {
         public int EyeBackgroundPosition { get; set; }
         public int EyePosition { get; set; }
+        public SkinToneModel SkinTone { get; set; }
         public Rectangle? EyeBaseSourceRectangle { get; set; }
         public PortraitModel Portrait { get; set; }
 
