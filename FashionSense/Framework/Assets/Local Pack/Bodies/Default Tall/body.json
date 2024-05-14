@@ -3,13 +3,18 @@
   "Name": "Default (Tall)",
   "Format": "6.3.0",
   "FrontBody": {
+    "SkinTone": {
+      "LightTone": [ 255, 255, 255 ],
+      "MediumTone": [ 238, 166, 163 ],
+      "DarkTone": [ 107, 0, 58 ]
+    },
     "ColorMaskLayers": [
       {
         "Name": "Skin Color",
         "Values": [
           [ 107, 0, 58 ],
-          [ 224, 107, 101 ],
-          [ 249, 174, 137 ]
+          [ 238, 166, 163 ],
+          [ 255, 255, 255 ]
         ]
       },
       {
@@ -1318,13 +1323,18 @@
     ]
   },
   "RightBody": {
+    "SkinTone": {
+      "LightTone": [ 255, 255, 255 ],
+      "MediumTone": [ 238, 166, 163 ],
+      "DarkTone": [ 107, 0, 58 ]
+    },
     "ColorMaskLayers": [
       {
         "Name": "Skin Color",
         "Values": [
           [ 107, 0, 58 ],
-          [ 224, 107, 101 ],
-          [ 249, 174, 137 ]
+          [ 238, 166, 163 ],
+          [ 255, 255, 255 ]
         ]
       },
       {
@@ -2621,13 +2631,18 @@
   },
   "LeftBody": {
     "Flipped": true,
+    "SkinTone": {
+      "LightTone": [ 255, 255, 255 ],
+      "MediumTone": [ 238, 166, 163 ],
+      "DarkTone": [ 107, 0, 58 ]
+    },
     "ColorMaskLayers": [
       {
         "Name": "Skin Color",
         "Values": [
           [ 107, 0, 58 ],
-          [ 224, 107, 101 ],
-          [ 249, 174, 137 ]
+          [ 238, 166, 163 ],
+          [ 255, 255, 255 ]
         ]
       },
       {
@@ -3923,13 +3938,18 @@
     ]
   },
   "BackBody": {
+    "SkinTone": {
+      "LightTone": [ 255, 255, 255 ],
+      "MediumTone": [ 238, 166, 163 ],
+      "DarkTone": [ 107, 0, 58 ]
+    },
     "ColorMaskLayers": [
       {
         "Name": "Skin Color",
         "Values": [
           [ 107, 0, 58 ],
-          [ 224, 107, 101 ],
-          [ 249, 174, 137 ]
+          [ 238, 166, 163 ],
+          [ 255, 255, 255 ]
         ]
       },
       {
