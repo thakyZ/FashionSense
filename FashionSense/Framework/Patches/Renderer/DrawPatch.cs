@@ -476,6 +476,12 @@ namespace FashionSense.Framework.Patches.Renderer
             Color medium = skinColorsData[skin_index * 3 % (skinColors.Height * 3) + 1];
             Color lightest = skinColorsData[skin_index * 3 % (skinColors.Height * 3) + 2];
 
+            BodyModel bodyModel = null;
+            if (who.modData.ContainsKey(ModDataKeys.CUSTOM_BODY_ID) && FashionSense.textureManager.GetSpecificAppearanceModel<BodyContentPack>(who.modData[ModDataKeys.CUSTOM_BODY_ID]) is BodyContentPack bodyPack && bodyPack is not null)
+            {
+                bodyModel = bodyPack.GetBodyFromFacingDirection(who.FacingDirection);
+            }
+
             if (sickFrame)
             {
                 if (pixels is null)
@@ -494,6 +500,13 @@ namespace FashionSense.Framework.Patches.Renderer
                     var darkestColor = new Color(107, 0, 58);
                     var mediumColor = new Color(224, 107, 101);
                     var lightestColor = new Color(249, 174, 137);
+
+                    if (bodyModel is not null && bodyModel.SkinTone is not null)
+                    {
+                        darkestColor = bodyModel.SkinTone.Darkest;
+                        mediumColor = bodyModel.SkinTone.Medium;
+                        lightestColor = bodyModel.SkinTone.Lightest;
+                    }
 
                     return new SkinToneModel(Utility.MultiplyColor(lightestColor, bodyColor.Value), Utility.MultiplyColor(mediumColor, bodyColor.Value), Utility.MultiplyColor(darkestColor, bodyColor.Value));
                 }
