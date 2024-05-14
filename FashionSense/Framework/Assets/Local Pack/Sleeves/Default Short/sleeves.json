@@ -18,9 +18,9 @@
     "UseShirtColors": true,
     "DisableSkinGrayscale": true,
     "SkinToneMasks": {
-      "LightTone": [ 193, 193, 193 ],
-      "MediumTone": [ 163, 163, 163 ],
-      "DarkTone": [ 54, 54, 54 ]
+      "LightTone": [ 255, 255, 255 ],
+      "MediumTone": [ 249, 224, 223 ],
+      "DarkTone": [ 107, 0, 58 ]
     },
     "StartingPosition": {
       "X": 0,
@@ -826,9 +826,9 @@
     "UseShirtColors": true,
     "DisableSkinGrayscale": true,
     "SkinToneMasks": {
-      "LightTone": [ 193, 193, 193 ],
-      "MediumTone": [ 163, 163, 163 ],
-      "DarkTone": [ 54, 54, 54 ]
+      "LightTone": [ 255, 255, 255 ],
+      "MediumTone": [ 249, 224, 223 ],
+      "DarkTone": [ 107, 0, 58 ]
     },
     "StartingPosition": {
       "X": 0,
@@ -1214,9 +1214,9 @@
     "UseShirtColors": true,
     "DisableSkinGrayscale": true,
     "SkinToneMasks": {
-      "LightTone": [ 193, 193, 193 ],
-      "MediumTone": [ 163, 163, 163 ],
-      "DarkTone": [ 54, 54, 54 ]
+      "LightTone": [ 255, 255, 255 ],
+      "MediumTone": [ 249, 224, 223 ],
+      "DarkTone": [ 107, 0, 58 ]
     },
     "StartingPosition": {
       "X": 0,
@@ -1772,9 +1772,9 @@
     "UseShirtColors": true,
     "DisableSkinGrayscale": true,
     "SkinToneMasks": {
-      "LightTone": [ 193, 193, 193 ],
-      "MediumTone": [ 163, 163, 163 ],
-      "DarkTone": [ 54, 54, 54 ]
+      "LightTone": [ 255, 255, 255 ],
+      "MediumTone": [ 249, 224, 223 ],
+      "DarkTone": [ 107, 0, 58 ]
     },
     "StartingPosition": {
       "X": 0,
