@@ -9,7 +9,7 @@ namespace FashionSense.Framework.External.ContentPatcher
 {
     class AppearanceToken
     {
-        private readonly List<string> _validInputs = new List<string>()
+        private readonly List<string> _validInputs = new()
         {
             "Hairstyle",
             "Accessory",

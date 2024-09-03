@@ -124,14 +124,14 @@ namespace FashionSense.Framework.Interfaces.API
 
         /*
          * Example usages (using the Fashion Sense example pack)
-         * 
+         *
          * var api = Helper.ModRegistry.GetApi<IApi>("PeacefulEnd.FashionSense");
          * var response = api.SetHatAppearance("ExampleAuthor.ExampleFashionSensePack", "Animated Pumpkin Head", this.ModManifest);
          * if (response.Key is true)
          * {
          *     // Setting was successful!
          * }
-         * 
+         *
          * // Attempt to get and brighten the current hair texture (note that counter is a variable outside of this snippet)
          * response = api.GetCurrentAppearanceId(IFashionSenseApi.Type.Hair);
          * if (response.Key is true)
@@ -164,13 +164,13 @@ namespace FashionSense.Framework.Interfaces.API
          *              colors[i] = pixel;
          *          }
          *       }
-         *       
+         *
          *       // Reset the texture after 15 brighten cycles
          *       if (shouldReset && counter >= 15)
          *       {
          *          response = api.ResetAppearanceTexture(appearanceId, this.ModManifest);
          *          counter = 0;
-         *          
+         *
          *          Monitor.Log(response.Value, LogLevel.Debug);
          *       }
          *       else

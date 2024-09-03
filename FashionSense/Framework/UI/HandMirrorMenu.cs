@@ -795,7 +795,7 @@ namespace FashionSense.Framework.UI
             }
             else if (current_index < -1)
             {
-                current_index = appearanceModels.Count() - 1;
+                current_index = appearanceModels.Count - 1;
             }
 
             string appearanceId = current_index == -1 ? "None" : appearanceModels[current_index].Id;

@@ -523,7 +523,7 @@ namespace FashionSense.Framework.UI
             // Draw the content pack buttons
             for (int j = 0; j < outfitButtons.Count; j++)
             {
-                if (_pages.Count() > 0 && _pages[_currentPage].Count() > j)
+                if (_pages.Count > 0 && _pages[_currentPage].Count > j)
                 {
                     var packName = _pages[_currentPage][j].Name;
                     if (packName == CREATE_OUTFIT_NAME)

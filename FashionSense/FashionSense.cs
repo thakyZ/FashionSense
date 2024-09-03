@@ -400,7 +400,7 @@ namespace FashionSense
         {
             // Clear the existing cache of AppearanceModels
             textureManager.Reset(packId);
-            conditionGroups = new Dictionary<string, ConditionGroup>();
+            conditionGroups = new();
 
             // Clear the preset outfits
             outfitManager.ClearPresetOutfits();
@@ -525,7 +525,7 @@ namespace FashionSense
                 }
 
                 var hairFolders = directoryPath.GetDirectories("*", SearchOption.AllDirectories);
-                if (hairFolders.Count() == 0)
+                if (hairFolders.Length == 0)
                 {
                     Monitor.Log($"No sub-folders found under Hairs for the content pack {contentPack.Manifest.Name}", LogLevel.Warn);
                     return;
@@ -536,7 +536,7 @@ namespace FashionSense
                 {
                     if (!File.Exists(Path.Combine(textureFolder.FullName, "hair.json")))
                     {
-                        if (textureFolder.GetDirectories().Count() == 0)
+                        if (textureFolder.GetDirectories().Length == 0)
                         {
                             Monitor.Log($"Content pack {contentPack.Manifest.Name} is missing a hair.json under {textureFolder.Name}", LogLevel.Warn);
                         }
@@ -641,7 +641,7 @@ namespace FashionSense
                 }
 
                 var accessoryFolders = directoryPath.GetDirectories("*", SearchOption.AllDirectories);
-                if (accessoryFolders.Count() == 0)
+                if (accessoryFolders.Length == 0)
                 {
                     Monitor.Log($"No sub-folders found under Accessories for the content pack {contentPack.Manifest.Name}", LogLevel.Warn);
                     return;
@@ -652,7 +652,7 @@ namespace FashionSense
                 {
                     if (!File.Exists(Path.Combine(textureFolder.FullName, "accessory.json")))
                     {
-                        if (textureFolder.GetDirectories().Count() == 0)
+                        if (textureFolder.GetDirectories().Length == 0)
                         {
                             Monitor.Log($"Content pack {contentPack.Manifest.Name} is missing a accessory.json under {textureFolder.Name}", LogLevel.Warn);
                         }
@@ -757,7 +757,7 @@ namespace FashionSense
                 }
 
                 var hatFolders = directoryPath.GetDirectories("*", SearchOption.AllDirectories);
-                if (hatFolders.Count() == 0)
+                if (hatFolders.Length == 0)
                 {
                     Monitor.Log($"No sub-folders found under Hats for the content pack {contentPack.Manifest.Name}", LogLevel.Warn);
                     return;
@@ -768,7 +768,7 @@ namespace FashionSense
                 {
                     if (!File.Exists(Path.Combine(textureFolder.FullName, "hat.json")))
                     {
-                        if (textureFolder.GetDirectories().Count() == 0)
+                        if (textureFolder.GetDirectories().Length == 0)
                         {
                             Monitor.Log($"Content pack {contentPack.Manifest.Name} is missing a hat.json under {textureFolder.Name}", LogLevel.Warn);
                         }
@@ -873,7 +873,7 @@ namespace FashionSense
                 }
 
                 var shirtFolders = directoryPath.GetDirectories("*", SearchOption.AllDirectories);
-                if (shirtFolders.Count() == 0)
+                if (shirtFolders.Length == 0)
                 {
                     Monitor.Log($"No sub-folders found under Shirts for the content pack {contentPack.Manifest.Name}", LogLevel.Warn);
                     return;
@@ -884,7 +884,7 @@ namespace FashionSense
                 {
                     if (!File.Exists(Path.Combine(textureFolder.FullName, "shirt.json")))
                     {
-                        if (textureFolder.GetDirectories().Count() == 0)
+                        if (textureFolder.GetDirectories().Length == 0)
                         {
                             Monitor.Log($"Content pack {contentPack.Manifest.Name} is missing a shirt.json under {textureFolder.Name}", LogLevel.Warn);
                         }
@@ -989,7 +989,7 @@ namespace FashionSense
                 }
 
                 var pantsFolders = directoryPath.GetDirectories("*", SearchOption.AllDirectories);
-                if (pantsFolders.Count() == 0)
+                if (pantsFolders.Length == 0)
                 {
                     Monitor.Log($"No sub-folders found under Pants for the content pack {contentPack.Manifest.Name}", LogLevel.Warn);
                     return;
@@ -1000,7 +1000,7 @@ namespace FashionSense
                 {
                     if (!File.Exists(Path.Combine(textureFolder.FullName, "pants.json")))
                     {
-                        if (textureFolder.GetDirectories().Count() == 0)
+                        if (textureFolder.GetDirectories().Length == 0)
                         {
                             Monitor.Log($"Content pack {contentPack.Manifest.Name} is missing a pants.json under {textureFolder.Name}", LogLevel.Warn);
                         }
@@ -1105,7 +1105,7 @@ namespace FashionSense
                 }
 
                 var sleevesFolders = directoryPath.GetDirectories("*", SearchOption.AllDirectories);
-                if (sleevesFolders.Count() == 0)
+                if (sleevesFolders.Length == 0)
                 {
                     Monitor.Log($"No sub-folders found under Sleeves for the content pack {contentPack.Manifest.Name}", LogLevel.Warn);
                     return;
@@ -1116,7 +1116,7 @@ namespace FashionSense
                 {
                     if (!File.Exists(Path.Combine(textureFolder.FullName, "sleeves.json")))
                     {
-                        if (textureFolder.GetDirectories().Count() == 0)
+                        if (textureFolder.GetDirectories().Length == 0)
                         {
                             Monitor.Log($"Content pack {contentPack.Manifest.Name} is missing a sleeves.json under {textureFolder.Name}", LogLevel.Warn);
                         }
@@ -1221,7 +1221,7 @@ namespace FashionSense
                 }
 
                 var shoesFolders = directoryPath.GetDirectories("*", SearchOption.AllDirectories);
-                if (shoesFolders.Count() == 0)
+                if (shoesFolders.Length == 0)
                 {
                     Monitor.Log($"No sub-folders found under Shoes for the content pack {contentPack.Manifest.Name}", LogLevel.Warn);
                     return;
@@ -1232,7 +1232,7 @@ namespace FashionSense
                 {
                     if (!File.Exists(Path.Combine(textureFolder.FullName, "shoes.json")))
                     {
-                        if (textureFolder.GetDirectories().Count() == 0)
+                        if (textureFolder.GetDirectories().Length == 0)
                         {
                             Monitor.Log($"Content pack {contentPack.Manifest.Name} is missing a shoes.json under {textureFolder.Name}", LogLevel.Warn);
                         }

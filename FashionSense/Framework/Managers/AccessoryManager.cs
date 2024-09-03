@@ -39,9 +39,9 @@ namespace FashionSense.Framework.Managers
                     UpdateAccessoryCache(who);
                 }
             }
-            catch (Exception)
+            catch (Exception exception)
             {
-                // TODO: Display error
+                _monitor.Log($"Failed to apply accessory.\n{exception.Message}\n{exception.StackTrace}", LogLevel.Error);
             }
         }
 
